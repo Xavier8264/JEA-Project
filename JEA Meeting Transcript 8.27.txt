@@ -1,0 +1,282 @@
+Using free modeled, look-alike components to represent the grid. Um, and then we won't it electrically connected and to operate as an advanced smart group. So, um, think of it like... 
+You know, here's a here's a decent explanation of of flizzard. Oops. So, um, if you've got 2 sources, 2 substations, you know, there's a usually a normally open point in the middle. 
+Systems aren't normally loop fed like that. It's typically rating. It comes to an end somewhere. 
+And a fault happens along the line, somewhere between, say, this device and this device, the system kind of automatically isolates the fault and reconfigures to provide power to the maximum amount of people. So that's really what we're after with this tabletop administration. When it's all said none, there'll be several fault locations, your fault zones, where I think a push button would work just fine to simulate a fault, and then we watch in real time as the RTEC controls these different devices to make decisions about how to isolate this fault and restore power. 
+So at a high level, that's what we're after. Oh, I don't think I'm gonna adore y'all with the video that I played during the presentation. Y'all know what Flizzer stands for? 
+I didn't know personally. Fall, location, isolation, and service restoration. Okay. 
+So we also call it DA Distribution Automation. So if you if you ever heard about automation or anything like that, that's what it, I mean that's what they're talking about. So, this is not the exact, um, art tech or automation controller that y'all will be using for the project. 
+We've already purchased this. It's on the way. Michael's Muir went in November, something like that. 
+It had a long wait time. So it's already it's already purchased. But right there is the brains of the operation. 
+That's where all the programming and decision making is going to live just like it does on our system. Michael's the expert when it comes to SEO, relaying, communication, protection. But we will certainly help and always you, and you, um, your HR program. 
+Go back to that caution quick. So when he says RTEC, so communications controller, SEO, which SEO is the, it's watch engineering laboratories, the blue boxes. They're kind of the gold standard on electric. 
+Um, relays, electric communications, and the RTAC is basically a communication processor, use logic, and then it talks different ways to different devices. So here, the modules you see toward the end, those are input and output modules, current modules, both as modules. So they're all inputs to that bike. 
+So, you'll program the art attack, and it uses kind of a, it's a variation of some C++, sort of, in its own language. And there's software to that, but we'll help you get the software and We'll help on that. But that's what you'll that's what you'll be actually programming as the art tech, and then it uses leather modules to communicate, you know, the statuses and outputs, and everything else. 
+Yeah. And so I'll tell you what I'm gonna do. Just help paint and all this. 
+I probably should have started. Here is an imperfect AI generating content fiction. Um, Looks pretty cool. 
+It does look very cool. So if we get remotely close to this at the end of this project, it's going to be a major success. But look, I mean, seriously, this is what we're thinking. 
+We're thinking something portable. We've got to be able to pick this thing up, move it around. We realize it's gonna be heavy, right? 
+Because it's got a controller in it. It's gonna have a power source. There's gonna be all kind of wiring and and, you know, et cetera. 
+So we get that, but it's still at the same time, the same can't be 6 feet long and 3 feet wide. Um, I'll let y'all figure out what the dimensions are gonna be. I mean, 4 by 2 and a half, you know, something, something, it takes 2 people to pick it up. 
+That's fine. Um, but somewhere right around there. I don't know what you're gonna build it out of. 
+I know when, I think my senior project was something very similar. We just built it out plywood, the actual box. Of course, we used the CNC machine and did a whole bunch of fancy reality and stuff. 
+Wow. Yeah, this is kind of what we're looking forward to. Two sources, 2 substations, that will be connected to 120 AC. 
+That's what the input power is gonna be. You know, we're thinking about having like a inside the box, like a little mini distribution panel, because you're probably gonna want breakers or fuses going to the art tag, one probably to each substation. Um, and then, I don't know, this whole time I had thought that all of the wiring and the connections would probably happen underneath the surface of the board, and it probably is still the best method to do it. 
+But when this, when AI generated this and I saw like that strip lighting above ground, I got really excited because it looked really cool. Oh, you do wire. No, we can do wiring below and lights up, though. 
+Yeah. Because one thing, the strip lighting is probably DC, and it's probably low voltage, and you have one... But, I mean, that's kind of the open-ended however, y'all. 
+Yeah. We didn't want to... We were gonna have, I mean, you gotta be able to visually see where the fault is and where it's being, where the power's being transferred to, and we were gonna use lights. 
+Yeah, yeah, we're gonna use. I mean, you got status, you have status light, so green and red on all your devices. So you could see with that, but that's pretty cool. 
+But if we, yeah, we'll do, we'll do the status lights first, you know, just to make sure that all of those work, and then if we wanted to do, like, a train of, of, like, you know, we're definitely gonna do that. Listen, we're gonna we're gonna make that, but better. Okay. 
+All right, if you can make that better, that's that's pretty. Yeah. I don't think we have not talked about doing any kind of like interface kind of load, right? 
+No, no, no, not okay. No, that was just its interpretation of the prompt that I gave it. So, the art tech itself has a, I think I ordered a spare. 
+I can't remember what I said I was gonna do with that. I was not running on the computer and running on the display court. You remember what we said? 
+No. It's probably in my notes somewhere. If I bought the art attack this morning, so, and I think I did. 
+No, I didn't. I don't remember. It has this playboard that you could log, you could, you know, plug a screen into or, um, you could log into it with your computer and part of this also will be building HMI for it. 
+Again, we can help out with that. There's a software that looks, it's pretty open-ended from Swatcher, and it's kind of like CAD, and you just kind of build, build it out. And then there's a way to tag the points that are in there to be able to be used. 
+So the thought was, basically, have a screen, an HMI where you could control this thing, but also, you know, faults, be able to push a button and do it without the screen as well. Yeah. Yeah. 
+That's doable. Well, that's doable. Oh, yeah. 
+Yeah, HMI. I don't know that much about it and I've built them for a couple of projects. I mean, if you could do CAD, it's pretty wide open to do that. 
+It's not hard. So. Since I, we don't have a lazier here, I'm just, you know, cold here. 
+That looks really cool. Yeah, yeah, yeah. And they, um, so we'll give y'all like, obviously, it didn't interpret exactly the devices where they needed to be, but, you know, we'll give you a, um, we're wanting it to be stale, too, if at all possible, because that just brings in another engineering aspect, all of it. 
+We can give you physical dimensions of what we buy, the exact equipment, and then y'all can scale it and see how it, how it fits on this way? That may also give you some guidance to how big the actual displays is gonna need to be. But, like, if you just had, like, a switch gear and just think of it just like an underground subdivision, and these are transformers in between the houses, and they go to each house. you know, this is pretty cool. where not all the houses are the same. 
+They're a little bit different. Um, don't know how that would work with y'all's 3D print out there at the lab. I don't know how easy it is to get models of houses. 
+But yeah, women like, probably not too hard. We would like, you know, LEDs, LEDs inside the houses to operate just like a status indicator on the side of a transformer. You know, when it goes out, house goes out. 
+Um, and then what's not in this picture is that, you know, there... And so many closures up there, which doesn't even want to really close. You know, they'll be like, we're thinking push buttons or something like, on the circuit itself, and you click that push button, and that's what simulates the fault and starts all of the reconfiguration of the system.. 
+We can do that. I mean, I guess you could get really fancy and do like fault injection, but I figured that was gonna be like... It's definitely interactive with it, actually, like... 
+Yeah, we... You know, where you could go for that... Yeah, you do definitely do it from HMI, but we're thinking like if someone could come on a physical push button and then watch it do its thing. 
+And then it probably needs to be another button like off to the side. That's like a return to door. Yeah, every so... 
+Yeah. Yeah, reset and then, I mean, the only thought is not have to use the HMO. HMO would be cool. 
+Because you can mimic everything that's happening and then do faults. But it would I think we don't want to have to do with HMI all the time. So, I mean, you could do something like the selector switch. 
+I mean, I guess you could do that and put different locations where you select, but I think our initial thought was just have it on the board, you know, wet zone. And, you know, heck, if you had lights above it, then you could have more they flash for a 2nd or something, then... believe that up to y'all. Yeah, those guys look. 
+But yeah, it would be cool to, you know, simulate it and then, like Zach said, I think you don't have to inject fault or anything like that. I think the actual, once you press that button, the what it does in the heart attack, more or less be hard-coded for each scenario. Yeah, yeah. 
+Just, because, I mean, injection falls and seeing that, that just, that's gonna be funky. So we did a lot of meters. Okay, so, yeah. 
+Yeah. So I think it's it's got like 3 voltage inputs and 3 currents. So you could inject voltage and current from each side? 
+Oh. So in terms of what all gets built out, put on here, you know, you can make as many residential streets and neighborhood taps as you want to, but obviously there has to be 2 sources, multiple reclosers that can operate and reconfigure. Um, one of the things that, um, I included in my proposal to Schwinton Hand was DR. 
+Um, don't know what that's going to look like, but the thought behind us doing it was I could bring in a little bit of the actual A code and teach them a little bit about actual 547 and talk about interconnection standards. And it can just be its own branch off the mainline, right? And then we could just have a recloser and then tie into whatever y'all's DR looks like, whether it's a battery or whatever connected underneath the solar panels. 
+The whole importance is, when you lose grid power, you have to open up, um, your knee or, um, for anti or, and all that. And then another component was like an industrial customer, just like a standalone industrial customer off the branch, and uses some type of transition or something and do variable load. And maybe if it works out, we can, you know, start training some power components and talking about voltage trucks and stuff like that. 
+Because although the field is really cool and probably the most important part, I did promise them that we would get in the power system analysis. And so, um, one part of this is once we settle on design, um, and I'm gonna throw up a very, very rough one-lined sketch. I want y'all to come up with your own. 
+Oh, I think we did this just sitting her, chit chatting around the table one day, but Looks complicated, but I promise it's not. Yeah, it looks worse than it really is. Yeah, yeah, source, circuit, break your main line. 
+You got to tap, you got to really close your. Um, there's you, your DER and maybe a fault location. Here's a fault location here, a recloser, branch off on another tap, recloser. 
+This could be a neighborhood. We transformers and houses. Another push button. 
+Here's probably your normally open. It's right in the middle. You would need, you know, push buttons on either side for fault zones, et cetera. 
+This is kind of like the looped scenario I was showing y'all earlier where maybe you've got a fuse or reclosures, houses, transformers, and subdivision. Then you gotta have a point here in the pack. Oh, et cetera. 
+So once you kind of come up with this, one line and what's gonna get put on the board toward the end when we have time, because the bill's got to get done, right? We will model everything in window. Well, actually draw this out with 2 sources, some more realistic distances, and we can start talking about, um, conductor impedances and actual load demands, and we can do a legitimate, um, Powerful analysis. 
+Oh, and then I think that should be included in y'all's y'all's reporter. Oh, I don't know, weeks that we talk about voltage drop. We can model your industrial customer and we can put the DER in there and all that sort of things. 
+I think it'd be pretty cool. Well, take all. But I know, I guess when I 1st went out there before I ever talked to y'all and pissed at Dr. Schwint, or I think it was just Dr. King, he emphasized that he didn't want this to be just a construction project, building Legos. 
+He wanted to have a little bit of engineering backbone behind it, which... I think that gives it its credibility. Yeah. 
+So... Yeah, we probably won't talk about coordination and all, but I hadn't done the other day. Yeah. 
+Y'all, y'all know what the thing is. It's gonna be a training day. So. 
+Oh, at a super high level, this is what we want to do. Oh, I don't know. Like I said, in this other document, obviously, today's the kickoff. 
+We kind of just went over what some of the requirements and research is gonna be. I just showed y'all a conceptual design that I can email y'all, just for reference. Um, and then here's where really y'all y'all take over. using your components and how things physically gonna be built. 
+Obviously, I think we want to have a little bit of approval in saying that, but we're definitely open minded and want this to be yours. When it comes time to start buying, send us a list, and I'll just buy it. Okay. 
+Um, I think we do have a budget, Michael, how much is the $10,000 that you eat up with the relay? Six of it. So we still have we have stuff several thousand dollars. 
+Oh, here. Oh, to spend. So I don't think I don't think money's gonna be. 
+It's legit, maybe. Yeah, if it's legit, we'll make it happen. Yeah, all right. 
+We'll try on to... Yeah, yeah. I mean, because I've got an indoor receipt. 
+I mean, we're going to use it. We find them using this as a training tool going forward for JA. We have a legit... 
+I think it would be really cool. If you look anything like that, I mean, to see that as someone who we deal with this, you know, we actually have, what, four or five, four DA schemes? I mean, that real world that we can watch and that will actually work. 
+This is some cool stuff. Yeah, can you go back to the dodo again? Yeah. 
+So, with those power lines, do they run, like, under the roads or do they run, like, in between houses? Like in real life? Oh, man, they can run really anywhere. 
+Probably not necessarily, not in between houses and like that. Mostly along the roadways, but going cross country, like from a substation out to the road, you ever do that all the time. Okay. 
+But like, I wouldn't be doing this. Um, I mean, there's a there's a figure line, which is a main line that's underground right through the Middle East campus. Yeah. 
+I mean, if you say big green boxes, when you use green boxes, that's how those 12, 12, 4, 70. So phase and phase is 12, about 12, 5, phase the ground, 7,200. And that's that's what we call feeders. 
+So that's not fuse or anything else. It's not direct to the breaker. So, I mean, underground is a lot more expensive than we were in. 
+Everybody in a lot of these cities, a lot of just put underground, you know. So that's one, that's one exercise that I think I kind of just skipped. If it was in here anywhere. 
+But once we settle on design, once y'all have done your one line and we all kind of agree, this is what it's going to look like, I'm going to help y'all build the bill of materials for what it would cost to do that in real life. Okay. And we're gonna do it underground, we're gonna do it overhead. 
+And I will give y'all a sense of how much more expensive it is to do it on your own. And we'll put some estimated man hours to it, and it won't be a very long exercise, but still, I think it's important for people to understand scope, because everybody's quick to get on Facebook and be like, bury the power lines. Yeah, it sounds great. 
+Looks great. Looks good. So expensive. 
+Who's gonna pay for it? And at the end of the day, when you're in, is gonna do it. Yeah, I mean, I mean, we do, contractors can do it. but yeah. 
+Well, so funny thing, you know, a lot of your subdivisions in Jackson, you know, a lot of your apartments, whatever, fed underground, right? I mean, probably where y'all live, more likely I was on the ground. There is not a single house in Jackson that is not overhead between somewhere between there and the substation. 
+Yeah. That's the thing people don't realize is they go underground. Oh, I'm never going to lose power. 
+Well, it's overhill between substation and your house somewhere. I mean, we've got 2 plates, 2 or 3 customers, and it's all underground, and those are industrial customers, and it's kind of specialized. So it goes over here. 
+So that's the that's the thing. I mean, it's underground was great. Lewis couldn't, I mean, it helps prevent hologists, but it's still on the, it's not the, save all, no. 
+But it's a lot more expensive. Yeah. And so this is just kind of my proposed phasing. 
+Y'all can do it however you want to. I will send this. I will send this to y'all. 
+Um, even kind of, I didn't again charge, but you could easily make again charge. Yeah, actually. Y'all do have some? 
+Yeah, the 2nd uniform I was like, perfect. Yeah, yeah, y'all can y'all can just take this, make it your own, and do your game charge. Yeah. 
+And so... So, Project Timeline, that's the big thing I want to talk about now. When do y'all have to have this done by? 
+Do you know? Uh, technically, the scholarship... Scholarship? 
+I was the MVR ideal. Which is, like, mid-March. They want us as much as possible. 
+I believe March, uh, the... What, the 27th in there, but y'all a little bit up from something. Well, I think we shut down for the scholarship symposium, wasn't it? 
+Oh, really? Yeah, I think they Last year, oh, they did bump it up last year. It was earlier in the year. 
+Yeah, I'm not sure when it is. I think they looked it up on the on the academic calendar. So that was our target for y'all too. 
+Okay, cool.. What I'd like for y'all to do, I think it would be a great shot run, and we'll do this several times, but once it's done, we've helped y'all troubleshoot and everything, it's good. It's solid. 
+It works. We would like for y'all to present it to our executive man. Oh, so that would be our C suite employees. 
+They're pretty excited about having a class. See, we've never done anything like this, so... I think that'd be interesting seeing the final product, that'd give y'all a chance to... 
+I'm assuming y'all have to present and do some type of form presentation on it. This would give y'all a trial run too, right? And I promise her, people are cooler. 
+Money would, money ate this up. Yeah, yeah. My cookers are CBO, hey, he came from the electrical background, and the DA, and all automation, and he, he, he, he... 
+So I'm thinking, you know, if we can be kind of done with this 1st little March, I think that way we're not stressing here. That's still a problem. Yeah. 
+Cool. Wash it up for me. Y'all got any questions? 
+Yeah, you mentioned AC. Are we working with ACADC? What was the input power on RK? 
+It's called an art, I think, and it can be whatever. Whatever. So I think the meteoring module is basic. 
+But, I mean, you could do DC for your controls and everything else. I think what we had talked about doing and what I need to do is get you to get them. Um, how are we gonna do, like, you gonna try to set up some kind of. 
+We need to set up file sharing. What kind of file sharing works for y'all? Uh, we have one drive. 
+We have one drive from the Union. I'm good with Google Drive. No, it's got something that way, like, or I guess you're the kind of, it'd be nice if, like, all of us can see the same thing. 
+Yeah, we need to set up some type of power changes. Yeah. Um, I don't know, I mean, we might have something, but I'm not a fake. 
+They might we might have something.. I'm doing good with driving. out of it. I mean, we're not putting anything out there. 
+That's over. Yeah, that's a vegetarian. Yeah. 
+So, I need to get y'all what I ordered as far as the model, the way the number of inputs number outputs. you're working with. I believe the metering part we ordered. So you're low with your, especially your variable load, it could actually be metered. 
+That, I think, would have to be AC. But the inputs and outputs on that. Oh, look, but I think I'm almost certain those can be basically organizing. 
+I just have to program. Um, the art tech itself, look, I'm pretty sure it'll operate on ACDC. The thought process was to have 120 AC powered into thing where you can just go plug it into a wall. 
+But then if you needed to move it to DC or whatever... Okay. I think we're all the concerns what the LEDs? 
+We realize DC plays better. with some of these... Let's see. But, yeah, 128C, for sure, for input power. 
+Yes. So I plug it into the wall, and then just, if you need your rectified transform, whatever you gotta do. Okay. 
+And with the PLC, they can controllers, you have, um, it's programmed with the, like, licensed software. You can download the software for you. Okay. 
+So it's not licensed. The only thing will be, we just need to make sure, like, software virgin wise and all that. Yeah, good. 
+Yeah, you can you do have to create an account on their website. Um, but it's, I think, well, you know, I think we had said, we'll have to give them the, the, um, executable file. Because I don't know if you can create an account and not have it tied to a corporate email. 
+But I've got those beautiful for the software. We can get the executable and then y'all download it on your. Yeah, we'll just put it in the Google Drive. 
+Yeah. Any young gala? Awesome. 
+But it's not a, um, the only issue I've had with it is my computer, and if you're not on a, um, corporate laptop where you have admin rights, I've had an issue where you, you access it via IP, and you're, I don't know, like a computer, genius, but your, your network adapter's supposed to grab an IP in that same subnet. Mine doesn't do it. And so I've had issues with that, but if I had having to write still, you could go in there and fix it. 
+So we'll help you with all that, but you would connect to it with ethernet cable. Um, and then that's how you program it also is just with the with the IB board. So. 
+And if y'all have the software, y'all could all push it, and, you know, it's not... You know, the IP of it and know the passport and stuff. That's easy. 
+Oh, it's not. You're letting us pick, so, like, the only requirements for us, I guess, are, like, two sources, right? But we can pick however many, like, Well, we'll pick, like, a dimension of how, like, actually, if we want it, and then we can pick up many, like, houses or whatever, like, they, like, Yeah, I think, yeah. 
+Yeah, take you first. Take your 1st ad, send it to us and let's look at it. But yeah, like I said, this one line, we just kind of sat down and sketched it out real quick just to kind of see what all can be added to the model. 
+And so yeah, that's just 2 sources, you know, one, two, three, four, five. Reclosers, switches, just something that can be operated and opening close. Gotcha. 
+Yeah, if it's a switch, I mean, you could have as simple as a push button, I don't know. I already won't do it. Yeah. 
+You guys use on a kennel? You guys are just auto catalog? Every day all day. 
+I was at Barnhart this summer, in Memphis. That's like, at least EPS and ESS, like projects and so forth. Use that. 
+Yes. I use that also. So, like, on a Cap chemical. 
+Yeah, I love worrying it all day every day. Thanks, I'm in it all day every day, but... How was at one point? 
+My two credit achievements were not okay, so... I'm not even gonna try to open this. It will crash mine. 
+Do that. Go to go to the contract store. Yeah. 
+Would you be able to send that PowerPoint card? Yeah, do us. I'll do everything. 
+Okay, 2 or 23, I think. Hey, would we consider designs for fire? Like, from a realistic perspective, like, if we had a subdivision design is what I'm saying, no. 
+No, I wouldn't give it to him. Okay. That's what I want to do. 
+Like, you're probably... So somebody could go out there and, like, dig and say that's where it's at. No, as long, I mean, if you take the street name off, you don't know where it's at. 
+Well, that's what I was gonna do. It was like, some G.R. I think, man. crazy. 
+Just thinking of sending you also, like, realistic ways that we would design a subdivision. So, we still listen to school, big, but... This is the only thing I've ever stamped, probably the only thing I will ever know. 
+Michael did all this design in 3D y'all again. substation. Y'all actually coming toward it. Yeah, Ninjago and Motoro, we did? 
+Yeah, me, Jordan. So that was all 3D caps. So that's just going to get my current achievement, but that's... 
+Pretty cool to see it go from CAD to actually being built. And it was almost $6000000 project. So, um, to answer your question a minute ago, I did order the... well, I can't remember what art I got. 
+I got that spare, but I think I ordered a spare, big one. You know what? I think I was gonna order... 
+I think I was gonna use that spare. I have, that's the lower powered one, and just connect to the computer instead of using the display porting. And then I bought the license for that. 
+I bought the HMI license for that. Um, and they'll tell you, the Powers fall, and this thing gonna take 125, 250, DC, 122, 40 days. The metering module is AC, and then the input output modules are, excuse me, 125 DC or AC. 
+And that's on a her input selectable. So, I mean, if you had an input that was AC, and one of them that was DC, you select what it is and it'll work. And currently, we had 32 inputs and 32 outputs. 
+So all we ordered. But if something happens and y'all need more than that, I think we can order, like, two or three more models. How long does it take to keep getting just the money? 
+That's the only thing, I don't know, with their league times. Yeah, well, twice or late time used to be super low, but they've gone out a lot. So, yeah, if you think, you know, when y'all start looking at this, you think you're going to be more modules or more inputs and outputs. 
+Let us know because of the lead time, but they're like literally cars that you can stick in. So, I mean, you could pretty much have everything wired and then stick them up in there later. Yeah, nice. 
+We came up with those numbers thinking that's a pretty... March number. And those all those outputs are, um, they're normally open out. 
+I put that. I mean, I guess that can matter. You'll program whatever. 
+Do y'all have any, uh, software computers? That's not my word. time. Because we had a PLC project, just last semester that I was working on, and yeah, it was Rockwell, and we had to get a license to use it, and I was kind of in pain, and it was only on one computer. 
+Didn't have a network license agreement, so... Yeah. Oh, I'll go our 155 right here. 
+So, like, we can... As long as you don't have, I have to worry about with admin. for today. It's hard to figure it out. 
+Yeah, these are all personal. Is that an HP? Victus or something? 
+Is it or good? Yeah. I was thinking about... 
+I found.... that? How much involvement does... First of all, do y'all know who the, is it Schwitt or Pinion that's going to be? 
+Okay. How much involvement is he going to have, as he said? Probably. 
+I think he wants to stay in the loop, but the bulk of the work is done like this. Well, does he, yeah. Is it project house songs for y'all? 
+I think that's something we define. I think that's true. But the other project is aerospace project, or there's one with TBJT, then there's one that's completely on their own. 
+They're doing SAE arrow, and that's one of our other professors. They're actually going through with that. And so she's like, can like help us out. 
+Yeah, but we're pretty hardworking, pretty independent. We can do, you know, new 100%. Without showing. 
+They didn't have any involved in those sort of, yeah. Kind of thing, I don't like the art tech stuff. would be the best way to get them kind of. might be sitting on a project, back it up. man, 'cause it's not like they can do anything with it, they don't know that. Because it's, so the art tech stuff, it's, I mean, it's... 
+The code, I think, and I'm not great at coding, I've done a lot of it, but I'm not great at it. I think it's like a, I said, some version of C. I don't think it's seen. 
+I think it's more like C push was. But she basically defined her variables and then you can use those. So I could probably send you a project or 2 that I've done and y'all use that as a basis because when you 1st look at it, it's like, what the heck's going on? 
+So this doesn't make use of regular latter logic, then this is a text-based carding. There is there lateral logic in it. I just never, I've never used later logic, so that's not where I went when I started messing. 
+Gashing. I mean, if y'all want to do lighter logic, it will hand it will do it. I can't help you out. 
+Yeah, we can agree that out. The tech stuff though, I mean, if I can figure it out, I'm sure y'all can, because I actually, when I was in school, I hated programming. I hated all that stuff, and then now, I spend half of my time programming. 
+Nice. But my cooking, how much do y'all use A on? Quite a bit? 
+A lot. What do you use? I use Clyde. 
+Okay, perfect. Oh, you're gonna be best buds. Yeah, I'm a huge proponent of fall, especially when it comes to coding. 
+Yeah, no. So, get your prompts, figure out what you want to do. Tell Claude what you want to do. 
+I have a feeling I'm going to be learning a lot from people on how to use it. about Claude, like, did you use Claude for the entire, not the entire, but like most of the biology project that we have actually? Bulk of it, yeah. How many lines of code was it? 
+I made a I made a web app that's hosted. I'm hosted locally, but it's during the opening unit. You know, you know, the whole website, coded the clause. 
+It was pretty cool. I use it quite a bit. So, don't be scared, because I promise you, there's enough help out there to get this. 
+Okay. How frequently, other than obviously ask us questions, when we get this, when we get this Google share setup, we'll put all of our contact information. Y'all call, text me, email me anytime. 
+Oh. So as soon as you got a question, don't feel like you gotta wait. Just ask. 
+And we'll get an answer. We all want to, like, try to meet in person. In person? 
+Yeah. So, um, once every 3 weeks. Opinion? 
+She wants us to send Y'all a weekly update of what we've worked on. Okay. No, that, no, email. by email. 
+Yeah, that's that's fine. Yeah. In person, I don't, at this point, I don't see a huge need. 
+I mean, typically in my experience, it's been like 30%, 6%, 90% meetings, like, go, go, go. Yeah. Okay. 
+Or let y'all. Yeah, we'll let y'all kind of get it figured. We have to make out a lot of ways scheduling ourselves. 
+So once we get that, we'll... It ain't nothing for me to come out there and make a trip to the lab, just... Yeah, see how things are going. 
+Cool. But also, we're a microvantage. We're done. 
+No. We just got to make sure at the end of the day, it's... presentable to our executives. Yeah, well, yeah, no, when you said we're gonna show it to higher ups, we're, like, Yeah, let's do it. 
+Yeah. Oh, whatever, I'm like... Oh, no, I, yeah, at Barnhart, each, every day, there's an engineering review meeting, and it's, like, every head of the department sitting in a room like this, and they had picked an intern each week to take notes on it. 
+So, like, literally, the guy would take notes, just literally just types frantically the entire time. And it's like the seat, it's like, both the guys have started it. the company, and, like, all the top guys, and they're all just looking at a project, and just spouting information. It was the most insane thing. 
+Like, it was... every day? Monday through Thursday, yeah. Yeah, ERMs. 
+It was... I thought we'd met our salesman dead. It was insane. 
+You got anything else?. It would be nice, that on the physical construction side, like I said, I don't know what you're gonna make your box out of. It's gotta be able to house everything underneath. 
+We thought about taking that heart attack, and kind of, like, mounting it into one of the sides, so the bush woods and everything are accessible from the outside. That would be cool. But if we can come up with some type of, not class, plastic cupboard, they can sit over the top of it and protect it during transport. 
+Yeah, no, we've gotten ideas of how to make it transportable. We were thinking about making it, maybe, possibly. This would be a stretch, but maybe modular, you know? 
+I think that's very doable. take pieces of art. What I'm thinking, suitcase style box rather than having it all big one, one big thing like this. I get, like, 4 seconds that, like, snap together for me, used to do different parts or something like that. where everybody's talking with that. 
+Do y'all have any? So, like, obviously you can 3D print the components, the houses, and all this. Basically, the entire like top of what's visible is probably going to be 3D printed. 
+Yeah, different pieces. So, yeah, we were curious, like, how you would do like roadways and different, like, different colors. Yeah, color. 
+We just got a bunch of new bamboos and there's, like, I didn't know that they replaced all of our, like, gruesome minis with, like, nice bamboo labs. Also got multicolored. Yeah, that we can work with as well. 
+We have a ton of different ideas for people. For, like, available resources for really pretty stuff. I mean, depending on the nozzle size, you could get pretty good detail. 
+We go with, like, a popular mintry scale, then you can go to Hobby Lobby, you get, like, artificial charities, you know, same scale. Yeah. I was gonna say, not all of this needs to be through you. 
+There's definitely, like, the roadways and the grass and stuff could just be, like, vinyl, like, vinyl wrap. Yeah. Whatever y'all want to do. 
+No, we can make it look funny. Yeah, cool. I will say I have to take off because I practice. 
+So, you wanna... start the Google Jazz? Yeah. Yeah, I know. 
+Nice to meet you, John. Yeah, nice to meet you. Just gonna be a good time. 
+Sorry, I just... Take care. see. Johnny, you on the Wi Fi?. 
+The lights on top? Y'all need Wi-Fi? We can get you on guest network. 
+I got my phone's past five. Oh, you're on the hotspot? okay.. 
+Interconnection. Interesting. Oh, yeah. 
+But, yeah, let's not throw that. So the door? Yeah, yeah. 
+That, that's crazy, but also... I know you can... Hey, I said it was pretty good. 
+I didn't see it. It was great. Did you tell AI to get this? 
+I think one crack. Did you just feed it like the project description? It's like, hey, take this. 
+So I gave co-pilot, Claude wouldn't let me do image generation with my license. I don't I don't have to do image and... Yeah. 
+I just I just pay for I just had pro, which doesn't do image generation. But, uh, co-pot will do it. So I gave it the presentation. 
+I gave it the scope of word document, and then I took about 5 minutes and sketched a one line on a sheet of paper and uploaded it and said, hey, generate me a 3D. Rimaged.. Well, you put things in the middle of the road and in the middle of nowhere, but it looks good. Hey, it looks cool. 
+Okay. I didn't notice it was in the middle of the road about five minutes. It looks like one of my old southern vision drawings, one, right? 
+And it's also got, like, different coke or LED lighting and stuff. But, I mean, you could, you could have like, Could you get it? Be really cool if you could add different feeds, have different colors, and then change it based on what feed is feeding. 
+Yeah, but I mean, I guess you could do anything programmed. You'd have to have some kind of over here. I don't know how those LEDs change. 
+You have to, like, hack in. Yeah, you have like a red feed and a blue feed and depending on the configuration, like the... No, that's that's something we could look into, for sure. 
+You'd have to, like, know at a time when you'd have to change it somehow. How do you? Yeah. 
+How does it know what source of time? Or maybe you don't change the actual feed. But if you're talking about the houses and those have multiple feeds, maybe you can change the individual lights inside of the houses. like, oh, boom. 
+Yeah, because of that, yeah. Well, a lot of your LEDs are multicolored. You just. 
+Well, yeah, but makes a little different code from the remote. No, I'm talking about a lot of your, like, LEDs and the bunker down there. Yeah. 
+That one LED has 3 different colors. Yes. That's true. 
+It's basically 4 wires and you you've got your common and then you're 3 hots. Or it may be a 3 yachts and breaking the common. I'm not sure. 
+What, how'd actually work, but? Do you want? Used to not require Google workspace for making a shared drive on Google Drive. 
+Yeah. That's really cool. Once we get a job set up on either one job or Google Drive, we'll send you the link. 
+Okay. Yeah. Yeah, I'll start uploading the crap toner information. 
+Yeah. Oh, maybe I'm gonna eat lunch. Got it, sorry. 
+Might as well just wait now, dude. Just consider it midday fasting. That's what I do every day. 
+I know. The problem is... stacking dinner. No problem is, by the time I go, this, I can remember. 
+Okay. Oh, your cloud would pay, dude. Yeah, any other questions? 
+You can do what Matt knows. Do you think we got all the? Or do you feel so good? 
+No. That's what he said. Who doesn't? 
+Matt Frank? Yeah. He only eats dinner. 
+That's what he said. A Diet Coke or a diet much pepper with them. I'm pretty sure it's hungry or dizzy? 
+You take the soup, but it's hungry also. That's a great one. Yeah. 
+So I have my... Okay. Yeah. 
+I don't say how you... Yeah, Charles work. Okay. 
+Make swing diverses. You better with the season. Well, I didn't say, I won't either make it. 
+Okay, here's what we'll do. Well, I'll trade them. You know, here you go. 
+And I okay? No? Good for today? 
+Yeah, yeah, I think. overwhelmed yet? No, just a lot of research to do, usually, I think. Sounds like y'all have already thought about this at least. 
+I mean, ideas. and so... Exact said, I think JA's open to... whatever. Yeah. 
+I think it's I think it's gonna be really cool. It'd be a lot better than what I did at Martin as my senior project. Hopefully, y'all actually learned. 
+Mine was a joke. Oh, yeah, this is... I've interned regularly, oscillation, energy, and then some of that kind of things. 
+So seeing how going through, like, past the station is really cool for me. in the other half. Is that how? That's, um, well, the one I'm at is in Cordova, Illinois. 
+They don't serve anywhere in Iowa, but they're not... America. I also agree, I think he gets slept on a lot in high school. 
+I'm like, more people knew how cool it was and how many opportunities there are within it. I knew I wanted to do that after going into a substation... See, yep, he wasn't CEO. 
+I mean, that's literally what I wanna do from the time I started. I co opt here. So, I worked here this summer, I'm back to school. 
+I was busting them out of drive before I graduated, well, a year before I graduated, so... But, yeah, I haven't got any impulse utilities. Okay, um... 
+Back Hey. Yeah, they continue in education. continue education. I promise, I ain't gonna make that decision. 
+I ain't making my test again. No, no. I got a bunch of... 
+I got another... I got another... Utilities is... 
+Maybe even opened up chemicals, too. Which, it's nice that they do require that, because some schools fake out, and the motivation to do this sometimes. is not there. They don't have to pass, though, right? 
+Not to graduate now. Actually, uh... Well, wireless, you hadn't passed it to graduate, so it was definitely motivates you, man. 
+Best off. You wanna graduate. So they claim they're a little claim to fame is on... 
+So that's nice. I mean, it's good because then you take you up, and then now y'all can take the beat, that's a lot sooner, too. I recommend doing that ASAP, by the way. 
+Yes. Yeah, we had to wait, what, 40 years? Yeah, and then I had kids and I ended up being like 6.5 or I think it. college, like, org and so just come out. 
+Oh, I didn't learn half of it anyway, and then I had to relearn it. Yeah, y'all gonna have that same blessed opportunity when you do it. graduation unity. Closure's just not thinking. 
+Yeah, it's like YouTube Martin is very similar to Union, but it's a general engineering program. So... Martin's pretty much their own burger. 
+The only bad thing is you don't get quite as much, like, detail and stuff. But it's good because you have to go with everything. So, I mean, like, on the early side, I mean, we do... 
+I don't... I don't do anymore, when I do live design... I mean, that's a status problem. 
+I mean, you're not sitting there doing the numbers, but just the general idea of a down guy. I mean, it's a status problem. And so just having that is good places to go. 
+What is that? What is that? What do you know? 
+It's a monitor.. No it's not a monitor. I just gotta know. 
+Oh, is this homework? No. If you do that in your head, how do you do it? 
+Oh, it's just, like, out of school, I'm saying, up a different. Yeah. edition system right now. No, you didn't. 
+Whoa, whoa. Okay, hold on. I'm gonna do it in your head. 
+Okay, no, how do you do it? So you do it just like you would do it. Yeah, I would do that. 
+I don't know if I hold a calculator. No, man, on mental, on mental math, I was like... No, you glance at the last two numbers, and you know it adds up to more than 10. 
+So you do 2 plus four, 6, I just add one, and then take the 2nd number, the last 2 numbers. good. Have a cheating? No, dude. 
+I'm just... I'm just... simplest time as well. See you later. 
+He was out of TIE, so... No, it's so... I think it was shiny. 
+I just got it hard, but... I'm trying to remember. I don't know. 
+I am.

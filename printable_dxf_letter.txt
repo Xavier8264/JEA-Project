@@ -1,0 +1,125 @@
+Build a Python CLI tool that splits a 2D DXF into 8.5" x 11" tiles and outputs a
+multi-page PDF for full-scale (1:1) printing, so the sheets can be butted together
+into a full-size template.
+
+INPUT FILE: <PASTE_YOUR_DXF_FILENAME_HERE>
+
+=== CONFIG (named constants at top of file) ===
+SHEET_W = 8.5                  # inches, portrait
+SHEET_H = 11.0
+DXF_UNITS = "auto"             # "auto" | "in" | "mm"
+SAFE_INSET = 0.25              # annotation keepout from sheet edge, geometry only
+FLATTEN_TOL = 0.005            # inches, arc/spline chord tolerance
+LINE_WIDTH = 0.5               # points
+ASSUMED_UNPRINTABLE = 0.12     # advisory only, used in the loss report
+
+=== CORE BEHAVIOR ===
+Grid pitch is the FULL sheet size, 8.5 x 11. Do not inset, blank, scale, or reflow
+anything for printer margins. Render geometry at true model position across the
+entire sheet and let the printer clip whatever falls in its physical unprintable
+area. Sheets butt edge to edge with no overlap and no trimming.
+
+=== GRID AND NAMING ===
+1. Read the DXF, compute the bounding box of all modelspace geometry.
+2. Resolve units: read $INSUNITS (1 = inches, 4 = mm) and convert to inches. If
+   DXF_UNITS is "auto" and $INSUNITS is 0 or unset, print a loud warning, report
+   the raw bbox dimensions, and require the user to pass --units explicitly.
+3. Grid origin = bbox min corner.
+4. n_cols = ceil(bbox_width / SHEET_W), n_rows = ceil(bbox_height / SHEET_H).
+5. Columns are lettered A, B, C ... LEFT TO RIGHT, A = leftmost.
+   Rows are numbered 1, 2, 3 ... BOTTOM TO TOP, 1 = bottom row.
+   Page ID = letter + number. A1 is bottom-left, B1 is directly right of A1,
+   A2 is directly above A1. This is intentionally NOT spreadsheet convention,
+   row 1 is at the bottom. Beyond column Z use AA, AB, ...
+
+=== PARTIAL PAGES AND CUT LINES ===
+The last column and the last row will normally be partial.
+- Content in the LAST COLUMN is anchored to the LEFT edge of its sheet.
+- Content in the LAST ROW is anchored to the BOTTOM edge of its sheet.
+
+For every page in the last column, draw a vertical dashed cut line running the
+full sheet height at:
+    x_cut = bbox_max_x - column_origin_x     (measured from the sheet left edge)
+For every page in the last row, draw a horizontal dashed cut line running the full
+sheet width at:
+    y_cut = bbox_max_y - row_origin_y        (measured from the sheet bottom edge)
+The top-right corner page gets both lines.
+
+Cut line style: dashed, 0.75 pt, with small rotated text "CUT" placed on the KEEP
+side of the line (left of a vertical cut, below a horizontal cut). Add a short
+label near the line stating the kept dimension, e.g. "CUT AT 5.500 in" or
+"CUT AT 4.000 in", so it is verifiable with a ruler.
+
+=== PER-PAGE ANNOTATIONS ===
+All annotations must sit at least SAFE_INSET in from every sheet edge, and inside
+the KEEP region on partial pages, so no printer clips them.
+- Page ID bottom-left, ~14 pt bold, e.g. "C2".
+- Neighbor labels at the midpoint of each edge: left "<- B2", right "D2 ->",
+  top "C3 ^", bottom "C1 v". Omit where no neighbor exists.
+- Registration ticks: 0.25" L-shaped marks at the four corners of the SAFE_INSET
+  box, for alignment when taping.
+- Footer text: source filename, page k of N.
+Draw all annotations after the geometry so nothing is obscured.
+
+=== INDEX PAGE (page 1 of the PDF) ===
+- Scaled overview of the whole model with the page grid overlaid, each cell labeled
+  with its page ID, so assembly order is obvious.
+- A 1.000" x 1.000" calibration square with dimension text, for verifying the print
+  came out at 100% before committing to the full run.
+- Text block: model size in inches, grid dimensions, count of partial pages and
+  their kept sizes, total page count.
+- Printing instructions in bold: print at 100% / Actual Size, NOT Fit to Page,
+  NOT Shrink to Printable Area, and do NOT use borderless mode (it enlarges the
+  image 2 to 5 percent and destroys 1:1 scale).
+
+=== OUTPUT ===
+- Single multi-page PDF. Index page first, then A1, B1, C1 ... then A2, B2, C2 ...
+  (left to right, bottom row first).
+- PDF is the correct format here. Do not emit raster images, they lose vector
+  precision and complicate exact scaling.
+- Also write a plain-text manifest listing each page ID and the model-coordinate
+  rectangle it covers.
+
+=== IMPLEMENTATION NOTES (real gotchas, follow them) ===
+- Use ezdxf for parsing. Do NOT use ezdxf.addons.drawing.matplotlib.qsave, it
+  overrides axis limits and breaks exact scale.
+- Flatten geometry once, up front, and reuse for every page:
+  ezdxf.disassemble.recursive_decompose(msp) to resolve INSERT blocks, then
+  ezdxf.path.make_path(entity).flattening(FLATTEN_TOL) to reduce LINE, LWPOLYLINE,
+  POLYLINE, ARC, CIRCLE, ELLIPSE, and SPLINE to world-coordinate vertex lists.
+- Entities make_path cannot handle (TEXT, MTEXT, HATCH, DIMENSION, POINT): count
+  them, skip them, and print a warning listing types and counts. Silently dropping
+  geometry from a fabrication template is the worst possible failure here.
+- Guarantee exact 1:1 scale with matplotlib, per page:
+      fig = plt.figure(figsize=(SHEET_W, SHEET_H))
+      ax = fig.add_axes([0, 0, 1, 1])          # axes fill the entire sheet
+      ax.set_xlim(page_x0, page_x0 + SHEET_W)
+      ax.set_ylim(page_y0, page_y0 + SHEET_H)
+      ax.set_aspect('equal')
+      ax.axis('off')
+  Axes filling the figure plus a data range equal to the sheet size in inches means
+  one data inch is exactly one figure inch. Never call autoscale, tight_layout, or
+  savefig(bbox_inches='tight'), any of which silently rescales.
+- Draw geometry as a single matplotlib LineCollection with clip_on=True so
+  off-page content is clipped at the sheet boundary.
+- Save with PdfPages, no bbox_inches argument.
+- ASCII only in all code, comments, and console output. Use ->, [OK], [X], [!].
+  No Unicode arrows or checkmarks. ASCII arrows in the PDF neighbor labels are fine.
+
+=== CLI ===
+python tile_dxf.py INPUT.dxf [-o OUTPUT.pdf] [--units in|mm|auto]
+    [--sheet 8.5x11] [--dry-run]
+--dry-run prints the grid plan (page count, column widths, row heights, partial
+page kept dimensions) and exits without rendering, so the layout is cheap to check.
+
+=== SELF-CHECK BEFORE FINISHING ===
+1. Run --dry-run on the input. For a 48 x 48 inch model it must report 6 columns
+   (A-F) with F kept at 5.500 in, 5 rows (1-5) with row 5 kept at 4.000 in, and
+   30 pages. Assert this in a unit test.
+2. Render the PDF, then verify with pypdf that every page MediaBox is exactly
+   612 x 792 points (8.5 x 11 in at 72 dpi). Print [OK] or [X] per page.
+3. Verify the manifest rectangles tile the bbox with no gaps and no overlap.
+4. Advisory loss report: count flattened segments falling within
+   ASSUMED_UNPRINTABLE of any sheet edge, and report total linework length at
+   risk per edge. Informational only, tells the user what the printer will likely
+   clip at each seam.

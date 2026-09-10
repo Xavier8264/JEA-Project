@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  body { margin:0; background:#fffefa; }
+  a { color:#2668cf; } a:hover { color:#0f8256; }
+</style>
+</helmet>
+<div style="font-family:'IBM Plex Mono',ui-monospace,monospace;color:#191d23;background:#fffefa;padding:40px 40px 80px;max-width:1400px;margin:0 auto;">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #191d23;padding-bottom:12px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <div style="font-size:22px;font-weight:600;letter-spacing:2px;">PLAN-VIEW SYMBOL SET</div>
+      <div style="font-size:12px;letter-spacing:1.2px;color:#a99c86;margin-top:6px;">12.47 kV UNDERGROUND DISTRIBUTION TRAINER · 17 STATIC SYMBOLS</div>
+    </div>
+    <div style="font-size:11px;letter-spacing:1px;color:#a99c86;text-align:right;line-height:1.7;">ARTBOARD 100 × 100 · STROKE 4 U<br />BOARD 0.6 IN · LEGEND 1.2 IN</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:26px;">
+    <div style="border:1.5px solid #191d23;padding:14px 16px;">
+      <div style="font-size:11px;letter-spacing:1.6px;font-weight:600;">SQUARE = INTERRUPTING</div>
+      <div style="font-size:11px;color:#a99c86;line-height:1.6;margin-top:6px;">Breaks fault current. Solid contact bar inside.</div>
+    </div>
+    <div style="border:1.5px solid #191d23;padding:14px 16px;">
+      <div style="font-size:11px;letter-spacing:1.6px;font-weight:600;">SQUARE + BLADE = RESTORING</div>
+      <div style="font-size:11px;color:#a99c86;line-height:1.6;margin-top:6px;">Switches only. Knife blade, never a solid bar.</div>
+    </div>
+    <div style="border:1.5px solid #191d23;padding:14px 16px;">
+      <div style="font-size:11px;letter-spacing:1.6px;font-weight:600;">CIRCLE = MUST TRIP</div>
+      <div style="font-size:11px;color:#a99c86;line-height:1.6;margin-top:6px;">DER interconnection, with drop-out triangle.</div>
+    </div>
+    <div style="border:1.5px solid #191d23;padding:14px 16px;">
+      <div style="font-size:11px;letter-spacing:1.6px;font-weight:600;">PAD / FRAME = PASSIVE</div>
+      <div style="font-size:11px;color:#a99c86;line-height:1.6;margin-top:6px;">Chamfered tanks and boxes; board hardware in a ticked frame.</div>
+    </div>
+  </div>
+
+  <div style="font-size:12px;letter-spacing:2px;font-weight:600;margin:44px 0 16px;border-bottom:1px solid #a99c86;padding-bottom:8px;">01 — THE SET</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:24px;">
+    <div style="text-align:center;">
+      <img src="icons/breaker-feeder.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">FEEDER BREAKER</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">R-MAG · INTERRUPTING</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/switchgear-vcb.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">SWGR VCB WAY</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">INTERRUPTING</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/switchgear-switch.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">SWGR SWITCH WAY</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">LOAD-BREAK · N.O. TIE</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/der-recloser.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">DER RECLOSER</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">IEEE 1547 · MUST TRIP</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/xfmr-1ph.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">1PH PAD XFMR</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">2 PRI / 3 SEC</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/xfmr-3ph.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">3PH PAD XFMR</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">6 PRI / 4 SEC</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/jbox-tap.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">J-BOX</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">LATERAL TAP</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/jbox-splice.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">J-BOX</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">CABLE SPLICE</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/jbox-seam.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">J-BOX</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">PANEL SEAM</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/house.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">HOUSE</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">SERVICE POINT</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/commercial.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">COMMERCIAL</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">SMALL 3PH</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/industrial.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">INDUSTRIAL</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">LARGE LOAD</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/solar-array.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">SOLAR ARRAY</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">DER FIELD</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/substation.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">SUBSTATION</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">FENCED YARD</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/btn-fault.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">FAULT INJECT</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">PUSHBUTTON</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/btn-reset.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">RESET</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">PUSHBUTTON</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="icons/plc-hmi.svg" style="width:100%;max-width:130px;" />
+      <div style="font-size:11px;letter-spacing:0.8px;margin-top:8px;">PLC / HMI</div>
+      <div style="font-size:10px;color:#a99c86;margin-top:3px;">SEL-2240 AXION</div>
+    </div>
+  </div>
+
+  <div style="font-size:12px;letter-spacing:2px;font-weight:600;margin:48px 0 16px;border-bottom:1px solid #a99c86;padding-bottom:8px;">02 — LEGEND BAND · 24.5 × 3.7 IN</div>
+  <img src="legend.svg" style="width:100%;border:1.5px solid #191d23;" />
+
+  <div style="font-size:12px;letter-spacing:2px;font-weight:600;margin:48px 0 16px;border-bottom:1px solid #a99c86;padding-bottom:8px;">03 — CONTACT SHEET · 0.6 IN BLACK ON WHITE</div>
+  <img src="contact-sheet.svg" style="width:100%;max-width:850px;border:1.5px solid #191d23;background:#fff;" />
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
