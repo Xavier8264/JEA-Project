@@ -8,15 +8,17 @@
   "PIN_BTN_FAULT_Z6": 7,
   "PIN_BTN_FAULT_DER": 8,
   "PIN_BTN_RESET": 9,
-  "DEVICE_LED_MODE": 1,
-  "PIN_DEV_SUB_A_BKR": 11,
-  "PIN_DEV_DEV_A1": 12,
-  "PIN_DEV_DEV_A2": 13,
-  "PIN_DEV_TIE": 14,
-  "PIN_DEV_DEV_B2": 15,
-  "PIN_DEV_DEV_B1": 16,
-  "PIN_DEV_SUB_B_BKR": 17,
-  "PIN_DEV_DER_PCC": 18,
+  "NUM_DEVICES": 8,
+  "COLOR_DEV_CLOSED": [
+   255,
+   255,
+   255
+  ],
+  "COLOR_DEV_OPEN": [
+   255,
+   176,
+   0
+  ],
   "LED_DATA_PIN": 10,
   "NUM_LEDS": 337,
   "LED_TYPE": "WS2812B",
@@ -69,6 +71,26 @@
   "SEGMENT_TEST_MS": 1200
  },
  "tables": {
+  "DEV_SEG": [
+   0,
+   3,
+   7,
+   17,
+   20,
+   27,
+   22,
+   30
+  ],
+  "DEV_PX": [
+   7,
+   2,
+   8,
+   0,
+   0,
+   0,
+   0,
+   1
+  ],
   "SEG_LEN": [
    17,
    17,

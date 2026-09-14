@@ -19,7 +19,7 @@
 (function (root) {
 'use strict';
 
-const PORTED_LOGIC_SHA256 = '7ea88a5173c53a810c95a5d4e6c13f91d5f7eb90beeb68ab893430faeaa4b9fd';
+const PORTED_LOGIC_SHA256 = 'f4235442ffa33dc1cc409120c166f2fd6d0d1acee6aaf7991c5d7ff979ad8af4';
 
 const u8  = v => v & 0xFF;
 const u16 = v => v & 0xFFFF;
@@ -124,14 +124,15 @@ const F = s => s;
  * =========================================================================== */
 function createFirmware(cfg, hal) {
   const D = cfg.defines, T = cfg.tables;
-  const { millis, pinMode, digitalRead, digitalWrite, pgm_read_byte } = hal;
+  const { millis, pinMode, digitalRead, pgm_read_byte } = hal;
   const Serial = hal.Serial, FastLED = hal.FastLED;
   const NUM_LEDS = D.NUM_LEDS, NUM_SEGMENTS = D.NUM_SEGMENTS;
   const BLACK = [0, 0, 0];
 
   /* ---- device chain ---------------------------------------------------- */
   const DEV_SUB_A_BKR = 0, DEV_A1 = 1, DEV_A2 = 2, DEV_TIE = 3, DEV_B2 = 4,
-        DEV_B1 = 5, DEV_SUB_B_BKR = 6, DEV_DER_PCC = 7, NUM_DEVICES = 8;
+        DEV_B1 = 5, DEV_SUB_B_BKR = 6, DEV_DER_PCC = 7;
+  const NUM_DEVICES = D.NUM_DEVICES;                 /* block [2] */
 
   /* ---- states ---------------------------------------------------------- */
   const ZS_A = 0, ZS_B = 1, ZS_DEAD = 2, ZS_FAULT = 3;
@@ -154,19 +155,6 @@ function createFirmware(cfg, hal) {
   const BTN_PIN = [
     D.PIN_BTN_FAULT_Z1, D.PIN_BTN_FAULT_Z2, D.PIN_BTN_FAULT_Z3, D.PIN_BTN_FAULT_Z4,
     D.PIN_BTN_FAULT_Z5, D.PIN_BTN_FAULT_Z6, D.PIN_BTN_FAULT_DER, D.PIN_BTN_RESET
-  ];
-
-  const DEV_PIN = D.DEVICE_LED_MODE === 1 ? [
-    D.PIN_DEV_SUB_A_BKR, D.PIN_DEV_DEV_A1, D.PIN_DEV_DEV_A2, D.PIN_DEV_TIE,
-    D.PIN_DEV_DEV_B2, D.PIN_DEV_DEV_B1, D.PIN_DEV_SUB_B_BKR, D.PIN_DEV_DER_PCC
-  ] : null;
-  const DEV_PIN_G = D.DEVICE_LED_MODE === 1 ? null : [
-    D.PIN_DEVG_SUB_A_BKR, D.PIN_DEVG_DEV_A1, D.PIN_DEVG_DEV_A2, D.PIN_DEVG_TIE,
-    D.PIN_DEVG_DEV_B2, D.PIN_DEVG_DEV_B1, D.PIN_DEVG_SUB_B_BKR, D.PIN_DEVG_DER_PCC
-  ];
-  const DEV_PIN_R = D.DEVICE_LED_MODE === 1 ? null : [
-    D.PIN_DEVR_SUB_A_BKR, D.PIN_DEVR_DEV_A1, D.PIN_DEVR_DEV_A2, D.PIN_DEVR_TIE,
-    D.PIN_DEVR_DEV_B2, D.PIN_DEVR_DEV_B1, D.PIN_DEVR_SUB_B_BKR, D.PIN_DEVR_DER_PCC
   ];
 
   /* ---- runtime state (globals are zero-initialized, as in C) ----------- */
@@ -400,7 +388,7 @@ function createFirmware(cfg, hal) {
       case ZS_A:     return D.COLOR_SRC_A;
       case ZS_B:     return D.COLOR_SRC_B;
       case ZS_FAULT: return blinkOn ? D.COLOR_FAULT : D.COLOR_DEAD;
-      default:       return D.COLOR_DEAD;
+      default:       return D.COLOR_FAULT;
     }
   }
 
@@ -425,14 +413,31 @@ function createFirmware(cfg, hal) {
     }
 
     if (animKind === ANIM_RESTORE && animActive && distInPiece(s, i, p) > front)
-      return D.COLOR_DEAD;
+      return D.COLOR_FAULT;
 
     return colorForZone(zn, blinkOn);
+  }
+
+  function colorForDevice(d, slowOn, fastOn) {
+    switch (devState[d]) {
+      case DS_CLOSED:  return D.COLOR_DEV_CLOSED;
+      case DS_OPEN:    return D.COLOR_DEV_OPEN;
+      case DS_TRIPPED: return slowOn ? D.COLOR_DEV_OPEN : D.COLOR_DEAD;
+      default:         return fastOn ? D.COLOR_DEV_OPEN : D.COLOR_DEAD;
+    }
+  }
+
+  function stripIndex(s, i) {
+    let idx = i;
+    for (let k = 0; k < s && k < NUM_SEGMENTS; k++) idx = u16(idx + pgm_read_byte(T.SEG_LEN, k));
+    return idx;
   }
 
   function render() {
     const blinking = (stepNow === ST_FAULT || stepNow === ST_LOCKOUT);
     const blinkOn  = blinking ? ((Math.floor(millis() / D.FAULT_BLINK_MS) & 1) !== 0) : true;
+    const slowOn   = (Math.floor(millis() / D.DEV_TRIP_BLINK_MS) & 1) !== 0;
+    const fastOn   = (Math.floor(millis() / D.DEV_LOCK_BLINK_MS) & 1) !== 0;
     const front = animFront();
 
     let idx = 0;
@@ -457,28 +462,12 @@ function createFirmware(cfg, hal) {
     }
     while (idx < NUM_LEDS) { setLed(idx, D.COLOR_DEAD); idx = u16(idx + 1); }
 
-    FastLED.show();
-  }
-
-  function renderDeviceLeds() {
-    const slow = (Math.floor(millis() / D.DEV_TRIP_BLINK_MS) & 1) !== 0;
-    const fast = (Math.floor(millis() / D.DEV_LOCK_BLINK_MS) & 1) !== 0;
-
     for (let d = 0; d < NUM_DEVICES; d++) {
-      if (D.DEVICE_LED_MODE === 1) {
-        let lit = (devState[d] === DS_CLOSED);
-        if (devState[d] === DS_TRIPPED) lit = slow;
-        if (devState[d] === DS_LOCKOUT) lit = fast;
-        digitalWrite(pgm_read_byte(DEV_PIN, d), lit ? HIGH : LOW);
-      } else {
-        const closed = (devState[d] === DS_CLOSED);
-        let opened = (devState[d] === DS_OPEN);
-        if (devState[d] === DS_TRIPPED) opened = slow;
-        if (devState[d] === DS_LOCKOUT) opened = fast;
-        digitalWrite(pgm_read_byte(DEV_PIN_G, d), closed ? HIGH : LOW);
-        digitalWrite(pgm_read_byte(DEV_PIN_R, d), opened ? HIGH : LOW);
-      }
+      const at = stripIndex(pgm_read_byte(T.DEV_SEG, d), pgm_read_byte(T.DEV_PX, d));
+      if (at < NUM_LEDS) setLed(at, colorForDevice(d, slowOn, fastOn));
     }
+
+    FastLED.show();
   }
 
   /* ======================================================================
@@ -654,21 +643,17 @@ function createFirmware(cfg, hal) {
       Serial.println(F('[OK] segment table matches NUM_LEDS'));
     }
 
-    initButtons();
-
-    if (D.DEVICE_LED_MODE === 1) {
-      for (let d = 0; d < NUM_DEVICES; d++) {
-        pinMode(pgm_read_byte(DEV_PIN, d), OUTPUT);
-        digitalWrite(pgm_read_byte(DEV_PIN, d), LOW);
-      }
-    } else {
-      for (let d = 0; d < NUM_DEVICES; d++) {
-        pinMode(pgm_read_byte(DEV_PIN_G, d), OUTPUT);
-        pinMode(pgm_read_byte(DEV_PIN_R, d), OUTPUT);
-        digitalWrite(pgm_read_byte(DEV_PIN_G, d), LOW);
-        digitalWrite(pgm_read_byte(DEV_PIN_R, d), LOW);
+    for (let d = 0; d < NUM_DEVICES; d++) {
+      const s = pgm_read_byte(T.DEV_SEG, d);
+      const i = pgm_read_byte(T.DEV_PX, d);
+      if (s >= NUM_SEGMENTS || i >= pgm_read_byte(T.SEG_LEN, s) || !pgm_read_byte(T.SEG_OVER, s)) {
+        Serial.print(F('[!] '));
+        printDeviceName(d);
+        Serial.println(F(': DEV_SEG / DEV_PX is not a pixel on a visible run. See block [2].'));
       }
     }
+
+    initButtons();
 
     FastLED.addLeds(D.LED_TYPE, D.LED_DATA_PIN, D.COLOR_ORDER, leds, NUM_LEDS)
            .setCorrection('TypicalLEDStrip');
@@ -701,8 +686,6 @@ function createFirmware(cfg, hal) {
         goToStep(stepNow + 1);
       }
     }
-
-    renderDeviceLeds();
 
     if (u32(millis() - lastFrame) >= D.FRAME_INTERVAL_MS) {
       lastFrame = millis();

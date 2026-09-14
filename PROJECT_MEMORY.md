@@ -1510,3 +1510,219 @@ claude.ai sidebar, and the FLISR_Trainer bench (`...ab75a52c-dfae-444d-ad1e-06d1
 unpinned but still published. **Supersedes** the pin state in the 22:17 entry. `[V]`
 
 ---
+
+## 2026-09-14 11:09 CDT - REV1 device status moved onto strip pixels (no discrete status LEDs exist)
+
+### What was asked
+
+User referenced `FLISR_Trainer_REV1/`, the tabulated REV1 xlsx, the REV1 bench artifact and the
+plan set artifact, and clarified: **there are no separate status LEDs on the elements. The only
+LEDs are the strip.** Asked whether the single strip pixel closest to each element could be that
+element's status LED. `[V]`
+
+**Supersedes** decision 3 of the 2026-09-13 21:22 entry ("Device status: separate discrete LEDs,
+not the WS2812 strip"), and the DEVICE_LED_MODE 1/2 pin maps there, for REV1. Note the original
+2026-09-07 plan set had already budgeted "device px" in the strip chain, so this returns to that
+idea, using an existing line pixel instead of a dedicated one. `[V]`
+
+### Sources read this session
+
+- `PROJECT_MEMORY.md` (all), `FLISR_Trainer_REV1/FLISR_Trainer_REV1.ino` (all), all five xlsx
+  sheets, both artifacts through the Artifact read action, and `build_sim.py`,
+  `firmware_rev1.js`, `test_firmware_rev1.js`, `sim_template.html`. `[V]`
+- xlsx unchanged since the 22:17 entry (N1 = 12.58, 9.95; N30 = 12.59, 29.51). `[V]`
+
+### Which pixel, and why
+
+Nearest pixel computed with the bench's own placement: each run's pixels are evenly spaced between
+its From and To node, and run 1's first 8 px run south of N1. Measured against both the Element
+sheet point and the DXF device symbol center. `[V]` for the computation, `[I]` for how well it
+matches the physical strip.
+
+- **E1 and E5 sit well off their DXF symbols:** E1 is 0.87 in south of the SUB_A_BKR block and E5
+  is 1.04 in west of the DEV_B2 block (the block is centered on N15, 31.12, 25.53). `[V]`
+- **Rule used:** of the two pixels on either side of the point where the device splits its two
+  zones, take the one nearer the Element sheet point. This is the nearest pixel outright for six
+  devices. `[I]` design call, made without asking, stated to the user.
+- **The two exceptions:**
+  - SUB_A_BKR: px 6 is nearer E1 (0.16 in vs 0.50 in), but it is inside the bus.
+  - DEV_B2: run 18 px 5 is nearer E5 (0.21 in vs 0.36 in), but it is west of the commercial tap at
+    N13, and DEV_B2 is electrically east of it.
+- **Close calls (within 0.15 in of the other side):** DEV_A2, TIE, DEV_B1, DER_PCC.
+
+| Device | Run (LED ID) | Array index | Pixel | Strip # | Zone side |
+|---|---|---|---|---|---|
+| SUB_A_BKR | 1 | 0 | 7 | 7 | BUSA |
+| DEV_A1 | 4 | 3 | 2 | 53 | Z2 |
+| DEV_A2 | 8 | 7 | 8 | 105 | Z2 |
+| TIE | 18 | 17 | 0 | 221 | Z4 |
+| DEV_B2 | 21 | 20 | 0 | 246 | Z4 |
+| DEV_B1 | 27 | 27 | 0 | 298 | Z5 |
+| SUB_B_BKR | 23 | 22 | 0 | 271 | Z6 |
+| DER_PCC | 30 | 30 | 1 | 325 | Z5 |
+
+None of these is a fault wave start pixel. `[V]`
+
+### Sketch changes, `FLISR_Trainer_REV1.ino` (edited in place; REV1 = the cardboard revision)
+
+- **Block [2] is now DEVICE STATUS PIXELS:** `NUM_DEVICES 8` (moved here from the logic section),
+  `DEV_SEG[]` / `DEV_PX[]` (array index + pixel along the run, same convention as block [4c]),
+  `COLOR_DEV_CLOSED` white `CRGB(0xFF,0xFF,0xFF)`, `COLOR_DEV_OPEN` amber `CRGB(0xFF,0xB0,0x00)`.
+  The comment block carries the table above and the reasoning. `[V]`
+- **Behavior:** CLOSED = solid white, OPEN = solid amber, TRIPPED = amber slow blink
+  (`DEV_TRIP_BLINK_MS` 500), LOCKOUT = amber fast blink (`DEV_LOCK_BLINK_MS` 150). Same states and
+  blink rates as the old mode 1. Setting `COLOR_DEV_OPEN` to black gives exactly the old mode-1
+  on / off / blink look. `[V]` Color choice `[I]`: white and amber were picked because blue, green
+  and red are already line colors.
+- **render()** paints the 8 status pixels after the line, so they override the line color. The
+  fault wave and restore fill still count those pixels as part of the line, so animation timing is
+  unchanged. New helpers `colorForDevice()` and `stripIndex()`. `[V]`
+- **setup()** prints `[!] <DEVICE>: DEV_SEG / DEV_PX is not a pixel on a visible run. See block [2].`
+  for a bad entry, and nothing when the table is good, so serial output is otherwise unchanged. `[V]`
+- **Removed:** `DEVICE_LED_MODE`, all `PIN_DEV*` defines, `DEV_PIN*` tables, `renderDeviceLeds()`,
+  and the device `pinMode` setup. Pin budget is now 9 used (8 buttons + strip data); D11-D13 and
+  A0-A5 spare. `[V]`
+- `FLISR_Trainer/FLISR_Trainer.ino` (REV0) was **not** changed and still assumes discrete LEDs. `[V]`
+
+### Bench changes
+
+- `firmware_rev1.js`: ported the same changes; `PORTED_LOGIC_SHA256` now
+  `a64b8de569437b5ddde18639ca16d69ae8fa1d365e93736195c566d5b81ecd0c`.
+- `build_sim.py`: for a sketch with `DEV_SEG`, reads the pixel table instead of pins.
+  - Fails on: a pixel not on a visible run, or two devices sharing a pixel.
+  - Warns on: a pixel outside the device's two zones, not touching the device's other zone, more
+    than 1 in from the Element point, or on a fault wave start.
+  - REV0 path unchanged.
+- `sim_template.html`: in pixel mode it draws a dashed ring on each status pixel with a label, and
+  lists the 8 status pixels with their live `leds[]` value under Outputs. It adds DEV_CLOSED and
+  DEV_OPEN to the key, and the probe names a device's status pixel. REV0 rendering is unchanged.
+- `test_firmware_rev1.js`: every frame check now expects the status pixels from the device states
+  printed on serial, plus 5 new tests:
+  - NORMAL colors
+  - table positions against hand-typed strip numbers
+  - the Z1 trip / lockout blink phases, far-side open and tie close
+  - DER fault
+  - the bad-entry boot warning
+
+### Verification actually performed
+
+1. **Compiled for Uno** (avr-gcc 7.3.0, core 1.8.8, `-Os -flto -std=gnu++11`, FastLED
+   `src/fl/build/*.cpp`), with `-Wall -Wextra`: **0 warnings.** A planted unused variable produced a
+   warning, so warnings really were on. **Flash 10,898 B (33%), up 110 B; SRAM 1,518 B, unchanged.**
+   The pre-change REV1 rebuilt with the same script gave 10,788 / 1,518, matching the 22:17 entry.
+   `[V]`
+2. **Bench builds:**
+   - REV1: 12 of 12 checks, 0 warnings.
+   - REV0: 8 of 8; `sim_config.json` byte-identical to before; GEOM equal as data (JSON key order
+     only).
+   `[V]`
+3. **Build checks fed bad tables** (scratch copies):
+   - Duplicate pixel and hidden run fail.
+   - DEV_A1 moved into Z2, SUB_A_BKR at px 6, DEV_B2 at run 18 px 5, and DER_PCC on the fault start
+     all warn.
+   - The first version missed the DEV_B2 case, because a hidden return run at N13 counted as a zone
+     change. Fixed so only the device's other zone counts. `[V]`
+4. **Tests:** REV1 18 of 18, REV0 20 of 20. Two bugs in my own new test were found and fixed
+   before it passed:
+   - an infinite loop (loop bound re-read the advancing clock)
+   - presses spaced inside the release debounce
+   A guard assertion also caught an empty blink sample that had been passing vacuously. `[V]`
+5. **Mutation check:** 8 planted bugs in the port (blink rates swapped, OPEN shows closed color,
+   stripIndex off by one, override dropped, TRIPPED phase inverted, setup check `>` for `>=`, setup
+   check ignores hidden runs, closed devices left at line color): **8 of 8 caught.** `[V]`
+6. **Port vs sketch structure:** 27 functions in each, same names, same order. `[V]`
+7. **One headless Chrome screenshot** of the REV1 bench at boot: 7 white status pixels, TIE amber,
+   DEV_B2's pixel just past the commercial tap. `[V]`
+8. **Not run on hardware.** Whether amber reads clearly against fault red on real WS2812B at
+   brightness 80 is unverified. `[I]`
+
+### Deliverables
+
+| Thing | Where |
+|---|---|
+| Sketch | `FLISR_Trainer_REV1/FLISR_Trainer_REV1.ino` |
+| REV1 bench, republished (version 2, same URL, still pinned) | `https://claude.ai/code/artifact/e104d46c-45b6-412a-890d-59185b0d97d4` |
+| Bench sources | `FLISR_Trainer_Sim/` `firmware_rev1.js`, `build_sim.py`, `sim_template.html`, `test_firmware_rev1.js`, rebuilt `FLISR_Trainer_REV1_Sim.html`, `sim_config_rev1.json`, `FLISR_Trainer_Sim.html` |
+
+Scratchpad only, gone after the session: `devpx.py` (nearest-pixel analysis), `avr_build.sh`,
+`buildcheck.py`, `mutate.py`.
+
+### Open items, flagged not resolved
+
+Continues the list above:
+
+26. **Check the status pixels on the physical board.** At step 00, 7 pixels should be white and the
+    TIE pixel amber. Eyeball DEV_A2, TIE, DEV_B1 and DER_PCC first. To move one, change its
+    `DEV_SEG` / `DEV_PX` entry in block [2].
+27. **Amber vs fault red on real strip.** Tune `COLOR_DEV_OPEN` on hardware if they blur together.
+    `[I]`
+28. **REV0 sketch and bench still model discrete device LEDs.** Not changed, since the request named
+    REV1. Decide whether REV0 should get the same change or be retired.
+29. **REV0 bench local HTML was rebuilt but not republished.** It has no visible change, only inert
+    template code and a build timestamp. `[V]`
+30. **Plan set artifact untouched.** It still shows older geometry and the ESP32 hub (already noted
+    in the 22:17 entry).
+31. `FLISR_Trainer_Sim/__pycache__/build_sim.cpython-314.pyc` is tracked in git and changes every
+    time `build_sim.py` runs. Consider untracking it.
+
+### Not done this session
+
+- No change to the xlsx, the DXF, `FLISR_Trainer.ino`, or the plan set artifact.
+- No hardware test. No git commit.
+- A stray empty file I created by mistake (`%TEMP%\claude_devpx.py`) was archived with `vault.ps1`
+  (restore id `cbbbeb9b`).
+
+---
+
+## 2026-09-14 11:18 CDT - REV1: lost-power sections stay red until the restore fill eats them
+
+### What was asked
+
+User liked the status pixels. They described the fault sequence as:
+1. red trail
+2. faulted segment blinks
+3. to-be-restored section goes off
+4. green or blue trail restores
+
+They asked to cut the third visual: the section that lost power should stay solid red and get
+"eaten up" by the restore trail. Everything else unchanged. Framed as a simple `.ino` change. `[V]`
+
+**Supersedes** the 22:17 entry's "03 ISOLATE: stranded zones dark" and "04 RESTORE: ... fills"
+(which filled over dark pixels). The FLISR steps themselves are unchanged: step 03 still opens the
+far-side device (its status pixel turns amber), and the faulted section stops blinking. `[V]`
+
+### Change, `FLISR_Trainer_REV1.ino`
+
+Two code lines plus comments:
+- `colorForState()`: `ZS_DEAD` now returns `COLOR_FAULT` instead of `COLOR_DEAD`, so anything that
+  lost power is solid red at 03 and 04.
+- `colorForPixel()`: restore-fill pixels not yet reached return `COLOR_FAULT` instead of
+  `COLOR_DEAD`.
+- `COLOR_DEAD` is now used only for under-board runs, the blink-off phase, and blinking status
+  pixels. Header, ANIMATIONS block and the `COLOR_DEAD` comment were updated to match. `[V]`
+
+**Design call made without asking** `[I]`, cheap to change: on a **Z5 fault the DER branch** loses
+power (anti-islanding trip) and is never restored, so it now stays solid red through 04 instead of
+going dark. That follows the same rule ("red until power comes back"). It is the only lost-power
+section that is neither faulted nor restored.
+
+### Verification actually performed
+
+1. **Compiled for Uno**, `-Wall -Wextra`, same recipe as the 11:09 entry: 0 warnings. **Flash
+   10,894 B (4 B less), SRAM 1,518 B.** `[V]`
+2. **Port** `firmware_rev1.js`: same two lines. `PORTED_LOGIC_SHA256` is now
+   `f4235442ffa33dc1cc409120c166f2fd6d0d1acee6aaf7991c5d7ff979ad8af4`. `[V]`
+3. **Tests** `test_firmware_rev1.js`:
+   - At 03, lost zones are expected red.
+   - At 04, restored pixels not yet reached are expected red, and still-unpowered zones stay red.
+   - Results: REV1 18 of 18, REV0 20 of 20. `[V]`
+4. **Mutation check:** reverting either line to the old dark behavior is caught (5 and 4 failing
+   tests). `[V]`
+5. **Bench build** 12 of 12, 0 warnings. Republished as version 3 at the same URL. `[V]`
+6. Not run on hardware.
+
+### Open items
+
+No new numbered items. Items 26 to 31 from the 11:09 entry stand.
+
+---

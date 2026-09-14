@@ -447,7 +447,11 @@ def main():
                         "x": r3(cx), "y": fy(cy), "r": r3(rad)})
     ok("8 buttons found in the DXF and matched to their pins")
 
-    # ---- device LEDs: Element sheet positions, names from block [2] ------
+    # ---- devices: Element sheet positions, names from block [2] ----------
+    # A sketch either drives separate device LEDs from pins (DEVICE_LED_MODE)
+    # or shows each device on one strip pixel (DEV_SEG / DEV_PX).
+    run_start = [sum(T["SEG_LEN"][:s]) for s in range(nseg)]
+    pixel_devices = "DEV_SEG" in T
     dev_order = ["SUB_A_BKR", "DEV_A1", "DEV_A2", "TIE", "DEV_B2", "DEV_B1", "SUB_B_BKR", "DER_PCC"]
     by_name = {v[0]: (eid, v[1], v[2]) for eid, v in ino["dev_doc"].items()}
     devices = []
@@ -460,17 +464,83 @@ def main():
         ex, ey = elements[eid]
         if math.dist((ex, ey), (dx_, dy_)) > 0.02:
             warn(f"{eid} {name}: .ino says ({dx_}, {dy_}), xlsx Element sheet says ({ex}, {ey})")
-        if mode == 1:
-            pins = [D["PIN_DEV_" + name]]
+        dev = {"name": name, "element": eid, "ex": r3(ex), "ey": fy(ey),
+               "x": r3(ex + DEVICE_LED_OFFSET_IN[0]), "y": fy(ey + DEVICE_LED_OFFSET_IN[1])}
+        if pixel_devices:
+            dev["pins"] = []
+        elif mode == 1:
+            dev["pins"] = [D["PIN_DEV_" + name]]
         else:
-            pins = [D["PIN_DEVG_" + name], D["PIN_DEVR_" + name]]
-        devices.append({"name": name, "element": eid, "pins": pins,
-                        "ex": r3(ex), "ey": fy(ey),
-                        "x": r3(ex + DEVICE_LED_OFFSET_IN[0]), "y": fy(ey + DEVICE_LED_OFFSET_IN[1])})
-    ok("8 device LEDs placed at their Element sheet positions")
+            dev["pins"] = [D["PIN_DEVG_" + name], D["PIN_DEVR_" + name]]
+        devices.append(dev)
+    if not pixel_devices:
+        ok("8 device LEDs placed at their Element sheet positions")
+    else:
+        if D.get("NUM_DEVICES") != len(dev_order):
+            fail(f"NUM_DEVICES is {D.get('NUM_DEVICES')}, the sketch has {len(dev_order)} devices")
+
+        def zone_at(g):
+            s, i = pixels[g][2], g - run_start[pixels[g][2]]
+            if not T["SEG_OVER"][s]:
+                return D["ZN_HID"]
+            sp = T["SEG_SPLIT"][s]
+            return T["SEG_ZONE2"][s] if sp and i >= sp else T["SEG_ZONE"][s]
+
+        def neighbours(g):                       # along the run, and across its end nodes
+            s, i = pixels[g][2], g - run_start[pixels[g][2]]
+            n, out = T["SEG_LEN"][s], []
+            if i > 0:
+                out.append(g - 1)
+            if i < n - 1:
+                out.append(g + 1)
+            ends = ([rows[s]["from"]] if i == 0 else []) + ([rows[s]["to"]] if i == n - 1 else [])
+            for s2, r2 in enumerate(rows):
+                if s2 == s or not T["SEG_LEN"][s2]:
+                    continue
+                if r2["from"] in ends:
+                    out.append(run_start[s2])
+                if r2["to"] in ends:
+                    out.append(run_start[s2] + T["SEG_LEN"][s2] - 1)
+            return out
+
+        separates = [(D["ZN_BUSA"], D["ZN_Z1"]), (D["ZN_Z1"], D["ZN_Z2"]), (D["ZN_Z2"], D["ZN_Z3"]),
+                     (D["ZN_Z3"], D["ZN_Z4"]), (D["ZN_Z4"], D["ZN_Z5"]), (D["ZN_Z5"], D["ZN_Z6"]),
+                     (D["ZN_Z6"],), (D["ZN_Z5"], D["ZN_DER"])]
+        zname = {v: k[3:] for k, v in D.items() if k.startswith("ZN_")}
+        fault_px = ({run_start[s] + p for s, p in zip(T["FAULT_SEG"], T["FAULT_PX"])}
+                    if "FAULT_SEG" in T else set())
+        taken, warned = {}, len(warnings)
+        for d, dev in enumerate(devices):
+            name, s, px = dev["name"], T["DEV_SEG"][d], T["DEV_PX"][d]
+            if s >= nseg or px >= T["SEG_LEN"][s] or not T["SEG_OVER"][s]:
+                fail(f"{name}: DEV_SEG {s} / DEV_PX {px} is not a pixel on a visible run")
+            g = run_start[s] + px
+            if g in taken:
+                fail(f"{name} and {taken[g]} both use strip pixel {g}")
+            taken[g] = name
+            dev["px"] = g
+            zone = zone_at(g)
+            where = f"run {rows[s]['id']} pixel {px} (strip {g})"
+            # beside the change = touching the device's other zone. SUB_B_BKR has
+            # only one visible side, so there it means touching the hidden feed.
+            other = [z for z in separates[d] if z != zone] or [D["ZN_HID"]]
+            if zone not in separates[d]:
+                warn(f"{name}: {where} is in zone {zname.get(zone, zone)}, not one the device separates")
+            elif not any(zone_at(n) in other for n in neighbours(g)):
+                warn(f"{name}: {where} is not beside the point where its zones change")
+            e = elements[dev["element"]]
+            dist = math.dist(e, (pixels[g][0], BOARD_IN - pixels[g][1]))
+            if dist > 1.0:
+                warn(f"{name}: {where} is {dist:.2f} in from its Element sheet point")
+            if g in fault_px:
+                warn(f"{name}: {where} is also a fault wave start, so the wave starts under the status pixel")
+        if len(warnings) == warned:
+            ok("8 device status pixels: one each, visible, beside the point where the device's zones "
+               "change, within 1 in of the Element sheet point")
+        else:
+            ok("8 device status pixels: one each, on visible runs (see warnings above)")
 
     # ---- REV1 animation tables (only when the sketch has them) ------------
-    run_start = [sum(T["SEG_LEN"][:s]) for s in range(nseg)]
     if "SEG_FROM" in T:
         for s, r in enumerate(rows):
             have = (T["SEG_FROM"][s], T["SEG_TO"][s])

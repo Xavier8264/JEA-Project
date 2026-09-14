@@ -17,7 +17,10 @@
  *   Press a fault button. The sketch runs the five-step FLISR sequence:
  *     00 NORMAL -> 01 FAULT -> 02 LOCKOUT -> 03 ISOLATE -> 04 RESTORE
  *   Line sections light by their source: blue = Substation A, green =
- *   Substation B, red = faulted or lost power, dark = de-energized.
+ *   Substation B, red = faulted or lost power. A section that lost power
+ *   stays red until power comes back to it.
+ *   Each device shows its own state on the one strip pixel beside it. There
+ *   are no separate status LEDs. See block [2].
  *
  * REV1 ANIMATIONS
  *   01 FAULT   Red starts at the fault point (the Fault sheet location) and
@@ -25,10 +28,11 @@
  *              every zone that lost power, out to the open tie. When it has
  *              covered them the faulted section blinks and the rest holds
  *              solid red.
- *   03 ISOLATE The zones that only lost power go dark. The faulted section
- *              holds solid red.
- *   04 RESTORE When the tie closes, the new source color fills the restored
- *              zones outward from the tie, one pixel every ANIM_STEP_MS.
+ *   03 ISOLATE The faulted section stops blinking. Everything that lost
+ *              power holds solid red.
+ *   04 RESTORE When the tie closes, the new source color eats up the red in
+ *              the restored zones, outward from the tie, one pixel every
+ *              ANIM_STEP_MS.
  *
  * OPERATION
  *   Press a fault button           -> starts that fault at step 01
@@ -40,7 +44,7 @@
  *   Set AUTO_ADVANCE to 0 for pure manual stepping.
  *
  * PIN BUDGET (Uno/Nano, 18 usable I/O with D0/D1 left for USB serial)
- *   8 buttons + 1 strip data + 8 device LEDs = 17 used, A5 spare.
+ *   8 buttons + 1 strip data = 9 used. D11 - D13 and A0 - A5 are spare.
  * =========================================================================== */
 
 #include <FastLED.h>
@@ -67,52 +71,53 @@
 #define PIN_BTN_RESET       9
 
 /* ===========================================================================
- * [2] DEVICE STATUS LED PINS                             <<< EDIT HERE
+ * [2] DEVICE STATUS PIXELS                               <<< EDIT HERE
  * ---------------------------------------------------------------------------
- * DEVICE_LED_MODE 1 : one pin per device (fits Uno/Nano)
- *      solid ON   = CLOSED        fast blink = LOCKOUT
- *      OFF        = OPEN          slow blink = TRIPPED
- * DEVICE_LED_MODE 2 : two pins per device, green + red (needs a Mega 2560)
- *      green ON = CLOSED, red ON = OPEN, red fast blink = LOCKOUT,
- *      red slow blink = TRIPPED
+ * There are no separate status LEDs. Each device shows its state on the ONE
+ * strip pixel beside it, and that pixel stops showing the line color:
+ *      COLOR_DEV_CLOSED solid       = CLOSED
+ *      COLOR_DEV_OPEN   solid       = OPEN
+ *      COLOR_DEV_OPEN   slow blink  = TRIPPED
+ *      COLOR_DEV_OPEN   fast blink  = LOCKOUT
+ * For plain on / off / blink, set COLOR_DEV_OPEN to CRGB(0x00, 0x00, 0x00).
  *
- * Device positions from the Element sheet / DXF blocks:
- *   E1 SUB_A_BKR (12.59,  9.12)   E5 DEV_B2    (30.08, 25.50)
- *   E2 DEV_A1    (12.59, 17.58)   E7 DEV_B1    (38.10, 21.91)
- *   E3 DEV_A2    (12.59, 29.38)   E6 SUB_B_BKR (38.10, 37.44)
- *   E4 TIE       (26.55, 25.50)   R1 DER_PCC   (34.15, 20.65)
+ * DEV_SEG is the array index of the run (the numbering used in block [4])
+ * and DEV_PX is the pixel along that run, 0 = the run's first pixel. If the
+ * pixel that lights is not the one beside the device on the board, change
+ * those two numbers. setup() warns if one is not on a visible run.
+ *
+ *   device, Element sheet point       run  index  pixel  strip  zone side
+ *   E1 SUB_A_BKR (12.59,  9.12)         1      0      7      7  BUSA
+ *   E2 DEV_A1    (12.59, 17.58)         4      3      2     53  Z2
+ *   E3 DEV_A2    (12.59, 29.38)         8      7      8    105  Z2
+ *   E4 TIE       (26.55, 25.50)        18     17      0    221  Z4
+ *   E5 DEV_B2    (30.08, 25.50)        21     20      0    246  Z4
+ *   E7 DEV_B1    (38.10, 21.91)        27     27      0    298  Z5
+ *   E6 SUB_B_BKR (38.10, 37.44)        23     22      0    271  Z6
+ *   R1 DER_PCC   (34.15, 20.65)        30     30      1    325  Z5
+ *
+ * How these were picked. A device sits where its two zones meet, so each
+ * pick is one of the two pixels either side of that point, whichever is
+ * nearer the Element sheet point. For six devices that is also the nearest
+ * pixel outright. The two that are not:
+ *   SUB_A_BKR  px 6 is nearer the E1 point, 0.16 in against 0.50 in, but it
+ *              is inside the bus, one pixel short of the breaker at N1.
+ *   DEV_B2     run 18 px 5 is nearer the E5 point, 0.21 in against 0.36 in,
+ *              but it is west of the commercial tap at N13, and DEV_B2 is
+ *              east of it. The E5 point sits 1.0 in west of the DXF symbol.
+ * Close calls, check these by eye: DEV_A2, TIE, DEV_B1 and DER_PCC each have
+ * the pixel on the other side of the device within 0.15 in of the same
+ * distance. Distances assume each run's pixels are evenly spaced between its
+ * two nodes, so the board itself has the final say.
  * =========================================================================== */
-#define DEVICE_LED_MODE     1
+#define NUM_DEVICES    8   /* in chain order: SUB_A_BKR, DEV_A1, DEV_A2, TIE,
+                              DEV_B2, DEV_B1, SUB_B_BKR, then DER_PCC        */
 
-#if DEVICE_LED_MODE == 1
-  #define PIN_DEV_SUB_A_BKR  11
-  #define PIN_DEV_DEV_A1     12
-  #define PIN_DEV_DEV_A2     13     /* also drives the onboard LED, harmless */
-  #define PIN_DEV_TIE        A0
-  #define PIN_DEV_DEV_B2     A1
-  #define PIN_DEV_DEV_B1     A2
-  #define PIN_DEV_SUB_B_BKR  A3
-  #define PIN_DEV_DER_PCC    A4
-#else
-  /* Green pins */
-  #define PIN_DEVG_SUB_A_BKR 22
-  #define PIN_DEVG_DEV_A1    24
-  #define PIN_DEVG_DEV_A2    26
-  #define PIN_DEVG_TIE       28
-  #define PIN_DEVG_DEV_B2    30
-  #define PIN_DEVG_DEV_B1    32
-  #define PIN_DEVG_SUB_B_BKR 34
-  #define PIN_DEVG_DER_PCC   36
-  /* Red pins */
-  #define PIN_DEVR_SUB_A_BKR 23
-  #define PIN_DEVR_DEV_A1    25
-  #define PIN_DEVR_DEV_A2    27
-  #define PIN_DEVR_TIE       29
-  #define PIN_DEVR_DEV_B2    31
-  #define PIN_DEVR_DEV_B1    33
-  #define PIN_DEVR_SUB_B_BKR 35
-  #define PIN_DEVR_DER_PCC   37
-#endif
+const uint8_t DEV_SEG[NUM_DEVICES] PROGMEM = {  0,  3,  7, 17, 20, 27, 22, 30 };
+const uint8_t DEV_PX[NUM_DEVICES]  PROGMEM = {  7,  2,  8,  0,  0,  0,  0,  1 };
+
+#define COLOR_DEV_CLOSED  CRGB(0xFF, 0xFF, 0xFF)   /* white */
+#define COLOR_DEV_OPEN    CRGB(0xFF, 0xB0, 0x00)   /* amber */
 
 /* ===========================================================================
  * [3] STRIP CONFIGURATION                                <<< EDIT HERE
@@ -131,7 +136,8 @@
 #define COLOR_SRC_A     CRGB(0x1E, 0x6B, 0xFF)   /* fed from Substation A */
 #define COLOR_SRC_B     CRGB(0x00, 0xD0, 0x50)   /* fed from Substation B */
 #define COLOR_FAULT     CRGB(0xFF, 0x18, 0x10)   /* faulted section       */
-#define COLOR_DEAD      CRGB(0x00, 0x00, 0x00)   /* de-energized, dark    */
+#define COLOR_DEAD      CRGB(0x00, 0x00, 0x00)   /* dark: under-board runs,
+                                                    blink off phase       */
 
 /* ===========================================================================
  * [4] LED SEGMENT TABLE                                  <<< EDIT HERE
@@ -337,7 +343,8 @@ const uint8_t FAULT_PX[NUM_FAULTS]  PROGMEM = { 16,  7,  6,  3,  4,  6,  4 };
 
 /* ---- device chain ------------------------------------------------------ */
 /* Index order is the electrical order from Substation A to Substation B.
- * Zone Zk lies between device k-1 and device k.                            */
+ * Zone Zk lies between device k-1 and device k. NUM_DEVICES is in block [2],
+ * and DEV_SEG / DEV_PX there follow this same order.                       */
 #define DEV_SUB_A_BKR  0
 #define DEV_A1         1
 #define DEV_A2         2
@@ -346,7 +353,6 @@ const uint8_t FAULT_PX[NUM_FAULTS]  PROGMEM = { 16,  7,  6,  3,  4,  6,  4 };
 #define DEV_B1         5
 #define DEV_SUB_B_BKR  6
 #define DEV_DER_PCC    7
-#define NUM_DEVICES    8
 
 /* ---- states ------------------------------------------------------------ */
 enum ZState : uint8_t { ZS_A, ZS_B, ZS_DEAD, ZS_FAULT };
@@ -382,22 +388,6 @@ const uint8_t BTN_PIN[NUM_BUTTONS] PROGMEM = {
   PIN_BTN_FAULT_Z1, PIN_BTN_FAULT_Z2, PIN_BTN_FAULT_Z3, PIN_BTN_FAULT_Z4,
   PIN_BTN_FAULT_Z5, PIN_BTN_FAULT_Z6, PIN_BTN_FAULT_DER, PIN_BTN_RESET
 };
-
-#if DEVICE_LED_MODE == 1
-const uint8_t DEV_PIN[NUM_DEVICES] PROGMEM = {
-  PIN_DEV_SUB_A_BKR, PIN_DEV_DEV_A1, PIN_DEV_DEV_A2, PIN_DEV_TIE,
-  PIN_DEV_DEV_B2, PIN_DEV_DEV_B1, PIN_DEV_SUB_B_BKR, PIN_DEV_DER_PCC
-};
-#else
-const uint8_t DEV_PIN_G[NUM_DEVICES] PROGMEM = {
-  PIN_DEVG_SUB_A_BKR, PIN_DEVG_DEV_A1, PIN_DEVG_DEV_A2, PIN_DEVG_TIE,
-  PIN_DEVG_DEV_B2, PIN_DEVG_DEV_B1, PIN_DEVG_SUB_B_BKR, PIN_DEVG_DER_PCC
-};
-const uint8_t DEV_PIN_R[NUM_DEVICES] PROGMEM = {
-  PIN_DEVR_SUB_A_BKR, PIN_DEVR_DEV_A1, PIN_DEVR_DEV_A2, PIN_DEVR_TIE,
-  PIN_DEVR_DEV_B2, PIN_DEVR_DEV_B1, PIN_DEVR_SUB_B_BKR, PIN_DEVR_DER_PCC
-};
-#endif
 
 /* ---- runtime state ----------------------------------------------------- */
 CRGB    leds[NUM_LEDS];
@@ -678,7 +668,7 @@ CRGB colorForState(ZState s, bool blinkOn)
     case ZS_A:     return COLOR_SRC_A;
     case ZS_B:     return COLOR_SRC_B;
     case ZS_FAULT: return blinkOn ? COLOR_FAULT : COLOR_DEAD;
-    default:       return COLOR_DEAD;
+    default:       return COLOR_FAULT;       /* lost power, red until restored */
   }
 }
 
@@ -709,9 +699,29 @@ CRGB colorForPixel(uint8_t zn, uint8_t s, uint8_t i, const Piece &p,
   }
 
   if (animKind == ANIM_RESTORE && animActive && distInPiece(s, i, p) > front)
-    return COLOR_DEAD;                                    /* not reached yet */
+    return COLOR_FAULT;                           /* not reached yet, still red */
 
   return colorForZone(zn, blinkOn);
+}
+
+/* Device status pixel: CLOSED and OPEN hold solid, TRIPPED and LOCKOUT
+ * blink the open color, slow and fast.                                     */
+CRGB colorForDevice(uint8_t d, bool slowOn, bool fastOn)
+{
+  switch (devState[d]) {
+    case DS_CLOSED:  return COLOR_DEV_CLOSED;
+    case DS_OPEN:    return COLOR_DEV_OPEN;
+    case DS_TRIPPED: return slowOn ? COLOR_DEV_OPEN : COLOR_DEAD;
+    default:         return fastOn ? COLOR_DEV_OPEN : COLOR_DEAD;
+  }
+}
+
+/* Position in the chain of pixel i on run s. */
+uint16_t stripIndex(uint8_t s, uint8_t i)
+{
+  uint16_t idx = i;
+  for (uint8_t k = 0; k < s && k < NUM_SEGMENTS; k++) idx += pgm_read_byte(&SEG_LEN[k]);
+  return idx;
 }
 
 void render()
@@ -720,6 +730,8 @@ void render()
    * Once it is isolated it holds solid red as a work boundary.             */
   const bool blinking = (stepNow == ST_FAULT || stepNow == ST_LOCKOUT);
   const bool blinkOn  = blinking ? (((millis() / FAULT_BLINK_MS) & 1) != 0) : true;
+  const bool slowOn   = ((millis() / DEV_TRIP_BLINK_MS) & 1) != 0;
+  const bool fastOn   = ((millis() / DEV_LOCK_BLINK_MS) & 1) != 0;
   const uint16_t front = animFront();
 
   uint16_t idx = 0;
@@ -744,30 +756,14 @@ void render()
   }
   while (idx < NUM_LEDS) leds[idx++] = COLOR_DEAD;  /* any surplus pixels */
 
-  FastLED.show();
-}
-
-void renderDeviceLeds()
-{
-  const bool slow = ((millis() / DEV_TRIP_BLINK_MS) & 1) != 0;
-  const bool fast = ((millis() / DEV_LOCK_BLINK_MS) & 1) != 0;
-
+  /* Device status goes on top: each device's pixel shows the device, not
+   * the line under it. The animations still count it as part of the line. */
   for (uint8_t d = 0; d < NUM_DEVICES; d++) {
-#if DEVICE_LED_MODE == 1
-    /* one pin: lit means closed, blinking means tripped or locked out */
-    bool lit = (devState[d] == DS_CLOSED);
-    if (devState[d] == DS_TRIPPED) lit = slow;
-    if (devState[d] == DS_LOCKOUT) lit = fast;
-    digitalWrite(pgm_read_byte(&DEV_PIN[d]), lit ? HIGH : LOW);
-#else
-    bool closed = (devState[d] == DS_CLOSED);
-    bool opened = (devState[d] == DS_OPEN);
-    if (devState[d] == DS_TRIPPED) opened = slow;
-    if (devState[d] == DS_LOCKOUT) opened = fast;
-    digitalWrite(pgm_read_byte(&DEV_PIN_G[d]), closed ? HIGH : LOW);
-    digitalWrite(pgm_read_byte(&DEV_PIN_R[d]), opened ? HIGH : LOW);
-#endif
+    const uint16_t at = stripIndex(pgm_read_byte(&DEV_SEG[d]), pgm_read_byte(&DEV_PX[d]));
+    if (at < NUM_LEDS) leds[at] = colorForDevice(d, slowOn, fastOn);
   }
+
+  FastLED.show();
 }
 
 /* ===========================================================================
@@ -956,21 +952,18 @@ void setup()
     Serial.println(F("[OK] segment table matches NUM_LEDS"));
   }
 
-  initButtons();
+  /* every device status pixel has to be a pixel on a visible run */
+  for (uint8_t d = 0; d < NUM_DEVICES; d++) {
+    const uint8_t s = pgm_read_byte(&DEV_SEG[d]);
+    const uint8_t i = pgm_read_byte(&DEV_PX[d]);
+    if (s >= NUM_SEGMENTS || i >= pgm_read_byte(&SEG_LEN[s]) || !pgm_read_byte(&SEG_OVER[s])) {
+      Serial.print(F("[!] "));
+      printDeviceName(d);
+      Serial.println(F(": DEV_SEG / DEV_PX is not a pixel on a visible run. See block [2]."));
+    }
+  }
 
-#if DEVICE_LED_MODE == 1
-  for (uint8_t d = 0; d < NUM_DEVICES; d++) {
-    pinMode(pgm_read_byte(&DEV_PIN[d]), OUTPUT);
-    digitalWrite(pgm_read_byte(&DEV_PIN[d]), LOW);
-  }
-#else
-  for (uint8_t d = 0; d < NUM_DEVICES; d++) {
-    pinMode(pgm_read_byte(&DEV_PIN_G[d]), OUTPUT);
-    pinMode(pgm_read_byte(&DEV_PIN_R[d]), OUTPUT);
-    digitalWrite(pgm_read_byte(&DEV_PIN_G[d]), LOW);
-    digitalWrite(pgm_read_byte(&DEV_PIN_R[d]), LOW);
-  }
-#endif
+  initButtons();
 
   FastLED.addLeds<LED_TYPE, LED_DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS)
          .setCorrection(TypicalLEDStrip);
@@ -1005,8 +998,6 @@ void loop()
     goToStep(stepNow + 1);
   }
 #endif
-
-  renderDeviceLeds();          /* cheap, runs every pass so blinks stay even */
 
   static uint32_t lastFrame = 0;
   if ((millis() - lastFrame) >= FRAME_INTERVAL_MS) {

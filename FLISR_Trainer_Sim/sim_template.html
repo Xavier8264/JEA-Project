@@ -110,6 +110,9 @@ header{border-bottom:2px solid var(--ink);margin-bottom:20px;padding-top:26px}
 .dev-halo.on{opacity:.45}
 .dev-lbl{font-family:"IBM Plex Mono",monospace;font-size:.36px;font-weight:500;fill:var(--ink2);
   paint-order:stroke;stroke:var(--lblHalo);stroke-width:.14px}
+.dev-ring{fill:none;stroke:var(--ink);stroke-width:.045;stroke-dasharray:.09 .06}
+.dev-ring,.dev-lead,.dev-mark,.dev-lbl{pointer-events:none}
+.lvl .sw{display:inline-block;vertical-align:-1px;margin-right:5px}
 .btn{cursor:pointer;outline:none;touch-action:none}
 .btn-body{fill:var(--btnBody);stroke:var(--btnEdge);stroke-width:.06}
 .btn-cap{fill:var(--btnCap);stroke:var(--btnEdge);stroke-width:.03;transition:transform .05s}
@@ -237,7 +240,7 @@ details.notes summary{cursor:pointer;font-family:"IBM Plex Sans Condensed",sans-
       <p><b>Pixels</b> show the <code>leds[]</code> buffer as of the last <code>FastLED.show()</code>. Brightness, color
       correction and dithering are applied after that, on the wire, and are not drawn. The FastLED 3.10.5 power limiter is
       computed every frame and shown under Outputs.</p>
-      <p><b>Placement.</b> Pixels are evenly spaced on the straight line between each run&rsquo;s From and To node in the LED
+      <p id="placement-note"><b>Placement.</b> Pixels are evenly spaced on the straight line between each run&rsquo;s From and To node in the LED
       sheet. Run 1 starts SEG_SPLIT[0] pixels south of N1, per the note on run 1. Under-board runs are drawn offset
       0.45 in so they don&rsquo;t cover the runs above them. Device LEDs sit 0.75 in right and 0.60 in up from their Element
       point, which is marked with a leader line.</p>
@@ -270,20 +273,37 @@ const rgbCss = c => `rgb(${c[0]},${c[1]},${c[2]})`;
 const ZN = {};
 for (const k in D) if (k.startsWith('ZN_')) ZN[D[k]] = k.slice(3);
 
+/* Devices show either on separate LEDs driven from pins, or each on one
+ * strip pixel (the sketch has DEV_SEG / DEV_PX). */
+const pixDev = G.devices.length > 0 && G.devices.every(dv => dv.px !== undefined);
+const devAtPx = new Map(pixDev ? G.devices.map(dv => [dv.px, dv.name]) : []);
+
 /* ---- title block, key, checks --------------------------------------- */
 const autoTxt = D.AUTO_ADVANCE ? `auto every ${D.STEP_INTERVAL_MS} ms` : 'manual only';
 $('#titleblock').innerHTML = [                  /* values are HTML */
   ['Sketch', esc(META.ino)], ['Logic sha256', esc(META.logicSha.slice(0, 16))],
   ['Layout', esc(META.dxf)], ['Tables', esc(META.xlsx)],
   ['Strip', `${esc(D.LED_TYPE)} ${esc(D.COLOR_ORDER)} &middot; ${D.NUM_LEDS} px &middot; ${PL(D.LED_DATA_PIN)}`],
-  ['Device LEDs', `mode ${D.DEVICE_LED_MODE} &middot; ${D.DEVICE_LED_MODE === 1 ? '1 pin' : '2 pins'} each`],
+  pixDev ? ['Device status', `1 strip pixel each &middot; no pins`]
+         : ['Device LEDs', `mode ${D.DEVICE_LED_MODE} &middot; ${D.DEVICE_LED_MODE === 1 ? '1 pin' : '2 pins'} each`],
   ['Steps', esc(autoTxt)], ['Built', esc(META.built)]
 ].map(([k, v]) => `<div class="tb-cell"><div class="lbl">${k}</div><div class="v">${v}</div></div>`).join('');
 
 $('#key').innerHTML = [
   ['COLOR_SRC_A', D.COLOR_SRC_A], ['COLOR_SRC_B', D.COLOR_SRC_B],
-  ['COLOR_FAULT', D.COLOR_FAULT], ['COLOR_DEAD', D.COLOR_DEAD]
+  ['COLOR_FAULT', D.COLOR_FAULT], ['COLOR_DEAD', D.COLOR_DEAD],
+  ...(pixDev ? [['COLOR_DEV_CLOSED', D.COLOR_DEV_CLOSED], ['COLOR_DEV_OPEN', D.COLOR_DEV_OPEN]] : [])
 ].map(([n, c]) => `<span><i class="sw" style="background:${rgbCss(c)}"></i>${n.slice(6)}</span>`).join('');
+
+if (pixDev) {
+  const sub = $('.tb-top .sub');
+  sub.innerHTML = sub.innerHTML.replace('the device LEDs', 'the device status pixels');
+  $('#board').setAttribute('aria-label', 'Cardboard layout with LED strip, device status pixels and fault buttons');
+  $('#out-h').innerHTML = 'Outputs &middot; device status pixels';
+  $('#placement-note').innerHTML = $('#placement-note').innerHTML.replace(/Device LEDs sit[\s\S]*$/,
+    'Each device&rsquo;s status pixel has a dashed ring. Its label sits 0.75 in right and 0.60 in up from the ' +
+    'device&rsquo;s Element point, which is marked with a dot.');
+}
 
 $('#checks').innerHTML =
   META.warnings.map(w => `<li><span class="t w">[!]</span><span>${esc(w)}</span></li>`).join('') +
@@ -338,9 +358,18 @@ G.runs.forEach(r => { if (r.over) o.push(tapeSvg(r)); });
 G.pixels.forEach((p, i) => { if (G.runs[p[2]].over) o.push(pixelSvg(p, i)); });
 o.push('</g>');
 
-/* device LEDs */
-const mode2 = D.DEVICE_LED_MODE !== 1;
-o.push(G.devices.map(dv => {
+/* device LEDs, or a ring around each device's status pixel */
+const mode2 = !pixDev && D.DEVICE_LED_MODE !== 1;
+if (pixDev) o.push(G.devices.map(dv => {
+  const [px, py] = G.pixels[dv.px], R = 0.27;
+  const len = Math.hypot(dv.x - px, dv.y - py) || 1;
+  const sx = (px + (dv.x - px) / len * R).toFixed(3), sy = (py + (dv.y - py) / len * R).toFixed(3);
+  return `<g class="dev"><circle class="dev-mark" cx="${dv.ex}" cy="${dv.ey}" r=".06"/>` +
+    `<line class="dev-lead" x1="${sx}" y1="${sy}" x2="${dv.x}" y2="${dv.y}"/>` +
+    `<circle class="dev-ring" cx="${px}" cy="${py}" r="${R}"/>` +
+    `<text class="dev-lbl" x="${(dv.x + 0.06).toFixed(3)}" y="${(dv.y + 0.13).toFixed(3)}">${dv.name} px ${dv.px}</text></g>`;
+}).join(''));
+else o.push(G.devices.map(dv => {
   const leds = dv.pins.map((pin, k) => {
     const cx = (dv.x + k * 0.42).toFixed(3), c = mode2 ? (k === 0 ? 'green' : 'red') : 'amber';
     return `<circle class="dev-halo" id="dh-${pin}" cx="${cx}" cy="${dv.y}" r=".34"/>` +
@@ -373,8 +402,11 @@ const outRows = [];
 G.devices.forEach(dv => dv.pins.forEach((pin, k) => {
   outRows.push({ pin, name: dv.name + (mode2 ? (k === 0 ? ' green' : ' red') : ''), c: mode2 ? (k === 0 ? 'lit-g' : 'lit-r') : 'lit' });
 }));
-$('#outputs').innerHTML = outRows.map(r =>
-  `<tr><td class="pin">${PL(r.pin)}</td><td class="nm">${r.name}</td><td class="lv"><span class="lvl" id="out-${r.pin}">not set</span></td></tr>`).join('');
+$('#outputs').innerHTML = pixDev
+  ? G.devices.map((dv, d) =>
+      `<tr><td class="pin">px ${dv.px}</td><td class="nm">${dv.name}</td><td class="lv"><span class="lvl" id="dp-${d}">not set</span></td></tr>`).join('')
+  : outRows.map(r =>
+      `<tr><td class="pin">${PL(r.pin)}</td><td class="nm">${r.name}</td><td class="lv"><span class="lvl" id="out-${r.pin}">not set</span></td></tr>`).join('');
 $('#stats').innerHTML = [
   ['show() calls', 'st-count'], ['last show()', 'st-last'],
   ['strip power', 'st-power'], ['brightness out', 'st-scale']
@@ -445,7 +477,8 @@ function probeText(i) {
   const s = G.pixels[i][2], r = G.runs[s], local = i - runStart[s];
   const split = T.SEG_SPLIT[s];
   let zn = (split && local >= split) ? T.SEG_ZONE2[s] : T.SEG_ZONE[s];
-  const zoneTxt = r.over ? `zone <b>${ZN[zn] || zn}</b>` : `under board, held dark`;
+  let zoneTxt = r.over ? `zone <b>${ZN[zn] || zn}</b>` : `under board, held dark`;
+  if (devAtPx.has(i)) zoneTxt += ` &middot; status pixel for <b>${devAtPx.get(i)}</b>`;
   const c = [strip[i * 3], strip[i * 3 + 1], strip[i * 3 + 2]];
   return `<b>px ${i}</b> &middot; run ${r.id} (${r.from} &rarr; ${r.to}), pixel ${local + 1} of ${T.SEG_LEN[s]} &middot; ${zoneTxt}` +
     ` &middot; leds[${i}] = <i class="sw" style="background:${rgbCss(c)}"></i><b>${hex2(c[0])} ${hex2(c[1])} ${hex2(c[2])}</b>` +
@@ -479,6 +512,10 @@ function paint() {
       el.g.classList.toggle('lit', lit);
       el.chip.style.fill = lit ? `rgb(${r},${g},${b})` : '';
       el.glow.style.fill = lit ? `rgb(${r},${g},${b})` : '';
+      if (devAtPx.has(i)) {
+        const d = G.devices.findIndex(dv => dv.px === i);
+        $('#dp-' + d).innerHTML = `<i class="sw" style="background:rgb(${r},${g},${b})"></i>${hex2(r)} ${hex2(g)} ${hex2(b)}`;
+      }
     }
     if (probeIdx >= 0) $('#probe').innerHTML = probeText(probeIdx);
   }

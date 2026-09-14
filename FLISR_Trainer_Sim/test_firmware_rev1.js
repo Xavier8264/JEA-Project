@@ -25,18 +25,46 @@ const BTN = [D.PIN_BTN_FAULT_Z1, D.PIN_BTN_FAULT_Z2, D.PIN_BTN_FAULT_Z3, D.PIN_B
 const RED = D.COLOR_FAULT, A = D.COLOR_SRC_A, B = D.COLOR_SRC_B, K = D.COLOR_DEAD;
 const STEP = D.ANIM_STEP_MS;
 
-function bench(FW, cfg, overrides) {
+function bench(FW, cfg, overrides, tableOverrides) {
   cfg = JSON.parse(JSON.stringify(cfg));
   Object.assign(cfg.defines, overrides || {});
+  Object.assign(cfg.tables, tableOverrides || {});
   const b = { text: '', writes: [], frame: null };
   b.board = FW.createBoard(cfg, {
     onSerial: s => { b.text += s; b.writes.push({ t: b.board.now, s }); },
     onShow: (leds, n) => { b.frame = { leds: leds.slice(0, n * 3), t: b.board.now }; }
   });
+  const pairs = s => Object.fromEntries(s.trim().split(' ').map(p => p.split('=')));
   b.states = () => [...b.text.matchAll(/STEP 0(\d)  (\w+)\r\n  fault   : (.*)\r\n  zones   : (.*)\r\n  devices : (.*)\r\n/g)]
-    .map(m => ({ step: +m[1], zones: Object.fromEntries(m[4].trim().split(' ').map(p => p.split('='))) }));
+    .map(m => ({ step: +m[1], zones: pairs(m[4]), devices: pairs(m[5]) }));
   b.stepTimes = () => b.writes.filter(w => w.s === 'STEP 0').map(w => w.t);
   return b;
+}
+
+/* ---- device status pixels ---------------------------------------------
+ * Strip positions typed in by hand from the block [2] comment table, so a
+ * slip in DEV_SEG / DEV_PX or in stripIndex() cannot also fool the test.   */
+const DEV_NAMES = ['SUB_A_BKR', 'DEV_A1', 'DEV_A2', 'TIE', 'DEV_B2', 'DEV_B1', 'SUB_B_BKR', 'DER_PCC'];
+const DEV_STRIP = [7, 53, 105, 221, 246, 298, 271, 325];
+const devAt = new Map(DEV_STRIP.map((g, d) => [g, DEV_NAMES[d]]));
+const OPEN = D.COLOR_DEV_OPEN, CLOSED = D.COLOR_DEV_CLOSED;
+
+/* What a status pixel should show at ms t, from the device states the
+ * board printed on the serial line up to t. */
+function deviceColor(b, name, t) {
+  if (!b.stCache || b.stCache.len !== b.text.length)
+    b.stCache = { len: b.text.length, times: b.stepTimes(), st: b.states() };
+  const { times, st } = b.stCache;
+  let k = -1;
+  for (let j = 0; j < times.length; j++) if (times[j] <= t) k = j;
+  assert.ok(k >= 0, `a state was printed before ${t} ms`);
+  switch (st[k].devices[name]) {
+    case 'CLOSED':  return CLOSED;
+    case 'OPEN':    return OPEN;
+    case 'TRIPPED': return (Math.floor(t / D.DEV_TRIP_BLINK_MS) & 1) ? OPEN : K;
+    case 'LOCKOUT': return (Math.floor(t / D.DEV_LOCK_BLINK_MS) & 1) ? OPEN : K;
+  }
+  throw new Error(`unknown state for ${name}: ${st[k].devices[name]}`);
 }
 
 /* two boards, same inputs, same clock */
@@ -106,11 +134,13 @@ function restoredMask(zones) {
 }
 
 const px = (f, g) => [f.leds[g * 3], f.leds[g * 3 + 1], f.leds[g * 3 + 2]];
+/* Every line pixel must match expectFn. The 8 device status pixels must show
+ * their device instead, whatever the line under them is doing. */
 function assertFrame(p, expectFn, label) {
   const f0 = p.r0.frame, f1 = p.r1.frame;
   assert.equal(f1.t, f0.t, `${label}: both boards rendered at the same ms`);
   for (let g = 0; g < NUM; g++) {
-    const want = expectFn(g, px(f0, g), f1.t);
+    const want = devAt.has(g) ? deviceColor(p.r1, devAt.get(g), f1.t) : expectFn(g, px(f0, g), f1.t);
     assert.deepEqual(px(f1, g), want, `${label}: px ${g} at ${f1.t} ms (run idx ${pxRun[g]} pixel ${pxOff[g]})`);
   }
 }
@@ -124,6 +154,96 @@ test('boot: banner says REV1, then output and the NORMAL frame match REV0', () =
   assert.ok(p.r1.text.startsWith('\n=== JEA Tabletop FLISR Trainer REV1 ===\r\n'));
   assert.equal(p.r1.text.replace(' REV1 ===', ' ==='), p.r0.text);
   assertFrame(p, (g, r0) => r0, 'NORMAL');
+});
+
+test('NORMAL: 7 status pixels closed, the TIE pixel open, every other pixel as REV0', () => {
+  const p = pair();
+  p.until(300);
+  const f = p.r1.frame;
+  DEV_STRIP.forEach((g, d) => assert.deepEqual(px(f, g), d === 3 ? OPEN : CLOSED, DEV_NAMES[d]));
+  for (let g = 0; g < NUM; g++) if (!devAt.has(g)) assert.deepEqual(px(f, g), px(p.r0.frame, g), `px ${g}`);
+  assert.notDeepEqual(OPEN, CLOSED);
+  for (const c of [A, B, RED, K]) { assert.notDeepEqual(OPEN, c); assert.notDeepEqual(CLOSED, c); }
+});
+
+test('status pixels are on visible runs, one per device, where the table says', () => {
+  assert.equal(D.NUM_DEVICES, 8);
+  for (let d = 0; d < 8; d++) {
+    assert.equal(runStart[T.DEV_SEG[d]] + T.DEV_PX[d], DEV_STRIP[d], DEV_NAMES[d]);
+    assert.equal(T.SEG_OVER[T.DEV_SEG[d]], 1, `${DEV_NAMES[d]} is on a visible run`);
+    assert.ok(T.DEV_PX[d] < T.SEG_LEN[T.DEV_SEG[d]], `${DEV_NAMES[d]} is inside its run`);
+  }
+  assert.equal(new Set(DEV_STRIP).size, 8);
+});
+
+test('FAULT Z1 status pixels: trip blinks slow, lockout fast, far side open, tie closes', () => {
+  const b = bench(REV1, CFG1, { AUTO_ADVANCE: 0 });
+  b.board.runUntil(300);
+  const press = pin => { const t = b.board.now; b.board.setContact(pin, true, t); b.board.setContact(pin, false, t + 60); b.board.runUntil(t + 41); };
+  const at = g => px(b.frame, g);
+  const sample = (g, ms) => {                  /* the pixel on every frame for ms */
+    const seen = [], from = b.board.now + 1, to = b.board.now + ms;
+    let lastT = b.frame.t;
+    for (let t = from; t <= to; t++) {
+      b.board.runUntil(t);
+      if (b.frame.t === lastT) continue;
+      lastT = b.frame.t;
+      seen.push({ t: lastT, on: at(g)[0] === OPEN[0] && at(g)[1] === OPEN[1] && at(g)[2] === OPEN[2], c: at(g) });
+    }
+    assert.ok(seen.length >= Math.floor(ms / D.FRAME_INTERVAL_MS) - 1, `sampled ${seen.length} frames in ${ms} ms`);
+    return seen;
+  };
+  const SUB_A = DEV_STRIP[0], A1 = DEV_STRIP[1], TIE = DEV_STRIP[3];
+
+  press(BTN[0]);                                   /* 01: SUB_A_BKR tripped */
+  let seen = sample(SUB_A, 2000);
+  for (const s of seen) {
+    assert.deepEqual(s.c, s.on ? OPEN : K, `tripped pixel is amber or dark at ${s.t}`);
+    assert.equal(s.on, (Math.floor(s.t / 500) & 1) === 1, `slow blink phase at ${s.t}`);
+  }
+  assert.ok(seen.some(s => s.on) && seen.some(s => !s.on));
+  assert.deepEqual(at(A1), CLOSED, 'DEV_A1 still closed at 01');
+
+  press(BTN[0]);                                   /* 02: lockout */
+  seen = sample(SUB_A, 1000);
+  for (const s of seen) assert.equal(s.on, (Math.floor(s.t / 150) & 1) === 1, `fast blink phase at ${s.t}`);
+
+  press(BTN[0]);                                   /* 03: DEV_A1 opens */
+  b.board.runUntil(b.board.now + 200);             /* past the release debounce */
+  assert.equal(b.states().at(-1).step, 3);
+  assert.deepEqual(at(A1), OPEN, 'DEV_A1 open at 03');
+  assert.deepEqual(at(TIE), OPEN, 'TIE still open at 03');
+
+  press(BTN[0]);                                   /* 04: tie closes */
+  b.board.runUntil(b.board.now + 200);
+  assert.equal(b.states().at(-1).step, 4);
+  assert.deepEqual(at(TIE), CLOSED, 'TIE closed at 04');
+  assert.deepEqual(at(A1), OPEN, 'DEV_A1 still open at 04');
+});
+
+test('FAULT DER: only the DER_PCC status pixel changes', () => {
+  const b = bench(REV1, CFG1, { AUTO_ADVANCE: 0 });
+  b.board.runUntil(300);
+  const t = b.board.now;
+  b.board.setContact(BTN[6], true, t); b.board.setContact(BTN[6], false, t + 60);
+  b.board.runUntil(t + 1500);
+  const f = b.frame;
+  DEV_STRIP.forEach((g, d) => {
+    if (d === 7) assert.deepEqual(px(f, g), (Math.floor(f.t / 500) & 1) ? OPEN : K, 'DER_PCC tripped, slow blink');
+    else assert.deepEqual(px(f, g), d === 3 ? OPEN : CLOSED, DEV_NAMES[d]);
+  });
+});
+
+test('a bad DEV_SEG / DEV_PX entry is reported at boot, and the good ones still work', () => {
+  const b = bench(REV1, CFG1, {}, { DEV_PX: [7, 2, 8, 0, 0, 0, 0, 13], DEV_SEG: [0, 3, 7, 17, 20, 2, 22, 30] });
+  b.board.runUntil(300);
+  assert.match(b.text, /\[!\] DEV_B1: DEV_SEG \/ DEV_PX is not a pixel on a visible run\. See block \[2\]\.\r\n/, 'hidden run');
+  assert.match(b.text, /\[!\] DER_PCC: DEV_SEG \/ DEV_PX is not a pixel on a visible run\. See block \[2\]\.\r\n/, 'past the run end');
+  assert.equal((b.text.match(/\[!\]/g) || []).length, 2, 'only the two bad entries');
+  assert.deepEqual(px(b.frame, DEV_STRIP[1]), CLOSED);
+  const good = bench(REV1, CFG1);
+  good.board.runUntil(300);
+  assert.ok(!good.text.includes('[!]'), 'the real table prints no warning');
 });
 
 test('every fault location sits in the zone it names', () => {
@@ -162,9 +282,11 @@ for (let f = 0; f < 7; f++) {
     p.press(BTN[f]);
     for (let n = 0; n < 10; n++) { p.run(37); assertFrame(p, faultRule, '02'); }
 
-    /* 03 ISOLATE: no animation, identical to REV0 */
+    /* 03 ISOLATE: no animation. Everything that lost power holds solid red,
+     * where REV0 turns the zones that only lost power dark. */
     p.press(BTN[f]);
-    for (let n = 0; n < 10; n++) { p.run(37); assertFrame(p, (g, r0) => r0, '03'); }
+    const isolateRule = (g, r0) => (lost & (1 << zoneOf(g))) ? RED : r0;
+    for (let n = 0; n < 10; n++) { p.run(37); assertFrame(p, isolateRule, '03'); }
 
     /* 04 RESTORE: the new source color fills out from the tie, if the tie closes */
     p.press(BTN[f]);
@@ -178,10 +300,15 @@ for (let f = 0; f < 7; f++) {
         rlast = Math.max(rlast, rdist[g]);
       }
     }
+    /* the fill eats the red; anything still without power stays red */
+    const lost4 = lostMask(p.r1.states()[4].zones);
     const restoreRule = (g, r0, t) => {
-      if (!restored || !(restored & (1 << zoneOf(g)))) return r0;
-      const front = Math.floor((t - rstart) / STEP);
-      return (front >= rlast || rdist[g] <= front) ? r0 : K;
+      const zn = zoneOf(g);
+      if (restored & (1 << zn)) {
+        const front = Math.floor((t - rstart) / STEP);
+        return (front >= rlast || rdist[g] <= front) ? r0 : RED;
+      }
+      return (lost4 & (1 << zn)) ? RED : r0;
     };
     for (let t = p.r1.board.now + 1; t <= rstart + rlast * STEP + 400; t += 20) { p.until(t); assertFrame(p, restoreRule, '04'); }
 
@@ -226,7 +353,7 @@ test('pressing on to 02 mid-wave keeps the wave going; 03 mid-wave cuts to the i
   }
   p.press(BTN[0]);                                 /* 03 */
   p.run(25);
-  assertFrame(p, (g, r0) => r0, '03 right after');
+  assertFrame(p, (g, r0) => (lost & (1 << zoneOf(g))) ? RED : r0, '03 right after');
 });
 
 test('a different fault button mid-wave starts a new wave from normal colors', () => {
