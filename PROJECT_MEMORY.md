@@ -883,3 +883,630 @@ fault-point design decisions in response to that discussion.
   lockout) not fixed, flagged above for later.
 
 ---
+
+## 2026-09-13 21:22 CDT - Arduino Uno FLISR firmware built from the REV1 DXF and tabulated Excel
+
+Session ran from the evening of 2026-09-12 into 2026-09-13, over four user messages.
+
+### What was asked
+
+1. **Build complete Arduino code for the automated fault restoration system**, from three
+   sources the user named:
+   - Restoration logic: the published artifact
+     `https://claude.ai/code/artifact/5ba6ca32-14a6-4a20-a69f-95a37753a51c`. The code must
+     follow the same redirect logic.
+   - Geometry: `Cardboard Layout REV1 backup_9.12.20.dxf`, full scale, inches.
+   - Ground truth alongside the DXF: `JEA Cardboard Prototype Tabulated REV1.xlsx` (the user
+     called it "...Tabulated.xlsx"; the file on disk carries REV1). It tabulates elements and
+     nodes by x/y, lines by their two nodes, fault points as the point ON the run, and LED
+     runs by pixel count, an Over flag, and From/To nodes.
+   - Origin (0,0) is the bottom-left corner of the model in both files.
+   - Requirements: every fault button pin listed at the top of the sketch so it can be
+     changed; every LED run length listed at the top so a miscount can be fixed in one
+     place; 60 LED/m.
+   - User notes on the tabulation: all surface runs are exactly horizontal or vertical
+     EXCEPT line 21, which is diagonal; lines 24 and 25 appear to jump nodes on purpose, so
+     assume a wire jumper N28 -> N27 between them with 0 LEDs; nodes that should share an
+     x or y but are slightly off are to be treated as exactly aligned.
+2. User updated the Excel "to correct inter panel nodes": check what changed and adjust.
+3. User confirmed N30 belongs at DEV_A2 (correct and adjust), and that LED run 1 is 9 px
+   from N1 to N2 plus 8 px that extend south, 17 total.
+4. Write this whole chat to memory. **Standing instruction from now on: for this project,
+   always write session work into this file and reference it in future chats, without
+   being asked.** Also saved as a Claude Code persistent memory at
+   `C:\Users\jprun\.claude\projects\c--Users-jprun-Downloads-JEA-Project\memory\` so it
+   loads automatically at the start of future sessions.
+
+### Sources read this session
+
+- The artifact, full raw HTML through the Artifact read action, including its `model()` and
+  `narrate()` JavaScript. `[V]`
+- `Cardboard Layout REV1 backup_9.12.20.dxf`, parsed with a throwaway Python group-code
+  parser. Layers that matter: `Cardboard Layout REV0 v8_Sketch3` holds the 27 LINE entities
+  of the electrical network; `...Sketch5` holds 8 CIRCLE r=0.50, the 7 fault buttons plus
+  RESET; layer `0` holds the device blocks (LWPOLYLINE), all MTEXT labels, and the small
+  breaker-symbol circles at Substation A. `[V]`
+- `JEA Cardboard Prototype Tabulated REV1.xlsx` in the working directory, sheets Element,
+  Node, Line, Fault, LED. Read at the start, then twice more as the user edited it. `[V]`
+- A second copy of the same workbook at
+  `C:\Users\jprun\OneDrive - Union University\JEA Tabletop Fault Simulator\Jordan Prunty\JEA Cardboard Prototype Tabulated REV1.xlsx`.
+  The two copies have diverged; see node corrections below. `[V]`
+
+### Reading the tabulation
+
+**Element -> device.** Matched by position against the DXF device blocks and the artifact's
+device schedule. `[V]`
+
+| Element | Device | x, y (Excel) |
+|---|---|---|
+| E1 | SUB_A_BKR | 12.59, 9.12 |
+| E2 | DEV_A1 | 12.59, 17.58 |
+| E3 | DEV_A2 | 12.59, 29.38 |
+| E4 | TIE, normally open | 26.55, 25.50 |
+| E5 | DEV_B2 | 30.08, 25.50 |
+| E7 | DEV_B1 | 38.10, 21.91 |
+| E6 | SUB_B_BKR | 38.10, 37.44 |
+| R1 | DER_PCC | 34.15, 20.65 |
+
+- **E6 and E7 are numbered out of chain order.** Electrical order from Source A to Source B
+  is E1, E2, E3, E4, E5, **E7, E6**. `[V]`
+- E-points are markers near each block, not always its center. The SUB_A_BKR block spans
+  y 9.4 to 10.5 (center 9.95, which is exactly N1's y); the DEV_B2 block spans x 30.5 to
+  31.7. `[V]`
+
+**Fault points and buttons.** The Fault sheet gives the point on the run; the DXF Sketch5
+circles give the physical button. Every fault point lies between its zone's two bounding
+devices, which independently confirms the device mapping above. `[V]`
+
+| Fault | Point on run (Excel) | Button center (DXF) |
+|---|---|---|
+| Z1 | 12.59, 15.84 | 10.09, 15.85 |
+| Z2 | 12.59, 21.05 | 11.11, 21.09 |
+| Z3 | 20.10, 29.50 | 20.11, 31.27 |
+| Z4 | 28.40, 25.50 | 28.40, 27.26 |
+| Z5 | 35.60, 21.90 | 35.60, 23.50 |
+| Z6 | 38.13, 32.55 | 36.60, 32.57 |
+| DER | 34.10, 19.10 | 32.26, 19.07 |
+| RESET | none | 26.46, 5.13 |
+
+**"Line 21" and "lines 24 and 25" meant LED sheet IDs, not Line sheet IDs.** On the Line
+sheet, L21 (N20 -> N22) is vertical and L24/L25 share a node. On the LED sheet, LED 21
+(N13 -> N35) is the only diagonal surface run, and LED 24 ends at N28 while LED 25 starts at
+N27. Both of the user's notes check out exactly under that reading. `[V]` for this session.
+As a general rule, a numbered "line" in a lighting context probably means the LED sheet.
+`[I]`
+
+**The strip is ONE continuous data chain.** Every LED row's To node is the next row's From
+node, the J1 jumper being the only jump. Rows with Over = 0 run back under the display to
+reach a branch point, which is how the branching looks seamless on top. `[V]`
+
+**Not lit:** the four DER solar stub laterals (Line sheet L23 to L26: N18 -> N19,
+N20 -> N21, N22 -> N23, N24 -> N25) and the horizontal leg of the commercial lateral have no
+LED rows. The DER feeder trunk and the commercial riser are lit. `[V]`
+
+### The LED chain and zone mapping, as built
+
+Generated from the final sketch tables and cross-checked row by row against the Excel LED
+sheet: pixel counts and Over flags agree on all 31 rows. "Row" is the sketch table row;
+"LED ID" is the Excel ID. `[V]`
+
+| Row | LED ID | px | Over | From -> To | Strip index | Zone |
+|---|---|---|---|---|---|---|
+| 1 | 1 | 17 | 1 | N1 -> N2 | 0-16 | BUSA 8 px, then Z1 9 px |
+| 2 | 2 | 17 | 1 | N2 -> N3 | 17-33 | Z1 |
+| 3 | 3 | 17 | 0 | N3 -> N2 | 34-50 | hidden (under board) |
+| 4 | 4 | 10 | 1 | N2 -> N4 | 51-60 | Z1 2 px, then Z2 8 px |
+| 5 | 5 | 17 | 1 | N4 -> N5 | 61-77 | Z2 |
+| 6 | 6 | 17 | 0 | N5 -> N4 | 78-94 | hidden (under board) |
+| 7 | 7 | 2 | 1 | N4 -> N32 | 95-96 | Z2 |
+| 8 | 8 | 9 | 1 | N32 -> N30 | 97-105 | Z2 |
+| 9 | 9 | 6 | 1 | N30 -> N6 | 106-111 | Z3 |
+| 10 | 10 | 8 | 1 | N6 -> N7 | 112-119 | Z3 |
+| 11 | 11 | 11 | 1 | N7 -> N8 | 120-130 | Z3 |
+| 12 | 12 | 14 | 1 | N8 -> N9 | 131-144 | Z3 |
+| 13 | 13 | 28 | 1 | N9 -> N10 | 145-172 | Z3 |
+| 14 | 14 | 26 | 0 | N10 -> N6 | 173-198 | hidden (under board) |
+| 15 | 15 | 12 | 1 | N6 -> N33 | 199-210 | Z3 |
+| 16 | 16 | 4 | 1 | N33 -> N11 | 211-214 | Z3 |
+| 17 | 17 | 6 | 1 | N11 -> N12 | 215-220 | Z3 |
+| 18 | 18 | 6 | 1 | N12 -> N13 | 221-226 | Z4 |
+| 19 | 19 | 9 | 1 | N13 -> N14 | 227-235 | Z4 |
+| 20 | 20 | 10 | 0 | N14 -> N13 | 236-245 | hidden (under board) |
+| 21 | 21 | 3 | 1 | N13 -> N35 | 246-248 | Z4 1 px, then Z5 2 px |
+| 22 | 22 | 22 | 0 | N35 -> N29 | 249-270 | hidden (under board) |
+| 23 | 23 | 12 | 1 | N29 -> N27 | 271-282 | Z6 |
+| 24 | 24 | 4 | 1 | N27 -> N28 | 283-286 | Z6 |
+| 25 | J1 | 0 | 0 | N28 -> N27 | - | wire jumper, no pixels |
+| 26 | 25 | 7 | 1 | N27 -> N34 | 287-293 | Z6 |
+| 27 | 26 | 4 | 1 | N34 -> N26 | 294-297 | Z6 |
+| 28 | 27 | 12 | 1 | N26 -> N16 | 298-309 | Z5 |
+| 29 | 28 | 3 | 1 | N16 -> N35 | 310-312 | Z5 |
+| 30 | 29 | 11 | 0 | N35 -> N17 | 313-323 | hidden (under board) |
+| 31 | 30 | 13 | 1 | N17 -> N24 | 324-336 | Z5 2 px, then DER 11 px |
+
+Totals: **337 px**. Visible 234: BUSA 8, Z1 28, Z2 36, Z3 89, Z4 16, Z5 19, Z6 27, DER 11.
+Hidden 103. `[V]`
+
+**Zone assignment rules used.** The protection chain is SUB_A_BKR, DEV_A1, DEV_A2, TIE,
+DEV_B2, DEV_B1, SUB_B_BKR, and zone Zk lies between device k-1 and device k. A run belongs to
+the zone between the devices on either side of it. A lateral belongs to the zone of the trunk
+point it taps. The commercial lateral (LED 19) rises at x = 30.125, upstream of the DEV_B2
+block, so it is Z4, matching the artifact's L3. The industrial lateral (LED 24) is Z6,
+matching the artifact's L5. `[V]`
+
+**Four runs cross a boundary partway and are split.** The first N pixels take the first zone
+and the rest take the second. Split points were placed from DXF geometry at 60 LED/m, which
+is 1.524 px per inch. `[V]`
+
+| LED ID | Crosses | Geometry | Split |
+|---|---|---|---|
+| 1 | SUB_A_BKR at N1 | 8 px south of N1 inside the substation, then N1 -> N2 = 6.08 in | BUSA 8 / Z1 9 |
+| 4 | DEV_A1 | N2 y 16.04 -> N4 y 22.52, device at about y 17.45, 21.7% along | Z1 2 / Z2 8 |
+| 21 | DEV_B2 | diagonal from x 30.125 enters the device block about 39% along | Z4 1 / Z5 2 |
+| 30 | DER_PCC | N17 y 21.93 -> N24 y 13.57, recloser at y 20.745, 14.2% along | Z5 2 / DER 11 |
+
+No split is needed anywhere else, because every other device lands exactly on a node: DEV_A2
+on the N30 corner between LED 8 (Z2) and LED 9 (Z3); the TIE at N12 between LED 17 and 18;
+DEV_B1 at N26 between LED 26 and 27; SUB_B_BKR at N29, where LED 23 starts. `[V]`
+
+### Node corrections this session
+
+Supersedes the node coordinates first read at the start of this session.
+
+| Node | Was | Now | Status |
+|---|---|---|---|
+| N32 | 26.55, 24 | 12.57, 24.0 | Fixed by user, in both Excel copies. `[V]` |
+| N1 | 25.58, 9.95 | 12.57, 9.95 | Fixed by user in the **OneDrive copy only**. The newer working-directory copy still has 25.58. `[V]` |
+| N30 | 21.58, 29.5 | 12.59, 29.51, the DEV_A2 corner | Confirmed by user. **Not yet written to either Excel copy.** `[V]` |
+
+How these were found: a script compared each LED run's counted pixels against its
+node-to-node distance at 60 LED/m. On the original coordinates, 23 of 30 runs landed within
++/-1.3 px, which is ordinary hand-count rounding. The 7 outliers pointed at bad coordinates:
+
+- **N32:** LED 7 predicted 21.4 px against 2 counted. At x = 12.57 it predicts 2.2. The Z2
+  trunk crosses the y = 24 seam at about x = 12.57, not 26.55.
+- **N30:** with N32 already fixed, LED 8 predicted 16.1 px against 9 counted and LED 9
+  predicted 8.3 against 6. At the DEV_A2 corner they predict 8.4 and 5.4. Two independent runs
+  both landing within 0.6 px settled it before the user confirmed. DXF Sketch3 lines 7 and 8
+  meet at exactly (12.586, 29.510).
+- **N1:** its y matched the breaker block center, but its x was 13 in east, inside the RTAC
+  cutout area. Once corrected, LED 1 measured only 9.3 px against 17 counted, which the
+  user explained: the extra 8 px extend south.
+
+All four inter-panel (seam) nodes are now correct: N32 (12.57, 24.0), N33 (24, 29.48),
+N34 (38.13, 24), N35 (31.09, 24). `[V]`
+
+### Decisions taken
+
+User answers to four questions asked before any code was written:
+
+1. **Board: Arduino Uno / Nano (ATmega328P).** `[V]` **Supersedes** the ESP32 assumption
+   in the 2026-09-07 21:46 entry ("Carry this into the RTAC logic and into the ESP32
+   animation", and HUB ESP32 + 5V in the artifact's wiring layer), at least for the cardboard
+   prototype.
+2. **Sequencing: auto-timed, with a manual step.** `[V]` Press a fault button to start that
+   fault at step 01. Steps advance every 2.5 s. `AUTO_ADVANCE 0` turns the timer off for pure
+   manual stepping.
+   - **Deviation from the option as worded.** The option the user picked described RESET
+     also acting as a manual step button. It was built instead so that pressing the **same
+     fault button again** advances one step, a **different** fault button abandons the
+     current fault and starts that one, and RESET only returns to NORMAL. That keeps RESET
+     unambiguous. It is documented in the sketch header's OPERATION block but was not called
+     out in chat until the memory-writing turn, where it was flagged to the user.
+3. **Device status: separate discrete LEDs**, not the WS2812 strip. `[V]` Hardware conflict
+   found and resolved: bicolor red + green for 8 devices is 16 pins, plus 8 buttons and 1 data
+   line makes 25, and an Uno/Nano has about 18 usable with D0/D1 kept for USB serial.
+   Delivered as `DEVICE_LED_MODE 1`: one pin per device, solid on = CLOSED, off = OPEN, slow
+   blink = TRIPPED, fast blink = LOCKOUT. 17 pins used, A5 spare. `DEVICE_LED_MODE 2`, a green
+   pin and a red pin per device, is in the sketch for a Mega 2560.
+4. **DER fault: the PCC clears it alone.** `[V]` The artifact has a FAULT DER button, but its
+   model only covers Z1 to Z6, so this was a new decision. Coordinated behavior: DER_PCC trips
+   at step 01 and locks out at step 02, the DER branch shows red, and Z5 and the whole feeder
+   stay energized. Nothing further to isolate and nothing stranded to restore. The teaching
+   point is that a branch device clears its own fault without upstream tripping.
+   Anti-islanding on a feeder fault is separate and unchanged from the artifact: whenever Z5
+   is dead or faulted, DER_PCC trips.
+
+Later in the session:
+
+5. **LED run 1 is 17 px: 8 px south of N1, then 9 px N1 -> N2.** `[V]` N1 is the SUB_A_BKR
+   location, so the southern 8 px are on the source side of the breaker. They are the
+   substation bus and stay lit in the Source A color always, even through a Z1 lockout. New
+   zone code `ZN_BUSA`. **Supersedes** the first build of this session, where all 17 px were
+   Z1 and went dark with it.
+
+### Firmware as built
+
+**File:** `FLISR_Trainer/FLISR_Trainer.ino` in the working directory, 717 lines. Needs the
+FastLED library.
+
+**Top-of-file edit blocks,** in order:
+
+1. Fault button pins, each with its DXF location in a comment.
+2. Device LED pins and `DEVICE_LED_MODE`, each with its element location.
+3. Strip: data pin, `NUM_LEDS`, type, color order, brightness, power cap, section colors.
+4. LED segment table: a commented row-by-row map (run, length, over, from, to, zone, note),
+   then five `PROGMEM` arrays of 31 entries each: `SEG_LEN`, `SEG_OVER`, `SEG_ZONE`,
+   `SEG_SPLIT`, `SEG_ZONE2`. Notes on run 1 and on N30 sit under the table.
+5. Timing and behavior, plus `SEGMENT_TEST_MODE`.
+
+**Pin map, Uno** `[V]`
+
+| Signal | Pin | Signal | Pin |
+|---|---|---|---|
+| FAULT Z1 | D2 | Strip data | D10 |
+| FAULT Z2 | D3 | SUB_A_BKR LED | D11 |
+| FAULT Z3 | D4 | DEV_A1 LED | D12 |
+| FAULT Z4 | D5 | DEV_A2 LED | D13 (shares the onboard LED) |
+| FAULT Z5 | D6 | TIE LED | A0 |
+| FAULT Z6 | D7 | DEV_B2 LED | A1 |
+| FAULT DER | D8 | DEV_B1 LED | A2 |
+| RESET | D9 | SUB_B_BKR LED | A3 |
+| | | DER_PCC LED | A4 |
+
+Buttons wire from pin to GND with `INPUT_PULLUP`, so pressed reads LOW; 40 ms debounce.
+
+**Behavior** `[V]`
+
+- Colors: Source A blue `CRGB(0x1E,0x6B,0xFF)`, Source B green `CRGB(0x00,0xD0,0x50)`, fault
+  red `CRGB(0xFF,0x18,0x10)`. De-energized is OFF rather than gray. Over = 0 pixels are always
+  off. BUSA pixels are always Source A blue.
+- The faulted section blinks red during steps 01 and 02 (350 ms) and holds solid red from
+  step 03 on, as the work boundary.
+- Brightness 80 of 255; FastLED soft power cap 5 V / 4000 mA.
+- Strip refresh capped at 50 fps (`FRAME_INTERVAL_MS 20`); device LEDs update every loop pass.
+- Serial monitor at 115200 prints the step, the fault, every zone's source, and every device's
+  state on each change.
+- `setup()` sums `SEG_LEN` and prints a loud mismatch warning if it does not equal `NUM_LEDS`.
+  Fixing a count means changing that row and `NUM_LEDS`; nothing else moves, because pixel
+  offsets are walked from the table at render time.
+- `SEGMENT_TEST_MODE 1` lights each run alone in its own hue at boot, 1.2 s each, and prints its
+  pixel index range, for checking counts against the physical board.
+
+**FLISR model.** `computeModel()` is a direct port of the artifact's `model(f, st)`. For a
+fault in zone f, the A side is f <= 3. The source-side device (index f-1 on the A side, f on
+the B side) trips at step 01 and locks out at 02. The far-side device (f on A, f-1 on B) opens
+at 03. At 04 the tie closes only if healthy zones are stranded past the fault, and those flip
+to the other source. Faults in Z3 or Z4 border the tie, so nothing is restored and the tie
+stays open, which is the correct answer. `[V]`
+
+Step 04 outcomes, from the sketch model `[V]`:
+
+| Fault | TIE | Restored from the other source | DER_PCC |
+|---|---|---|---|
+| Z1 | closed | Z2, Z3 from B | closed |
+| Z2 | closed | Z3 from B | closed |
+| Z3 | open | none | closed |
+| Z4 | open | none | closed |
+| Z5 | closed | Z4 from A | tripped (anti-islanding) |
+| Z6 | closed | Z4, Z5 from A | closed |
+| DER | open | none, feeder untouched | lockout |
+
+### Judgment calls worth remembering
+
+- **Zone assignment runs off chain order and pixel counts, not coordinates.** That is why the
+  N32 and N1 corrections changed no code. Coordinates only matter where a device lands partway
+  along a run and forces a split, which is why N30 mattered in principle.
+- **J1 is a real 0-length row** in the tables, so the sketch matches the user's mental model
+  and stays editable. It is Over = 0 and zone hidden, so any pixels later added there would
+  stay dark, which is right for a wire jumper.
+- **Tables and every serial string live in flash** (`PROGMEM`, `F()`), because the pixel
+  buffer alone is 1011 of the Uno's 2048 bytes of SRAM.
+- **Refresh is capped at 50 fps** because the AVR WS2812 driver disables interrupts while it
+  clocks out data, about 10 ms per frame at 337 px. Refreshing flat out would leave interrupts
+  off roughly half the time. `[S]`
+- **`ZN_DER` is 7 and `ZN_BUSA` is 8, but `zoneState[]` holds only indices 0 to 6.**
+  `colorForZone()` returns on both before indexing the array, with a comment saying so. Any
+  future zone code above 6 must do the same.
+- **`NUM_LEDS` is hard-coded, with a runtime check,** rather than computed at compile time,
+  because a constexpr array on AVR risks being copied into SRAM. `[I]`
+
+### Verification actually performed
+
+1. **Compiled** with avr-g++ 7.3.0 for atmega328p, `-std=gnu++17 -Wall -Wextra`, against the
+   real Arduino AVR core 1.8.8 and FastLED 3.10.5: zero warnings. Variants `DEVICE_LED_MODE 2`
+   (atmega2560), `SEGMENT_TEST_MODE 1`, and `AUTO_ADVANCE 0` also compiled clean. `[V]`
+2. **Linked the full firmware** and read `avr-size` on the final version: **flash 11,934 B
+   (36.4%), SRAM 1,492 B (72.9%), 556 B free for stack.** The symbol table shows `leds[]` at
+   1011 B, and all lookup tables (171 B) and every string in `.progmem.data`. `[V]`
+3. **Logic cross-check against the artifact.** The artifact's `model()`, copied verbatim, ran
+   in Node alongside a line-by-line JavaScript transliteration of `computeModel()`, for faults
+   Z1 to Z6 at steps 00 to 04, comparing every zone and every device: **420 comparisons, 0
+   mismatches.** `[V]` for logic equivalence, with one caveat: the C++ itself was never
+   executed on a host, so the check is only as faithful as the transliteration.
+   `computeModel()` was not edited after this check.
+4. **Table invariants,** checked by extracting the arrays from the `.ino` text so the test
+   cannot drift from the code: 31 rows in all five tables; lengths sum to `NUM_LEDS`; every
+   split point lies inside its run; no unsplit row carries a stray second zone; every Over = 0
+   row is marked hidden; every zone code above 6 returns before the array index. This caught
+   one real defect: the J1 row was Over = 0 but zone Z6. Fixed. `[V]`
+5. **Render simulation** of every fault at steps 01, 02, and 04, counting visible pixels by
+   color. Normal is 161 blue and 73 green. Z1 at lockout: bus 8 px blue, Z1 red, Z2 and Z3
+   dark. After restore, Z2 and Z3 turn green and the bus is still blue. `[V]`
+6. **Not run on hardware.** Nothing in this sketch has touched a real Uno, strip, or button.
+
+### Deliverables
+
+| Thing | Where |
+|---|---|
+| Arduino sketch | `FLISR_Trainer/FLISR_Trainer.ino` (working directory) |
+| This log entry | `PROJECT_MEMORY.md` |
+| Persistent memory, standing instruction to use this file | `C:\Users\jprun\.claude\projects\c--Users-jprun-Downloads-JEA-Project\memory\jea-project-memory-file.md` |
+
+The verification scripts (`verify.js`, the table checker, `build.sh`) lived in the session
+scratchpad and are gone. The method is recorded above and the build recipe below.
+
+### Environment notes for next time
+
+- **Toolchain.** No `arduino-cli` and no host g++. The Arduino IDE is installed at
+  `C:\Users\jprun\AppData\Local\Programs\Arduino IDE`. avr-g++ 7.3.0 is at
+  `C:\Users\jprun\AppData\Local\Arduino15\packages\arduino\tools\avr-gcc\7.3.0-atmel3.6.1-arduino7\bin`,
+  and AVR core 1.8.8 at `...\Arduino15\packages\arduino\hardware\avr\1.8.8` (variants
+  `standard` and `mega`). An ESP32 core is also installed. Node v22 and Python 3.14 with
+  openpyxl 3.1.5 are available. `[V]`
+- **The Arduino sketchbook is OneDrive-redirected.** FastLED 3.10.5 is at
+  `C:\Users\jprun\OneDrive\Documents\Arduino\libraries\FastLED`, not `Documents\Arduino`. `[V]`
+- **FastLED 3.10.5 is a unity build.** To link by hand, use the core objects, only FastLED's
+  `*+.cpp` amalgamation files plus `src.cpp`, and the sketch. Also compiling every individual
+  FastLED `.cpp` gives duplicate symbols; linking only the individual files leaves
+  `fl::memcpy` undefined. Needs `-std=gnu++17`. `[V]`
+- **The Excel file locks while it is open.** A write fails with PermissionError and a
+  `~$...xlsx` lock file appears. If the user says the workbook was updated but the hash has not
+  changed, the edit is probably unsaved; also check the OneDrive copy. `[V]`
+- The workbook is plain data (no charts, pivots, tables, or drawings), so an openpyxl edit is
+  safe once Excel has closed it. `[V]`
+- The file-safety hook blocks `rm` with a glob. Call `vault.ps1` from PowerShell, not bash,
+  because bash strips the backslashes out of the path. `[V]`
+
+### Open items, flagged not resolved
+
+Continues the numbered open-items list already on record:
+
+12. **Write N30 into the Excel:** `Node!B31` -> `12.59`, `Node!C31` -> `29.51`. Blocked this
+    session because the workbook was open in Excel.
+13. **Reconcile the two Excel copies.** The working-directory copy (saved 2026-09-13 00:17) is
+    newer but still has the old N1 (25.58, 9.95); the OneDrive copy (saved 00:16) has the
+    corrected N1 (12.57, 9.95). Pick a master before further edits.
+14. **Recount LED runs 11 and 13.** LED 11 (N7 -> N8, RES-2 west): 11 counted, geometry says
+    16.1 over 10.59 in. LED 13 (N9 -> N10, RES-2 top street): 28 counted, geometry says 31.5
+    over 20.67 in. Every other surface run is within +/-1.3 px. LED 29 (N35 -> N17) reads 5.4 px
+    long, but it runs under the board where the path is free, so it is probably fine.
+    `SEGMENT_TEST_MODE 1` exists for this.
+15. **Stray RESET label in the DXF** at (34.07, 18.31), beside FAULT DER, with no button circle
+    near it. The real RESET is at (26.46, 5.13).
+16. **Strip build and power notes, not yet acted on** `[S]`: inject 5 V about every 100 px on a
+    337 px chain; put a 330 to 470 ohm series resistor on the data line at the first pixel; put
+    a 1000 uF capacitor across 5 V and GND at the strip input.
+17. **SRAM headroom is 556 B.** Fine for the current code. If features are added, cutting the
+    serial narration is the first saving.
+18. **Single chain versus per-panel chains.** The 2026-09-07 21:46 wiring architecture uses
+    four independent chains, one per panel, so no LED data crosses a seam. The REV1
+    tabulation, and this firmware, use one 337 px chain that crosses seams. That is right for
+    the cardboard prototype. Whether the final build returns to per-panel chains is undecided.
+    Interacts with open items 5, 8 and 9. `[I]`
+19. **Where the FLISR logic lives in the final trainer.** Standing Facts say the SEL-2240 is
+    the brains and fault scenarios are hard-coded in the RTAC. This sketch runs the whole
+    FLISR model on the Arduino, standalone. That suits a prototype demo, but the final design
+    needs a decision: keep a standalone model on the LED controller, or make the LED
+    controller a display driven by RTAC outputs. Noticed while writing this entry; not
+    discussed with the user. `[I]`
+
+### Not done this session
+
+- No changes to the published artifact, the DXF, or `jea_tabletop_layout_spec.md`.
+- The Excel workbook was not modified. Its hash was confirmed unchanged after the blocked
+  write, and the backup taken for that write was archived with `vault.ps1` (restore id
+  `1c66ebfe`).
+- No hardware test. No RTAC or IEC 61131 logic. No git commit.
+
+---
+
+## 2026-09-13 22:17 CDT - Test bench for FLISR_Trainer.ino, then FLISR_Trainer_REV1 with fault wave and restore fill animations
+
+Separate session from the 21:22 entry, running in parallel with it this evening. This session
+did not read this file until its last turn: the standing instruction to use it was saved by
+the other session at 21:27, after this one had started. Checked afterwards: nothing built here
+contradicts the entries above.
+
+### What was asked
+
+1. **Build a virtual environment to test `FLISR_Trainer/FLISR_Trainer.ino`**, based on the
+   REV1 DXF and the plan set artifact (`https://claude.ai/code/artifact/5ba6ca32-14a6-4a20-a69f-95a37753a51c`).
+   User's words: not a compiler and not a virtual Arduino, "just create an environment so that
+   it operates EXACTLY as the code is written, nothing more, nothing less."
+2. **Pin that bench**, and **create `FLISR_Trainer_REV1`**: a fault in the middle of a line
+   should spread outward pixel by pixel until the area is red, then a trail animation should
+   show the new source routing power.
+   User answers to three clarifying questions: `[V]`
+   - Wave look: **red spreads, no dark front.** Pixels go straight from their source color to red.
+   - Wave reach: **everything that lost power.** The faulted section plus every stranded zone out
+     to the open tie. At 03 ISOLATE the stranded zones drop to dark and only the fault stays red.
+   - Restore: **plain fill from the tie.** No bright comet head.
+
+### Sources read this session
+
+- `FLISR_Trainer/FLISR_Trainer.ino` (717 lines), the plan set artifact's raw HTML including
+  `model()`, the DXF through ezdxf 1.4.4, and all five xlsx sheets. `[V]`
+- The xlsx was saved at 21:24 during this session. Re-read after: **working-directory copy now
+  has N1 = (12.58, 9.95)** and N30 = (12.59, 29.51). Nothing else changed. `[V]`
+- FastLED 3.10.5 source, for behavior the sketch depends on: `power_mgt.cpp.hpp` (power limiter),
+  `FastLED.cpp.hpp` `show()`, `hsv2rgb.cpp.hpp` (`hsv2rgb_rainbow`), `fl/gfx/crgb_extra.cpp.hpp`
+  (CRGB = CHSV routes to rainbow), `platforms/shared/scale8.h`, `fastled_config.h`
+  (`FASTLED_SCALE8_FIXED 1`). `[V]`
+
+### Part 1: the test bench
+
+**What it is.** A self-contained HTML page. It shows the DXF drawn to scale, the 337-pixel strip
+placed along the LED sheet runs, the 8 DXF buttons (hold to close the contact), the 8 device LED
+pins, a serial monitor, and a pin/millis/power readout. Published and pinned:
+`https://claude.ai/code/artifact/ab75a52c-dfae-444d-ad1e-06d14a08ed18`. `[V]`
+
+**How exactness is kept.** `[V]`
+- `FLISR_Trainer_Sim/firmware.js` is a line-for-line JS port of everything below "NOTHING BELOW
+  HERE NEEDS EDITING", same function names, statement order and integer widths.
+- `FLISR_Trainer_Sim/build_sim.py` extracts every `#define` and PROGMEM table from the .ino (with
+  a small `#if/#else` evaluator), so config is never retyped. It sha256-hashes the logic section
+  and refuses to build if that no longer matches the hash stored in the port.
+- It also cross-checks the .ino against the xlsx and DXF: run From/To, lengths, button positions,
+  element positions, nodes on DXF route lines.
+- FastLED pieces the sketch relies on are ported from source: the power limiter (computed every
+  frame; this sketch peaks near 7.6 W of the 20 W cap, so it never limits) and `hsv2rgb_rainbow`
+  for SEGMENT_TEST_MODE.
+
+**Modeling choices, stated on the page.** `[V]` as implemented, `[I]` as to hardware fidelity.
+- Virtual millisecond clock; `delay()` in setup advances it; `loop()` runs once per ms;
+  `show()` and Serial take zero time. A real Uno loops faster and `show()` blocks about 10 ms.
+- Button contacts are timestamped, so a contact shorter than 41 ms is ignored, as the debounce
+  code does. No mechanical bounce.
+- Pixels show the `leds[]` buffer at the last `show()`. Brightness, color correction and
+  dithering are not drawn.
+- Pixels are evenly spaced on the straight From -> To node line; run 1 starts `SEG_SPLIT[0]` px
+  south of N1. Under-board runs are drawn offset 0.45 in, behind a toggle. Device LEDs sit
+  0.75 in right and 0.60 in up from their Element point, with a leader line.
+
+### Part 2: FLISR_Trainer_REV1
+
+**File:** `FLISR_Trainer_REV1/FLISR_Trainer_REV1.ino`, a full copy of `FLISR_Trainer.ino` with
+additions. The original sketch is untouched. `[V]`
+
+**New config blocks.** `[V]`
+- `[4b]` `NUM_NODES 36`, `SEG_FROM[]` / `SEG_TO[]` node numbers per run, a tap table
+  (`TAP_SEG 27`, `TAP_PX 7`, `TAP_NODE 17`: N17 sits 6.78 px along run 27, where the DER branch
+  leaves the Z5 line), and `TIE_NODE 12`.
+- `[4c]` `FAULT_SEG[]` / `FAULT_PX[]`: the run (array index, where J1 = 24) and pixel nearest
+  each Fault sheet point: Z1 run 1 px 16, Z2 run 4 px 7, Z3 run 15 px 6, Z4 run 18 px 3,
+  Z5 run 27 px 4, Z6 run 23 px 6 (exact tie with px 7), DER run 30 px 4. This honors the
+  2026-09-10 decision that each button binds to an explicit run, not a runtime nearest lookup.
+- `[5]` `ANIM_STEP_MS 30` (one pixel per 30 ms).
+
+**Behavior.** `[V]`
+- **01 FAULT:** red spreads from the fault pixel along the line through every zone that lost
+  power, including the DER branch when it loses power, stopping at devices bordering live zones.
+  Pixels ahead of the wave keep their NORMAL colors. After the wave, the faulted section blinks
+  as before (350 ms) and the stranded zones hold solid red. The wave continues through 02 if the
+  user presses ahead.
+- **03 ISOLATE:** identical to FLISR_Trainer: stranded zones dark, fault solid red.
+- **04 RESTORE:** if the tie closes, the new source color fills the restored zones outward from
+  N12, pixel by pixel. For a Z6 fault the fill continues through N17 into the DER branch, since
+  DER_PCC recloses at 04. Z3, Z4 and DER faults have no fill.
+- **Auto-advance** waits for an animation to finish, then counts `STEP_INTERVAL_MS`.
+- **Serial** banner reads `=== JEA Tabletop FLISR Trainer REV1 ===`. Everything else printed is
+  identical to FLISR_Trainer.
+
+**Design calls made without asking** `[I]`, cheap to change:
+- Blinking after the wave applies to the faulted section only; stranded zones are solid red.
+- The step timer restarts when an animation finishes, so each step shows for the full interval.
+- 30 ms per pixel. The longest wave is the Z1 fault, about 2.6 s.
+
+**How the animation runs on an Uno.** `[V]` Each run splits into pieces at its SEG_SPLIT and any
+tap. When an animation starts, the sketch works out the pixel distance from the source to every
+node and split point by repeated relaxation (uint8 `pointDist[67]`). Each frame, a pixel's
+distance is its piece's end-point distance plus its offset along the piece. Extra SRAM is 79 B.
+No per-pixel RAM array, which the Uno could not afford.
+
+**REV1 bench:** `FLISR_Trainer_Sim/firmware_rev1.js` (port),
+`python build_sim.py --sketch FLISR_Trainer_REV1`, published as
+`https://claude.ai/code/artifact/e104d46c-45b6-412a-890d-59185b0d97d4`. Not pinned. `[V]`
+
+### Verification actually performed
+
+1. **Bench build checks.** FLISR_Trainer: 8 of 8 pass, 0 warnings. REV1: 12 of 12, including
+   SEG_FROM/SEG_TO vs block [4], tap position, TIE_NODE vs E4, and each fault pixel being the
+   nearest visible pixel to its Fault sheet point and in the right zone. `[V]`
+2. **FLISR_Trainer port tests,** `node --test test_firmware.js`: 20 of 20 pass. They cover
+   - exact boot serial text
+   - all 6 zone faults x 5 steps against the artifact's `model()` copied verbatim
+   - DER fault, pixel color counts, debounce edge (40 ms ignored, 41 ms counts), auto-advance
+     timing, blink phase, device LED blink rates
+   - FastLED limiter math on a full-white frame (72,302 mW -> brightness 69), rainbow hues,
+     SEGMENT_TEST_MODE 1, DEVICE_LED_MODE 2
+   Mutation check: 5 planted bugs, 5 caught, after tightening the blink-phase test, which
+   first missed one. `[V]`
+3. **REV1 port tests,** `node --test test_firmware_rev1.js`: 13 of 13 pass. For all 7 faults,
+   every frame of the wave, hold, isolate and restore must match a BFS over an explicit pixel
+   graph (a different algorithm from the sketch's) laid over the FLISR_Trainer port's frames at
+   the same ms. Serial output must equal FLISR_Trainer's apart from the banner. Also tested:
+   auto-advance timing (02 at wave end + 2500 ms), pressing ahead mid-wave, a new fault
+   mid-wave, and RESET mid-wave. Mutation check: 6 planted bugs, 6 caught. `[V]`
+4. **Port vs sketch structure.** All 26 functions in REV1's logic section exist in the port with
+   identical call sequences, checked by script. Beyond that, port fidelity rests on review. `[V]`
+5. **Compiled for Uno** with avr-gcc 7.3.0, AVR core 1.8.8, IDE-like flags (`-Os -flto
+   -std=gnu++11`), FastLED built from `src/fl/build/*.cpp` only. `[V]` for these flags:
+   - FLISR_Trainer: flash 9,176 B (28%), SRAM 1,439 B (70%)
+   - REV1: flash 10,788 B (33%), SRAM 1,518 B (74%), 530 B free for stack
+   - REV1 with `-Wall -Wextra`: 0 warnings
+   These differ from the 21:22 entry's 11,934 / 1,492, which used `-std=gnu++17` and a different
+   link set. The Arduino IDE's own numbers may differ slightly again. `[I]`
+6. **One screenshot** of the REV1 bench mid-wave on a Z1 fault, zoomed at SUB_A_BKR: red
+   upstream of N2, bus below the breaker still blue. `[V]`
+7. **Not run on hardware.** Frame rate during a wave on a real Uno is unmeasured. `[I]`
+
+### Findings
+
+- **The FastLED install mixes two versions.** `src/` holds 136 `.cpp` files dated 2026-03-07 from
+  an older FastLED, next to the 26 FastLED 3.10.5 unity files in `src/fl/build/` dated
+  2026-07-28. `[V]`
+  - Compiling the old files fails, e.g. `cled_controller.cpp` uses `m_pTail`, which 3.10.5
+    renamed. `[V]`
+  - The Arduino IDE compiles every `.cpp` under a library's `src/`, so an IDE upload of either
+    sketch will likely fail until FastLED is reinstalled cleanly. `[I]`, strong, not tried in
+    the IDE.
+  - This explains the 21:22 entry's "compiling every individual FastLED .cpp gives duplicate
+    symbols."
+- **Two buttons in the same loop pass:** only the lower index is handled, and the other press is
+  lost for good. `[V]`
+- **Z6 restore:** DER_PCC goes from TRIPPED straight to CLOSED at 04 with no reconnect delay.
+  Worth checking against the IEEE 1547 teaching story. `[I]`
+- **The plan set artifact is older geometry:** RESET at (25, 14) and 281 px, vs REV1's
+  (26.46, 5.13) and 337 px. `[V]`
+
+### Deliverables
+
+| Thing | Where |
+|---|---|
+| FLISR_Trainer bench (published, pinned) | `https://claude.ai/code/artifact/ab75a52c-dfae-444d-ad1e-06d14a08ed18`, source `FLISR_Trainer_Sim/FLISR_Trainer_Sim.html` |
+| REV1 sketch | `FLISR_Trainer_REV1/FLISR_Trainer_REV1.ino` |
+| REV1 bench (published) | `https://claude.ai/code/artifact/e104d46c-45b6-412a-890d-59185b0d97d4`, source `FLISR_Trainer_Sim/FLISR_Trainer_REV1_Sim.html` |
+| Ports | `FLISR_Trainer_Sim/firmware.js`, `FLISR_Trainer_Sim/firmware_rev1.js` |
+| Builder | `FLISR_Trainer_Sim/build_sim.py` (`--sketch FLISR_Trainer` or `FLISR_Trainer_REV1`), template `sim_template.html`, extracted config `sim_config.json` / `sim_config_rev1.json` |
+| Tests | `FLISR_Trainer_Sim/test_firmware.js`, `FLISR_Trainer_Sim/test_firmware_rev1.js` |
+
+The manual AVR build script (`avr_build.sh`) and mutation copies lived in the session scratchpad.
+The recipe is in item 5 above.
+
+### Open items, flagged not resolved
+
+Continues the list above:
+
+20. **Reinstall FastLED cleanly** before uploading either sketch: remove
+    `C:\Users\jprun\OneDrive\Documents\Arduino\libraries\FastLED` and reinstall 3.10.5 from
+    Library Manager. Not done here: it is outside the project and deleting library files needs
+    the user.
+21. **Upload REV1 to a real Uno** and watch the wave frame rate. The distance math adds render
+    cost that was not measured on hardware. `[I]`
+22. **SRAM headroom** is 530 B with REV1 under IDE-like flags. Supersedes the 556 B in item 17
+    for REV1.
+23. **Item 12 is done in the working-directory xlsx** (N30 = 12.59, 29.51). **Item 13 is
+    narrower now:** the working copy has N1 x = 12.58, the OneDrive copy 12.57. `[V]` for the
+    working copy.
+24. **If node or LED tables change,** REV1's `SEG_FROM`, `SEG_TO`, tap and fault tables must
+    follow. `build_sim.py --sketch FLISR_Trainer_REV1` checks all of them against the xlsx.
+25. **DER_PCC reclose delay at Z6 restore:** decide whether the trainer should show an IEEE 1547
+    enter-service wait. `[I]`
+
+### Not done this session
+
+- No changes to `FLISR_Trainer.ino`, the DXF, the xlsx, or the plan set artifact.
+- The REV1 bench is not pinned (offered).
+- No hardware test. No git commit.
+
+---
+
+## 2026-09-13 22:25 CDT - Pinned bench switched to REV1
+
+User asked for REV1 pinned and REV0 not. Done: the REV1 bench
+(`https://claude.ai/code/artifact/e104d46c-45b6-412a-890d-59185b0d97d4`) is pinned in the
+claude.ai sidebar, and the FLISR_Trainer bench (`...ab75a52c-dfae-444d-ad1e-06d14a08ed18`) is
+unpinned but still published. **Supersedes** the pin state in the 22:17 entry. `[V]`
+
+---

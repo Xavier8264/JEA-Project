@@ -1,0 +1,550 @@
+<title>{{TITLE}}</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+/* Tokens follow the FLISR Trainer Plan Set: light = plotted sheet, dark = model space. */
+:root{
+  --paper:#faf8f3; --sheet:#ffffff; --sunk:#f1eee6;
+  --ink:#191d23; --ink2:#4d5560; --ink3:#7d8794; --rule:#ddd8cc; --rule2:#eae5da;
+  --fault:#c8342a; --focus:#2668cf; --board:#fffefa;
+  --dxf:#9a9282; --dxfText:#6f6859; --route:#e4ded2;
+  --tape:#ece7dd; --tapeEdge:#d3ccbd; --chipOff:#d2cbbd; --chipEdge:#a79f8f;
+  --under:#b07407; --btnBody:#f6efe4; --btnCap:#e8b3aa; --btnCapHover:#de9084; --btnReset:#d9d2c4; --btnEdge:#8c8272;
+  --ledOff:#cfc8ba; --lblHalo:#fffefa;
+  --console:#f4f1ea; --consoleInk:#2a2f37;
+  --shadow:0 1px 2px rgba(25,29,35,.06),0 6px 18px -10px rgba(25,29,35,.18);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --paper:#12151a; --sheet:#191d24; --sunk:#1f242c;
+  --ink:#e6e9ee; --ink2:#a4adba; --ink3:#78828f; --rule:#2b313a; --rule2:#232830;
+  --fault:#ff5f4d; --focus:#57a0ff; --board:#14181e;
+  --dxf:#56606d; --dxfText:#7e8896; --route:#232932;
+  --tape:#232932; --tapeEdge:#323a45; --chipOff:#39414c; --chipEdge:#4b5461;
+  --under:#e0ad48; --btnBody:#232932; --btnCap:#6b3029; --btnCapHover:#8a3a31; --btnReset:#434b57; --btnEdge:#6e7783;
+  --ledOff:#39414c; --lblHalo:#14181e;
+  --console:#0f1216; --consoleInk:#d4d9e0;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 26px -12px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --paper:#12151a; --sheet:#191d24; --sunk:#1f242c;
+  --ink:#e6e9ee; --ink2:#a4adba; --ink3:#78828f; --rule:#2b313a; --rule2:#232830;
+  --fault:#ff5f4d; --focus:#57a0ff; --board:#14181e;
+  --dxf:#56606d; --dxfText:#7e8896; --route:#232932;
+  --tape:#232932; --tapeEdge:#323a45; --chipOff:#39414c; --chipEdge:#4b5461;
+  --under:#e0ad48; --btnBody:#232932; --btnCap:#6b3029; --btnCapHover:#8a3a31; --btnReset:#434b57; --btnEdge:#6e7783;
+  --ledOff:#39414c; --lblHalo:#14181e;
+  --console:#0f1216; --consoleInk:#d4d9e0;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 26px -12px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 15px/1.55 "IBM Plex Sans","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1480px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans","Arial Narrow",sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums}
+.lbl{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-size:10.5px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* ---- title block ---- */
+header{border-bottom:2px solid var(--ink);margin-bottom:20px;padding-top:26px}
+.tb-top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px;padding-bottom:14px}
+.tb-top h1{font-size:clamp(26px,3.6vw,38px);font-weight:700;letter-spacing:-.015em;line-height:1.05}
+.tb-top .sub{font-size:14px;color:var(--ink2);max-width:62ch;margin:7px 0 0}
+.tb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+.tb-cell{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:6px 10px 7px;min-width:0}
+.tb-cell .v{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;color:var(--ink);
+  margin-top:2px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+
+/* ---- bench layout ---- */
+.bench{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:1080px){.bench{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+.bar .grp{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ctl{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;letter-spacing:.05em;
+  padding:6px 11px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink2);
+  cursor:pointer;border-radius:2px}
+.ctl:hover{border-color:var(--ink3);color:var(--ink)}
+.tog{display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+  color:var(--ink2);cursor:pointer;user-select:none}
+.tog input{margin:0;accent-color:var(--focus)}
+.key{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink2)}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:10px;height:10px;border-radius:2px;flex:none;border:1px solid var(--chipEdge)}
+
+.plot{background:var(--board);border:1px solid var(--ink2);box-shadow:var(--shadow);padding:6px}
+.plot svg{display:block;width:100%;height:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.probe{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink2);min-height:2.9em;
+  border:1px solid var(--rule);background:var(--sheet);padding:7px 11px;overflow-wrap:anywhere}
+.probe b{color:var(--ink);font-weight:600}
+.probe .sw{display:inline-block;vertical-align:-1px;margin-inline:2px 4px}
+
+/* ---- board drawing ---- */
+.b-ground{fill:var(--board)}
+.dxf-ink{fill:none;stroke:var(--dxf);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.dxf-fill{fill:var(--dxf);fill-rule:evenodd}
+.dxf-route{fill:none;stroke:var(--route);stroke-width:.5;stroke-linecap:round}
+.dxf-text{fill:var(--dxfText);font-family:"IBM Plex Sans Condensed","Arial Narrow",sans-serif;font-weight:600;letter-spacing:.02em}
+.tape{stroke:var(--tape);stroke-width:.39;stroke-linecap:butt}
+.tape-edge{stroke:var(--tapeEdge);stroke-width:.45;stroke-linecap:butt}
+.px-chip{fill:var(--chipOff);stroke:var(--chipEdge);stroke-width:.018}
+.px-glow{fill:transparent;opacity:0}
+.px.lit .px-chip{stroke:rgba(0,0,0,.25)}
+.px.lit .px-glow{opacity:.42}
+.px:hover .px-chip,.px.probed .px-chip{stroke:var(--ink);stroke-width:.05}
+#under .tape{stroke:none}
+#under .tape-edge{stroke:var(--under);stroke-width:.03;stroke-dasharray:.22 .14}
+#under .px-chip{opacity:.8}
+.dev-lead{stroke:var(--ink3);stroke-width:.03}
+.dev-mark{fill:var(--ink3)}
+.dev-led{fill:var(--ledOff);stroke:var(--ink2);stroke-width:.04}
+.dev-halo{opacity:0}
+.dev-led.on{stroke:rgba(0,0,0,.35)}
+.dev-halo.on{opacity:.45}
+.dev-lbl{font-family:"IBM Plex Mono",monospace;font-size:.36px;font-weight:500;fill:var(--ink2);
+  paint-order:stroke;stroke:var(--lblHalo);stroke-width:.14px}
+.btn{cursor:pointer;outline:none;touch-action:none}
+.btn-body{fill:var(--btnBody);stroke:var(--btnEdge);stroke-width:.06}
+.btn-cap{fill:var(--btnCap);stroke:var(--btnEdge);stroke-width:.03;transition:transform .05s}
+.btn:hover .btn-cap{fill:var(--btnCapHover)}
+.btn.reset .btn-cap,.btn.reset:hover .btn-cap{fill:var(--btnReset)}
+.btn.down .btn-cap{fill:var(--fault);transform:scale(.88)}
+.btn:focus-visible .btn-body{stroke:var(--focus);stroke-width:.12}
+
+/* ---- side panels ---- */
+.panel{border:1px solid var(--rule);background:var(--sheet)}
+.panel-hd{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 12px;
+  padding:8px 12px;border-bottom:1px solid var(--rule)}
+.panel-hd h2{font-size:15px;font-weight:600;letter-spacing:.01em}
+.clock{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 18px;padding:10px 12px}
+.clock .big{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:500;color:var(--ink);
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.phase{font-family:"IBM Plex Mono",monospace;font-size:11.5px;padding:1px 7px;border:1px solid var(--rule);
+  border-radius:2px;color:var(--ink2)}
+.io{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.io > div{min-width:0}
+.io > div + div{border-left:1px solid var(--rule)}
+@media (max-width:620px){.io > div + div{border-left:0;border-top:1px solid var(--rule)}}
+.io h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink3);padding:8px 12px 4px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+td{padding:4px 12px;border-top:1px solid var(--rule2);vertical-align:middle;white-space:nowrap}
+td.pin{font-family:"IBM Plex Mono",monospace;color:var(--ink3);width:3.2em}
+td.nm{font-family:"IBM Plex Mono",monospace;color:var(--ink);overflow:hidden;text-overflow:ellipsis;max-width:0;width:100%}
+td.lv{text-align:right}
+.lvl{display:inline-block;min-width:4.6em;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  padding:0 6px;border-radius:2px;border:1px solid var(--rule);color:var(--ink3)}
+.lvl.hi{color:var(--ink);border-color:var(--ink3)}
+.lvl.lo{color:var(--fault);border-color:var(--fault)}
+.lvl.lit{color:#1d1a12;background:#ffb21e;border-color:#c98700}
+.lvl.lit-g{color:#062812;background:#2fd35c;border-color:#1f9a41}
+.lvl.lit-r{color:#fff;background:#e8392b;border-color:#a8261b}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));border-top:1px solid var(--rule)}
+.stat{padding:7px 12px;min-width:0}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+.serial pre{margin:0;height:430px;overflow:auto;padding:10px 12px;background:var(--console);color:var(--consoleInk);
+  font:12.5px/1.5 "IBM Plex Mono",ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+@media (max-width:1080px){.serial pre{height:320px}}
+
+details.notes{margin-top:22px;border-top:1px solid var(--rule);padding-top:12px}
+details.notes summary{cursor:pointer;font-family:"IBM Plex Sans Condensed",sans-serif;font-size:17px;font-weight:600}
+.notes-body{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:8px 32px;margin-top:10px}
+.notes-body p{margin:0 0 10px;max-width:68ch;color:var(--ink2);font-size:14px}
+.notes-body p b{color:var(--ink);font-weight:600}
+.notes-body code{font-family:"IBM Plex Mono",monospace;font-size:.9em;background:var(--sunk);padding:0 4px;border-radius:2px;color:var(--ink)}
+.checks{list-style:none;margin:0;padding:0;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink2)}
+.checks li{display:grid;grid-template-columns:2.6em 1fr;gap:8px;padding:4px 0;border-top:1px solid var(--rule2)}
+.checks .t{font-weight:600;color:var(--ink3)}
+.checks .t.w{color:var(--under)}
+@media (prefers-reduced-motion:reduce){.btn-cap{transition:none}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="tb-top">
+    <div>
+      <div class="lbl" style="margin-bottom:6px">JEA &middot; Union University Senior Design</div>
+      <h1>{{TITLE}}</h1>
+      <p class="sub">{{SKETCH}} running on the REV1 cardboard layout. Press the buttons on the board.
+      The strip, the device LEDs and the serial monitor respond the way the sketch is written, nothing added.</p>
+    </div>
+  </div>
+  <div class="tb-grid" id="titleblock"></div>
+</header>
+
+<div class="bench">
+  <section class="col" aria-label="Board">
+    <div class="bar">
+      <div class="grp">
+        <button class="ctl" type="button" id="btn-reset" title="Like the Uno reset button: the strip keeps its last frame until setup() runs">Reset board</button>
+        <button class="ctl" type="button" id="btn-power" title="Unplug and replug: the strip goes dark too">Power cycle</button>
+        <label class="tog"><input type="checkbox" id="show-under"> Under-board runs</label>
+      </div>
+      <div class="key" id="key"></div>
+    </div>
+    <div class="plot"><svg id="board" role="img" aria-label="Cardboard layout with LED strip, device LEDs and fault buttons"></svg></div>
+    <div class="probe" id="probe">Hover or tap a pixel to read its chain index, run, zone and current <b>leds[]</b> value.</div>
+  </section>
+
+  <section class="col" aria-label="Board I/O">
+    <div class="panel">
+      <div class="clock">
+        <div><div class="lbl">millis()</div><div class="big" id="millis">0</div></div>
+        <div><div class="lbl">Running</div><div class="phase" id="phase">setup()</div></div>
+      </div>
+      <div class="io" style="border-top:1px solid var(--rule)">
+        <div><h3>Inputs &middot; INPUT_PULLUP</h3><table><tbody id="inputs"></tbody></table></div>
+        <div><h3 id="out-h">Outputs &middot; device LEDs</h3><table><tbody id="outputs"></tbody></table></div>
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <div class="panel serial">
+      <div class="panel-hd">
+        <h2>Serial Monitor <span class="lbl" style="margin-left:6px">115200 baud</span></h2>
+        <div class="grp" style="display:flex;gap:12px;align-items:center">
+          <label class="tog"><input type="checkbox" id="autoscroll" checked> Autoscroll</label>
+          <button class="ctl" type="button" id="btn-clear">Clear output</button>
+        </div>
+      </div>
+      <pre id="serial" tabindex="0" aria-label="Serial output"></pre>
+    </div>
+  </section>
+</div>
+
+<details class="notes">
+  <summary>How the bench models the hardware</summary>
+  <div class="notes-body">
+    <div>
+      <p><b>What runs.</b> <code>setup()</code> and <code>loop()</code> are a line-for-line port of everything below
+      &ldquo;NOTHING BELOW HERE NEEDS EDITING&rdquo;. Pins, colors, timing and the segment table are read out of the
+      .ino at build time, not retyped. The build refuses to run if the sketch logic changes without the port being updated.</p>
+      <p><b>Time.</b> <code>millis()</code> starts at 0 on reset. <code>delay()</code> in setup advances it, then
+      <code>loop()</code> runs once per millisecond. Button contacts are timestamped, so a tap shorter than
+      <code>DEBOUNCE_MS</code> is ignored, the same as on the board. The clock pauses while this tab is in the background.</p>
+      <p><b>Buttons</b> are ideal contacts to GND, with no mechanical bounce. Hold one with the mouse, a finger, or Space/Enter when it has focus.
+      Pressing two at once behaves as the sketch does: only the first one found in a pass is handled.</p>
+    </div>
+    <div>
+      <p><b>Pixels</b> show the <code>leds[]</code> buffer as of the last <code>FastLED.show()</code>. Brightness, color
+      correction and dithering are applied after that, on the wire, and are not drawn. The FastLED 3.10.5 power limiter is
+      computed every frame and shown under Outputs.</p>
+      <p><b>Placement.</b> Pixels are evenly spaced on the straight line between each run&rsquo;s From and To node in the LED
+      sheet. Run 1 starts SEG_SPLIT[0] pixels south of N1, per the note on run 1. Under-board runs are drawn offset
+      0.45 in so they don&rsquo;t cover the runs above them. Device LEDs sit 0.75 in right and 0.60 in up from their Element
+      point, which is marked with a leader line.</p>
+    </div>
+    <div>
+      <p><b>Source checks from the last build</b></p>
+      <ul class="checks" id="checks"></ul>
+    </div>
+  </div>
+</details>
+</div>
+
+<script>
+/*__CFG__*/
+/*__GEOM__*/
+/*__META__*/
+</script>
+<script>
+/*__FIRMWARE__*/
+</script>
+<script>
+(function () {
+'use strict';
+const D = CFG.defines, T = CFG.tables, G = GEOM;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const PL = p => G.pinLabels[p] || ('D' + p);
+const hex2 = v => v.toString(16).toUpperCase().padStart(2, '0');
+const rgbCss = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+const ZN = {};
+for (const k in D) if (k.startsWith('ZN_')) ZN[D[k]] = k.slice(3);
+
+/* ---- title block, key, checks --------------------------------------- */
+const autoTxt = D.AUTO_ADVANCE ? `auto every ${D.STEP_INTERVAL_MS} ms` : 'manual only';
+$('#titleblock').innerHTML = [                  /* values are HTML */
+  ['Sketch', esc(META.ino)], ['Logic sha256', esc(META.logicSha.slice(0, 16))],
+  ['Layout', esc(META.dxf)], ['Tables', esc(META.xlsx)],
+  ['Strip', `${esc(D.LED_TYPE)} ${esc(D.COLOR_ORDER)} &middot; ${D.NUM_LEDS} px &middot; ${PL(D.LED_DATA_PIN)}`],
+  ['Device LEDs', `mode ${D.DEVICE_LED_MODE} &middot; ${D.DEVICE_LED_MODE === 1 ? '1 pin' : '2 pins'} each`],
+  ['Steps', esc(autoTxt)], ['Built', esc(META.built)]
+].map(([k, v]) => `<div class="tb-cell"><div class="lbl">${k}</div><div class="v">${v}</div></div>`).join('');
+
+$('#key').innerHTML = [
+  ['COLOR_SRC_A', D.COLOR_SRC_A], ['COLOR_SRC_B', D.COLOR_SRC_B],
+  ['COLOR_FAULT', D.COLOR_FAULT], ['COLOR_DEAD', D.COLOR_DEAD]
+].map(([n, c]) => `<span><i class="sw" style="background:${rgbCss(c)}"></i>${n.slice(6)}</span>`).join('');
+
+$('#checks').innerHTML =
+  META.warnings.map(w => `<li><span class="t w">[!]</span><span>${esc(w)}</span></li>`).join('') +
+  META.checks.map(c => `<li><span class="t">[OK]</span><span>${esc(c)}</span></li>`).join('');
+
+/* ---- board drawing -------------------------------------------------- */
+const svg = $('#board');
+const S = G.board;
+svg.setAttribute('viewBox', `-0.6 -0.6 ${S + 1.2} ${S + 1.2}`);
+
+const runStart = [];
+{ let n = 0; T.SEG_LEN.forEach((len, s) => { runStart[s] = n; n += len; }); }
+
+function textSvg(t) {
+  const [x, y, h, att, lines] = t;
+  const col = (att - 1) % 3, row = Math.floor((att - 1) / 3);
+  const lh = h * 5 / 3, total = h + (lines.length - 1) * lh;
+  const top = row === 0 ? y : row === 1 ? y - total / 2 : y - total;
+  const anchor = ['start', 'middle', 'end'][col];
+  return lines.map((ln, i) =>
+    `<text class="dxf-text" x="${x}" y="${(top + h + i * lh).toFixed(3)}" font-size="${(h * 1.42).toFixed(3)}" text-anchor="${anchor}">${esc(ln)}</text>`).join('');
+}
+
+function tapeSvg(run) {
+  return run.pieces.map(p =>
+    `<line class="tape-edge" x1="${p[0]}" y1="${p[1]}" x2="${p[2]}" y2="${p[3]}"/>` +
+    `<line class="tape" x1="${p[0]}" y1="${p[1]}" x2="${p[2]}" y2="${p[3]}"/>`).join('');
+}
+
+function pixelSvg(p, i) {
+  return `<g class="px" data-i="${i}" transform="translate(${p[0]} ${p[1]}) rotate(${p[3]})">` +
+    `<circle class="px-glow" r=".36"/><rect class="px-chip" x="-.115" y="-.115" width=".23" height=".23" rx=".03"/></g>`;
+}
+
+const o = [];
+o.push(`<rect class="b-ground" x="0" y="0" width="${S}" height="${S}"/>`);
+o.push(`<path class="dxf-route" d="${G.drawing.route}"/>`);
+o.push(`<path class="dxf-fill" d="${G.drawing.fill}"/>`);
+o.push(`<path class="dxf-ink" d="${G.drawing.ink}"/>`);
+o.push(G.drawing.circles.map(c => `<circle class="dxf-ink" cx="${c[0]}" cy="${c[1]}" r="${c[2]}"/>`).join(''));
+o.push(G.drawing.texts.map(textSvg).join(''));
+
+/* under-board runs, hidden unless toggled */
+o.push('<g id="under" hidden>');
+G.runs.forEach((r, s) => { if (!r.over) o.push(tapeSvg(r)); });
+G.pixels.forEach((p, i) => { if (!G.runs[p[2]].over) o.push(pixelSvg(p, i)); });
+o.push('</g>');
+
+/* visible strip */
+o.push('<g id="strip">');
+G.runs.forEach(r => { if (r.over) o.push(tapeSvg(r)); });
+G.pixels.forEach((p, i) => { if (G.runs[p[2]].over) o.push(pixelSvg(p, i)); });
+o.push('</g>');
+
+/* device LEDs */
+const mode2 = D.DEVICE_LED_MODE !== 1;
+o.push(G.devices.map(dv => {
+  const leds = dv.pins.map((pin, k) => {
+    const cx = (dv.x + k * 0.42).toFixed(3), c = mode2 ? (k === 0 ? 'green' : 'red') : 'amber';
+    return `<circle class="dev-halo" id="dh-${pin}" cx="${cx}" cy="${dv.y}" r=".34"/>` +
+           `<circle class="dev-led" id="dl-${pin}" data-c="${c}" cx="${cx}" cy="${dv.y}" r=".13"/>`;
+  }).join('');
+  const lx = (dv.x + 0.26 + (dv.pins.length - 1) * 0.42).toFixed(3);
+  return `<g class="dev"><line class="dev-lead" x1="${dv.ex}" y1="${dv.ey}" x2="${dv.x}" y2="${dv.y}"/>` +
+    `<circle class="dev-mark" cx="${dv.ex}" cy="${dv.ey}" r=".06"/>${leds}` +
+    `<text class="dev-lbl" x="${lx}" y="${(dv.y + 0.13).toFixed(3)}">${dv.name} ${dv.pins.map(PL).join('/')}</text></g>`;
+}).join(''));
+
+/* buttons */
+o.push(G.buttons.map(b =>
+  `<g class="btn${b.define === 'PIN_BTN_RESET' ? ' reset' : ''}" tabindex="0" role="button" aria-label="${b.label} button on ${PL(b.pin)}" data-pin="${b.pin}" transform="translate(${b.x} ${b.y})">` +
+  `<circle class="btn-body" r="${b.r}"/><circle class="btn-cap" r="${(b.r * 0.66).toFixed(3)}"/></g>`).join(''));
+
+svg.innerHTML = o.join('');
+
+const pxEls = [];
+svg.querySelectorAll('.px').forEach(g => { pxEls[+g.dataset.i] = { g, glow: g.firstChild, chip: g.lastChild }; });
+const btnEls = new Map();
+svg.querySelectorAll('.btn').forEach(g => btnEls.set(+g.dataset.pin, g));
+
+$('#show-under').addEventListener('change', e => { $('#under').hidden = !e.target.checked; });
+
+/* ---- side tables ---------------------------------------------------- */
+$('#inputs').innerHTML = G.buttons.map(b =>
+  `<tr><td class="pin">${PL(b.pin)}</td><td class="nm">${b.label}</td><td class="lv"><span class="lvl" id="in-${b.pin}">not set</span></td></tr>`).join('');
+const outRows = [];
+G.devices.forEach(dv => dv.pins.forEach((pin, k) => {
+  outRows.push({ pin, name: dv.name + (mode2 ? (k === 0 ? ' green' : ' red') : ''), c: mode2 ? (k === 0 ? 'lit-g' : 'lit-r') : 'lit' });
+}));
+$('#outputs').innerHTML = outRows.map(r =>
+  `<tr><td class="pin">${PL(r.pin)}</td><td class="nm">${r.name}</td><td class="lv"><span class="lvl" id="out-${r.pin}">not set</span></td></tr>`).join('');
+$('#stats').innerHTML = [
+  ['show() calls', 'st-count'], ['last show()', 'st-last'],
+  ['strip power', 'st-power'], ['brightness out', 'st-scale']
+].map(([k, id]) => `<div class="stat"><div class="lbl">${k}</div><div class="v" id="${id}">&ndash;</div></div>`).join('');
+
+/* ---- the board ------------------------------------------------------ */
+const contacts = new Uint8Array(256);
+const holders = new Map();            /* pin -> Set of pointer ids / 'key' */
+const strip = new Uint8Array(D.NUM_LEDS * 3);
+let frameSeq = 0;                     /* bumps whenever the strip latch changes */
+let showCalls = 0, lastShowAt = null, lastScale = null, lastPower = null;
+let serialBuf = '';
+let board = null, bootWall = 0;
+
+function onShow(leds, n, scale, power) {
+  strip.set(leds.subarray(0, n * 3));
+  frameSeq++; showCalls++; lastShowAt = board.now; lastScale = scale; lastPower = power;
+}
+function onSerial(s) { serialBuf += s; }
+
+function boot(powerCycle) {
+  if (powerCycle) { strip.fill(0); frameSeq++; }   /* no power, strip goes dark */
+  showCalls = 0; lastShowAt = null; lastScale = null; lastPower = null;
+  contacts.fill(0);
+  holders.forEach((set, pin) => { if (set.size) contacts[pin] = 1; });
+  board = FLISR.createBoard(CFG, { contacts, onShow, onSerial });
+  bootWall = performance.now();
+}
+const vnow = () => Math.floor(performance.now() - bootWall);
+
+$('#btn-reset').addEventListener('click', () => boot(false));
+$('#btn-power').addEventListener('click', () => boot(true));
+
+/* ---- buttons: hold to close the contact ----------------------------- */
+function hold(pin, who, closed) {
+  let set = holders.get(pin);
+  if (!set) holders.set(pin, set = new Set());
+  const was = set.size > 0;
+  closed ? set.add(who) : set.delete(who);
+  const is = set.size > 0;
+  if (was !== is) {
+    board.setContact(pin, is, vnow());
+    btnEls.get(pin).classList.toggle('down', is);
+  }
+}
+btnEls.forEach((g, pin) => {
+  g.addEventListener('pointerdown', e => {
+    if (e.button !== undefined && e.button !== 0) return;
+    e.preventDefault(); g.focus({ preventScroll: true });
+    g.setPointerCapture(e.pointerId);
+    hold(pin, e.pointerId, true);
+  });
+  const up = e => hold(pin, e.pointerId, false);
+  g.addEventListener('pointerup', up);
+  g.addEventListener('pointercancel', up);
+  g.addEventListener('lostpointercapture', up);
+  g.addEventListener('contextmenu', e => e.preventDefault());
+  g.addEventListener('keydown', e => {
+    if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); hold(pin, 'key', true); }
+  });
+  g.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); hold(pin, 'key', false); } });
+  g.addEventListener('blur', () => hold(pin, 'key', false));
+});
+
+/* ---- probe ---------------------------------------------------------- */
+let probeIdx = -1;
+function probeText(i) {
+  const s = G.pixels[i][2], r = G.runs[s], local = i - runStart[s];
+  const split = T.SEG_SPLIT[s];
+  let zn = (split && local >= split) ? T.SEG_ZONE2[s] : T.SEG_ZONE[s];
+  const zoneTxt = r.over ? `zone <b>${ZN[zn] || zn}</b>` : `under board, held dark`;
+  const c = [strip[i * 3], strip[i * 3 + 1], strip[i * 3 + 2]];
+  return `<b>px ${i}</b> &middot; run ${r.id} (${r.from} &rarr; ${r.to}), pixel ${local + 1} of ${T.SEG_LEN[s]} &middot; ${zoneTxt}` +
+    ` &middot; leds[${i}] = <i class="sw" style="background:${rgbCss(c)}"></i><b>${hex2(c[0])} ${hex2(c[1])} ${hex2(c[2])}</b>` +
+    `<br><span style="color:var(--ink3)">${esc(r.note)}</span>`;
+}
+function setProbe(i) {
+  if (probeIdx >= 0 && pxEls[probeIdx]) pxEls[probeIdx].g.classList.remove('probed');
+  probeIdx = i;
+  pxEls[i].g.classList.add('probed');
+  $('#probe').innerHTML = probeText(i);
+}
+svg.addEventListener('pointerover', e => { const g = e.target.closest('.px'); if (g) setProbe(+g.dataset.i); });
+svg.addEventListener('pointerdown', e => { const g = e.target.closest('.px'); if (g) setProbe(+g.dataset.i); });
+
+/* ---- paint ---------------------------------------------------------- */
+const painted = new Int32Array(D.NUM_LEDS).fill(-1);
+let paintedSeq = -1, paintedCalls = -1;
+const outState = new Map(), inState = new Map();
+const serialEl = $('#serial');
+
+function paint() {
+  if (paintedSeq !== frameSeq) {
+    paintedSeq = frameSeq;
+    for (let i = 0; i < D.NUM_LEDS; i++) {
+      const r = strip[i * 3], g = strip[i * 3 + 1], b = strip[i * 3 + 2];
+      const packed = (r << 16) | (g << 8) | b;
+      if (packed === painted[i]) continue;
+      painted[i] = packed;
+      const el = pxEls[i];
+      const lit = packed !== 0;
+      el.g.classList.toggle('lit', lit);
+      el.chip.style.fill = lit ? `rgb(${r},${g},${b})` : '';
+      el.glow.style.fill = lit ? `rgb(${r},${g},${b})` : '';
+    }
+    if (probeIdx >= 0) $('#probe').innerHTML = probeText(probeIdx);
+  }
+  if (paintedCalls !== showCalls) {
+    paintedCalls = showCalls;
+    $('#st-count').textContent = showCalls ? showCalls.toLocaleString('en-US') : '–';
+    $('#st-last').textContent = lastShowAt === null ? '–' : `at ${lastShowAt.toLocaleString('en-US')} ms`;
+    $('#st-power').textContent = lastPower ? `${lastPower.requested_mW.toLocaleString('en-US')} / ${lastPower.maxPower_mW.toLocaleString('en-US')} mW` : '–';
+    $('#st-scale').textContent = lastScale === null ? '–' :
+      `${lastScale} of ${lastPower.brightness}${lastScale < lastPower.brightness ? ' (limited)' : ''}`;
+  }
+
+  for (const r of outRows) {
+    const set = board.pinMode(r.pin) === FLISR.OUTPUT;
+    const hi = set && board.pinLevel(r.pin) === FLISR.HIGH;
+    const key = set ? (hi ? 2 : 1) : 0;
+    if (outState.get(r.pin) === key) continue;
+    outState.set(r.pin, key);
+    const lv = $('#out-' + r.pin);
+    lv.className = 'lvl' + (hi ? ' ' + r.c : '');
+    lv.textContent = set ? (hi ? 'HIGH' : 'LOW') : 'not set';
+    const led = $('#dl-' + r.pin), halo = $('#dh-' + r.pin);
+    const col = r.c === 'lit-g' ? '#2fd35c' : r.c === 'lit-r' ? '#ff3b2f' : '#ffb21e';
+    led.style.fill = hi ? col : ''; halo.style.fill = hi ? col : '';
+    led.classList.toggle('on', hi); halo.classList.toggle('on', hi);
+  }
+
+  for (const b of G.buttons) {
+    const set = board.pinMode(b.pin) === FLISR.INPUT_PULLUP;
+    const hi = set && board.pinLevel(b.pin) === FLISR.HIGH;
+    const key = set ? (hi ? 2 : 1) : 0;
+    if (inState.get(b.pin) === key) continue;
+    inState.set(b.pin, key);
+    const lv = $('#in-' + b.pin);
+    lv.className = 'lvl' + (set ? (hi ? ' hi' : ' lo') : '');
+    lv.textContent = set ? (hi ? 'HIGH' : 'LOW') : 'not set';
+  }
+
+  $('#millis').textContent = board.now.toLocaleString('en-US');
+  $('#phase').textContent = board.inSetup ? 'setup()' : 'loop()';
+
+  if (serialBuf) {
+    serialEl.append(document.createTextNode(serialBuf.replace(/\r\n/g, '\n').replace(/\r/g, '')));
+    serialBuf = '';
+    while (serialEl.childNodes.length > 1 && serialEl.textContent.length > 250000) serialEl.firstChild.remove();
+    if ($('#autoscroll').checked) serialEl.scrollTop = serialEl.scrollHeight;
+  }
+}
+$('#btn-clear').addEventListener('click', () => { serialEl.textContent = ''; });
+
+/* ---- clock ---------------------------------------------------------- */
+let hiddenAt = null;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) hiddenAt = performance.now();
+  else if (hiddenAt !== null) { bootWall += performance.now() - hiddenAt; hiddenAt = null; }
+});
+function tick() {
+  if (!document.hidden) {
+    let target = vnow();
+    if (target - board.now > 2000) { bootWall += target - board.now - 2000; target = vnow(); }
+    board.runUntil(target);
+    paint();
+  }
+  requestAnimationFrame(tick);
+}
+boot(true);
+requestAnimationFrame(tick);
+})();
+</script>

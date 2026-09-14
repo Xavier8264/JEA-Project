@@ -1,0 +1,1146 @@
+<title>FLISR Trainer Test Bench</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+/* Tokens follow the FLISR Trainer Plan Set: light = plotted sheet, dark = model space. */
+:root{
+  --paper:#faf8f3; --sheet:#ffffff; --sunk:#f1eee6;
+  --ink:#191d23; --ink2:#4d5560; --ink3:#7d8794; --rule:#ddd8cc; --rule2:#eae5da;
+  --fault:#c8342a; --focus:#2668cf; --board:#fffefa;
+  --dxf:#9a9282; --dxfText:#6f6859; --route:#e4ded2;
+  --tape:#ece7dd; --tapeEdge:#d3ccbd; --chipOff:#d2cbbd; --chipEdge:#a79f8f;
+  --under:#b07407; --btnBody:#f6efe4; --btnCap:#e8b3aa; --btnCapHover:#de9084; --btnReset:#d9d2c4; --btnEdge:#8c8272;
+  --ledOff:#cfc8ba; --lblHalo:#fffefa;
+  --console:#f4f1ea; --consoleInk:#2a2f37;
+  --shadow:0 1px 2px rgba(25,29,35,.06),0 6px 18px -10px rgba(25,29,35,.18);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --paper:#12151a; --sheet:#191d24; --sunk:#1f242c;
+  --ink:#e6e9ee; --ink2:#a4adba; --ink3:#78828f; --rule:#2b313a; --rule2:#232830;
+  --fault:#ff5f4d; --focus:#57a0ff; --board:#14181e;
+  --dxf:#56606d; --dxfText:#7e8896; --route:#232932;
+  --tape:#232932; --tapeEdge:#323a45; --chipOff:#39414c; --chipEdge:#4b5461;
+  --under:#e0ad48; --btnBody:#232932; --btnCap:#6b3029; --btnCapHover:#8a3a31; --btnReset:#434b57; --btnEdge:#6e7783;
+  --ledOff:#39414c; --lblHalo:#14181e;
+  --console:#0f1216; --consoleInk:#d4d9e0;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 26px -12px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --paper:#12151a; --sheet:#191d24; --sunk:#1f242c;
+  --ink:#e6e9ee; --ink2:#a4adba; --ink3:#78828f; --rule:#2b313a; --rule2:#232830;
+  --fault:#ff5f4d; --focus:#57a0ff; --board:#14181e;
+  --dxf:#56606d; --dxfText:#7e8896; --route:#232932;
+  --tape:#232932; --tapeEdge:#323a45; --chipOff:#39414c; --chipEdge:#4b5461;
+  --under:#e0ad48; --btnBody:#232932; --btnCap:#6b3029; --btnCapHover:#8a3a31; --btnReset:#434b57; --btnEdge:#6e7783;
+  --ledOff:#39414c; --lblHalo:#14181e;
+  --console:#0f1216; --consoleInk:#d4d9e0;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 8px 26px -12px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:400 15px/1.55 "IBM Plex Sans","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1480px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans","Arial Narrow",sans-serif;margin:0;text-wrap:balance}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums}
+.lbl{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-size:10.5px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* ---- title block ---- */
+header{border-bottom:2px solid var(--ink);margin-bottom:20px;padding-top:26px}
+.tb-top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px;padding-bottom:14px}
+.tb-top h1{font-size:clamp(26px,3.6vw,38px);font-weight:700;letter-spacing:-.015em;line-height:1.05}
+.tb-top .sub{font-size:14px;color:var(--ink2);max-width:62ch;margin:7px 0 0}
+.tb-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+.tb-cell{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:6px 10px 7px;min-width:0}
+.tb-cell .v{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;color:var(--ink);
+  margin-top:2px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+
+/* ---- bench layout ---- */
+.bench{display:grid;grid-template-columns:minmax(0,1.32fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:1080px){.bench{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px}
+.bar .grp{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ctl{font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;letter-spacing:.05em;
+  padding:6px 11px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink2);
+  cursor:pointer;border-radius:2px}
+.ctl:hover{border-color:var(--ink3);color:var(--ink)}
+.tog{display:inline-flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+  color:var(--ink2);cursor:pointer;user-select:none}
+.tog input{margin:0;accent-color:var(--focus)}
+.key{display:flex;flex-wrap:wrap;gap:6px 14px;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink2)}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:10px;height:10px;border-radius:2px;flex:none;border:1px solid var(--chipEdge)}
+
+.plot{background:var(--board);border:1px solid var(--ink2);box-shadow:var(--shadow);padding:6px}
+.plot svg{display:block;width:100%;height:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.probe{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink2);min-height:2.9em;
+  border:1px solid var(--rule);background:var(--sheet);padding:7px 11px;overflow-wrap:anywhere}
+.probe b{color:var(--ink);font-weight:600}
+.probe .sw{display:inline-block;vertical-align:-1px;margin-inline:2px 4px}
+
+/* ---- board drawing ---- */
+.b-ground{fill:var(--board)}
+.dxf-ink{fill:none;stroke:var(--dxf);stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.dxf-fill{fill:var(--dxf);fill-rule:evenodd}
+.dxf-route{fill:none;stroke:var(--route);stroke-width:.5;stroke-linecap:round}
+.dxf-text{fill:var(--dxfText);font-family:"IBM Plex Sans Condensed","Arial Narrow",sans-serif;font-weight:600;letter-spacing:.02em}
+.tape{stroke:var(--tape);stroke-width:.39;stroke-linecap:butt}
+.tape-edge{stroke:var(--tapeEdge);stroke-width:.45;stroke-linecap:butt}
+.px-chip{fill:var(--chipOff);stroke:var(--chipEdge);stroke-width:.018}
+.px-glow{fill:transparent;opacity:0}
+.px.lit .px-chip{stroke:rgba(0,0,0,.25)}
+.px.lit .px-glow{opacity:.42}
+.px:hover .px-chip,.px.probed .px-chip{stroke:var(--ink);stroke-width:.05}
+#under .tape{stroke:none}
+#under .tape-edge{stroke:var(--under);stroke-width:.03;stroke-dasharray:.22 .14}
+#under .px-chip{opacity:.8}
+.dev-lead{stroke:var(--ink3);stroke-width:.03}
+.dev-mark{fill:var(--ink3)}
+.dev-led{fill:var(--ledOff);stroke:var(--ink2);stroke-width:.04}
+.dev-halo{opacity:0}
+.dev-led.on{stroke:rgba(0,0,0,.35)}
+.dev-halo.on{opacity:.45}
+.dev-lbl{font-family:"IBM Plex Mono",monospace;font-size:.36px;font-weight:500;fill:var(--ink2);
+  paint-order:stroke;stroke:var(--lblHalo);stroke-width:.14px}
+.btn{cursor:pointer;outline:none;touch-action:none}
+.btn-body{fill:var(--btnBody);stroke:var(--btnEdge);stroke-width:.06}
+.btn-cap{fill:var(--btnCap);stroke:var(--btnEdge);stroke-width:.03;transition:transform .05s}
+.btn:hover .btn-cap{fill:var(--btnCapHover)}
+.btn.reset .btn-cap,.btn.reset:hover .btn-cap{fill:var(--btnReset)}
+.btn.down .btn-cap{fill:var(--fault);transform:scale(.88)}
+.btn:focus-visible .btn-body{stroke:var(--focus);stroke-width:.12}
+
+/* ---- side panels ---- */
+.panel{border:1px solid var(--rule);background:var(--sheet)}
+.panel-hd{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 12px;
+  padding:8px 12px;border-bottom:1px solid var(--rule)}
+.panel-hd h2{font-size:15px;font-weight:600;letter-spacing:.01em}
+.clock{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 18px;padding:10px 12px}
+.clock .big{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:500;color:var(--ink);
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.phase{font-family:"IBM Plex Mono",monospace;font-size:11.5px;padding:1px 7px;border:1px solid var(--rule);
+  border-radius:2px;color:var(--ink2)}
+.io{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.io > div{min-width:0}
+.io > div + div{border-left:1px solid var(--rule)}
+@media (max-width:620px){.io > div + div{border-left:0;border-top:1px solid var(--rule)}}
+.io h3{font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink3);padding:8px 12px 4px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+td{padding:4px 12px;border-top:1px solid var(--rule2);vertical-align:middle;white-space:nowrap}
+td.pin{font-family:"IBM Plex Mono",monospace;color:var(--ink3);width:3.2em}
+td.nm{font-family:"IBM Plex Mono",monospace;color:var(--ink);overflow:hidden;text-overflow:ellipsis;max-width:0;width:100%}
+td.lv{text-align:right}
+.lvl{display:inline-block;min-width:4.6em;text-align:center;font-family:"IBM Plex Mono",monospace;font-size:11px;
+  padding:0 6px;border-radius:2px;border:1px solid var(--rule);color:var(--ink3)}
+.lvl.hi{color:var(--ink);border-color:var(--ink3)}
+.lvl.lo{color:var(--fault);border-color:var(--fault)}
+.lvl.lit{color:#1d1a12;background:#ffb21e;border-color:#c98700}
+.lvl.lit-g{color:#062812;background:#2fd35c;border-color:#1f9a41}
+.lvl.lit-r{color:#fff;background:#e8392b;border-color:#a8261b}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));border-top:1px solid var(--rule)}
+.stat{padding:7px 12px;min-width:0}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+.serial pre{margin:0;height:430px;overflow:auto;padding:10px 12px;background:var(--console);color:var(--consoleInk);
+  font:12.5px/1.5 "IBM Plex Mono",ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+@media (max-width:1080px){.serial pre{height:320px}}
+
+details.notes{margin-top:22px;border-top:1px solid var(--rule);padding-top:12px}
+details.notes summary{cursor:pointer;font-family:"IBM Plex Sans Condensed",sans-serif;font-size:17px;font-weight:600}
+.notes-body{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:8px 32px;margin-top:10px}
+.notes-body p{margin:0 0 10px;max-width:68ch;color:var(--ink2);font-size:14px}
+.notes-body p b{color:var(--ink);font-weight:600}
+.notes-body code{font-family:"IBM Plex Mono",monospace;font-size:.9em;background:var(--sunk);padding:0 4px;border-radius:2px;color:var(--ink)}
+.checks{list-style:none;margin:0;padding:0;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink2)}
+.checks li{display:grid;grid-template-columns:2.6em 1fr;gap:8px;padding:4px 0;border-top:1px solid var(--rule2)}
+.checks .t{font-weight:600;color:var(--ink3)}
+.checks .t.w{color:var(--under)}
+@media (prefers-reduced-motion:reduce){.btn-cap{transition:none}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="tb-top">
+    <div>
+      <div class="lbl" style="margin-bottom:6px">JEA &middot; Union University Senior Design</div>
+      <h1>FLISR Trainer Test Bench</h1>
+      <p class="sub">FLISR_Trainer.ino running on the REV1 cardboard layout. Press the buttons on the board.
+      The strip, the device LEDs and the serial monitor respond the way the sketch is written, nothing added.</p>
+    </div>
+  </div>
+  <div class="tb-grid" id="titleblock"></div>
+</header>
+
+<div class="bench">
+  <section class="col" aria-label="Board">
+    <div class="bar">
+      <div class="grp">
+        <button class="ctl" type="button" id="btn-reset" title="Like the Uno reset button: the strip keeps its last frame until setup() runs">Reset board</button>
+        <button class="ctl" type="button" id="btn-power" title="Unplug and replug: the strip goes dark too">Power cycle</button>
+        <label class="tog"><input type="checkbox" id="show-under"> Under-board runs</label>
+      </div>
+      <div class="key" id="key"></div>
+    </div>
+    <div class="plot"><svg id="board" role="img" aria-label="Cardboard layout with LED strip, device LEDs and fault buttons"></svg></div>
+    <div class="probe" id="probe">Hover or tap a pixel to read its chain index, run, zone and current <b>leds[]</b> value.</div>
+  </section>
+
+  <section class="col" aria-label="Board I/O">
+    <div class="panel">
+      <div class="clock">
+        <div><div class="lbl">millis()</div><div class="big" id="millis">0</div></div>
+        <div><div class="lbl">Running</div><div class="phase" id="phase">setup()</div></div>
+      </div>
+      <div class="io" style="border-top:1px solid var(--rule)">
+        <div><h3>Inputs &middot; INPUT_PULLUP</h3><table><tbody id="inputs"></tbody></table></div>
+        <div><h3 id="out-h">Outputs &middot; device LEDs</h3><table><tbody id="outputs"></tbody></table></div>
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <div class="panel serial">
+      <div class="panel-hd">
+        <h2>Serial Monitor <span class="lbl" style="margin-left:6px">115200 baud</span></h2>
+        <div class="grp" style="display:flex;gap:12px;align-items:center">
+          <label class="tog"><input type="checkbox" id="autoscroll" checked> Autoscroll</label>
+          <button class="ctl" type="button" id="btn-clear">Clear output</button>
+        </div>
+      </div>
+      <pre id="serial" tabindex="0" aria-label="Serial output"></pre>
+    </div>
+  </section>
+</div>
+
+<details class="notes">
+  <summary>How the bench models the hardware</summary>
+  <div class="notes-body">
+    <div>
+      <p><b>What runs.</b> <code>setup()</code> and <code>loop()</code> are a line-for-line port of everything below
+      &ldquo;NOTHING BELOW HERE NEEDS EDITING&rdquo;. Pins, colors, timing and the segment table are read out of the
+      .ino at build time, not retyped. The build refuses to run if the sketch logic changes without the port being updated.</p>
+      <p><b>Time.</b> <code>millis()</code> starts at 0 on reset. <code>delay()</code> in setup advances it, then
+      <code>loop()</code> runs once per millisecond. Button contacts are timestamped, so a tap shorter than
+      <code>DEBOUNCE_MS</code> is ignored, the same as on the board. The clock pauses while this tab is in the background.</p>
+      <p><b>Buttons</b> are ideal contacts to GND, with no mechanical bounce. Hold one with the mouse, a finger, or Space/Enter when it has focus.
+      Pressing two at once behaves as the sketch does: only the first one found in a pass is handled.</p>
+    </div>
+    <div>
+      <p><b>Pixels</b> show the <code>leds[]</code> buffer as of the last <code>FastLED.show()</code>. Brightness, color
+      correction and dithering are applied after that, on the wire, and are not drawn. The FastLED 3.10.5 power limiter is
+      computed every frame and shown under Outputs.</p>
+      <p><b>Placement.</b> Pixels are evenly spaced on the straight line between each run&rsquo;s From and To node in the LED
+      sheet. Run 1 starts SEG_SPLIT[0] pixels south of N1, per the note on run 1. Under-board runs are drawn offset
+      0.45 in so they don&rsquo;t cover the runs above them. Device LEDs sit 0.75 in right and 0.60 in up from their Element
+      point, which is marked with a leader line.</p>
+    </div>
+    <div>
+      <p><b>Source checks from the last build</b></p>
+      <ul class="checks" id="checks"></ul>
+    </div>
+  </div>
+</details>
+</div>
+
+<script>
+const CFG = {"defines":{"PIN_BTN_FAULT_Z1":2,"PIN_BTN_FAULT_Z2":3,"PIN_BTN_FAULT_Z3":4,"PIN_BTN_FAULT_Z4":5,"PIN_BTN_FAULT_Z5":6,"PIN_BTN_FAULT_Z6":7,"PIN_BTN_FAULT_DER":8,"PIN_BTN_RESET":9,"DEVICE_LED_MODE":1,"PIN_DEV_SUB_A_BKR":11,"PIN_DEV_DEV_A1":12,"PIN_DEV_DEV_A2":13,"PIN_DEV_TIE":14,"PIN_DEV_DEV_B2":15,"PIN_DEV_DEV_B1":16,"PIN_DEV_SUB_B_BKR":17,"PIN_DEV_DER_PCC":18,"LED_DATA_PIN":10,"NUM_LEDS":337,"LED_TYPE":"WS2812B","COLOR_ORDER":"GRB","BRIGHTNESS":80,"MAX_MILLIAMPS":4000,"COLOR_SRC_A":[30,107,255],"COLOR_SRC_B":[0,208,80],"COLOR_FAULT":[255,24,16],"COLOR_DEAD":[0,0,0],"NUM_SEGMENTS":31,"ZN_HID":0,"ZN_BUSA":8,"ZN_Z1":1,"ZN_Z2":2,"ZN_Z3":3,"ZN_Z4":4,"ZN_Z5":5,"ZN_Z6":6,"ZN_DER":7,"AUTO_ADVANCE":1,"STEP_INTERVAL_MS":2500,"DEBOUNCE_MS":40,"FAULT_BLINK_MS":350,"DEV_TRIP_BLINK_MS":500,"DEV_LOCK_BLINK_MS":150,"FRAME_INTERVAL_MS":20,"SEGMENT_TEST_MODE":0,"SEGMENT_TEST_MS":1200},"tables":{"SEG_LEN":[17,17,17,10,17,17,2,9,6,8,11,14,28,26,12,4,6,6,9,10,3,22,12,4,0,7,4,12,3,11,13],"SEG_OVER":[1,1,0,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,0,1,1,1,1,0,1],"SEG_ZONE":[8,1,0,1,2,0,2,2,3,3,3,3,3,0,3,3,3,4,4,0,4,0,6,6,0,6,6,5,5,0,5],"SEG_SPLIT":[8,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,2],"SEG_ZONE2":[1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,7]}};
+const GEOM = {"board":48.0,"pitch":0.656,"drawing":{"ink":"M1.5 34.5L1.5 42.5M48.0 48.0L48.0 0.0M19.304 32.853L19.304 34.103M46.0 10.0L46.0 2.0M48.0 0.0L0.0 0.0M17.198 32.853L17.198 34.103M19.304 34.103L17.554 34.103M1.5 42.5L12.0 42.5M17.554 32.853L19.304 32.853M15.448 32.853L17.198 32.853M17.554 34.103L17.554 32.853M21.4 34.103L19.65 34.103M23.531 32.853L23.531 34.103M12.0 34.5L1.5 34.5M25.0 47.0L25.0 43.5M23.531 34.103L21.781 34.103M1.0 47.0L25.0 47.0M0.0 0.0L0.0 48.0M46.0 2.0L34.0 2.0M34.0 10.0L46.0 10.0M46.0 46.0L46.0 37.2M46.0 37.2L28.25 37.2M17.198 34.103L15.448 34.103M19.65 34.103L19.65 32.853M21.781 32.853L23.531 32.853M15.456 26.339L17.206 26.339M34.0 2.0L34.0 10.0M21.4 32.853L21.4 34.103M0.0 48.0L48.0 48.0M1.0 43.5L1.0 47.0M17.206 26.339L17.206 27.589M15.448 34.103L15.448 32.853M28.25 46.0L46.0 46.0M19.65 32.853L21.4 32.853M21.781 34.103L21.781 32.853M15.456 27.589L15.456 26.339M12.0 42.5L12.0 34.5M25.0 43.5L1.0 43.5M17.206 27.589L15.456 27.589M17.567 26.339L19.317 26.339M28.25 37.2L28.25 46.0M8.172 11.408L8.172 12.658M6.422 10.384L6.422 8.634M19.657 27.589L19.657 26.339M3.351 8.31L4.601 8.31M15.509 3.7L13.759 3.7M21.407 27.589L19.657 27.589M8.75 2.45L10.5 2.45M21.407 26.339L21.407 27.589M15.95 3.7L15.95 2.45M23.498 27.589L21.748 27.589M14.788 11.408L14.788 12.658M19.657 26.339L21.407 26.339M7.672 6.119L7.672 7.869M19.317 26.339L19.317 27.589M6.422 7.869L6.422 6.119M4.601 10.06L3.351 10.06M6.422 6.119L7.672 6.119M11.5 2.45L13.25 2.45M13.25 2.45L13.25 3.7M13.25 3.7L11.5 3.7M8.649 12.658L8.649 11.408M3.351 10.06L3.351 8.31M12.589 11.408L12.589 12.658M10.839 11.408L12.589 11.408M3.351 6.009L4.601 6.009M6.422 12.658L6.422 11.408M8.172 12.658L6.422 12.658M4.601 7.759L3.351 7.759M10.839 12.658L10.839 11.408M10.399 11.408L10.399 12.658M13.038 11.408L14.788 11.408M14.788 12.658L13.038 12.658M4.601 12.358L3.351 12.358M3.351 12.358L3.351 10.608M7.672 10.384L6.422 10.384M4.601 8.31L4.601 10.06M6.422 11.408L8.172 11.408M17.567 27.589L17.567 26.339M10.399 12.658L8.649 12.658M10.5 2.45L10.5 3.7M17.7 2.45L17.7 3.7M6.422 8.634L7.672 8.634M4.601 10.608L4.601 12.358M7.672 7.869L6.422 7.869M8.75 3.7L8.75 2.45M10.5 3.7L8.75 3.7M3.351 10.608L4.601 10.608M7.672 8.634L7.672 10.384M3.351 7.759L3.351 6.009M17.7 3.7L15.95 3.7M12.589 12.658L10.839 12.658M19.317 27.589L17.567 27.589M23.498 26.339L23.498 27.589M21.748 27.589L21.748 26.339M13.038 12.658L13.038 11.408M8.649 11.408L10.399 11.408M21.748 26.339L23.498 26.339M13.759 2.45L15.509 2.45M15.509 2.45L15.509 3.7M13.759 3.7L13.759 2.45M11.5 3.7L11.5 2.45M4.601 6.009L4.601 7.759M15.95 2.45L17.7 2.45M46.572 34.947L35.572 34.947M21.407 24.589L19.657 24.589M41.098 16.484L46.598 16.484M17.567 23.339L19.317 23.339M35.105 16.756L29.605 16.756M24.58 2.45L26.33 2.45M20.516 3.7L18.766 3.7M35.572 30.932L35.572 29.932M46.572 29.932L46.572 30.932M23.531 29.853L23.531 31.103M17.567 24.589L17.567 23.339M26.33 2.45L26.33 3.7M23.397 3.7L21.647 3.7M46.572 28.0L46.572 29.0M20.516 2.45L20.516 3.7M35.572 31.954L46.572 31.954M46.572 33.947L46.572 34.947M46.598 20.984L41.098 20.984M29.605 16.756L29.605 14.006M18.766 2.45L20.516 2.45M18.766 3.7L18.766 2.45M21.647 2.45L23.397 2.45M23.397 2.45L23.397 3.7M35.572 29.0L35.572 28.0M41.098 20.984L41.098 16.484M15.448 29.853L17.198 29.853M24.58 3.7L24.58 2.45M19.65 31.103L19.65 29.853M21.4 29.853L21.4 31.103M26.33 3.7L24.58 3.7M23.531 31.103L21.781 31.103M46.572 29.0L35.572 29.0M17.554 31.103L17.554 29.853M17.198 29.853L17.198 31.103M19.304 31.103L17.554 31.103M46.572 30.932L35.572 30.932M21.647 3.7L21.647 2.45M46.572 32.954L35.572 32.954M35.572 32.954L35.572 31.954M29.605 14.006L35.105 14.006M35.105 14.006L35.105 16.756M35.572 29.932L46.572 29.932M19.65 29.853L21.4 29.853M17.198 31.103L15.448 31.103M19.304 29.853L19.304 31.103M21.781 29.853L23.531 29.853M15.456 23.339L17.206 23.339M15.456 24.589L15.456 23.339M17.206 23.339L17.206 24.589M19.317 24.589L17.567 24.589M35.572 28.0L46.572 28.0M35.572 33.947L46.572 33.947M46.598 16.484L46.598 20.984M17.554 29.853L19.304 29.853M21.4 31.103L19.65 31.103M19.317 23.339L19.317 24.589M21.781 31.103L21.781 29.853M35.572 34.947L35.572 33.947M19.657 23.339L21.407 23.339M19.657 24.589L19.657 23.339M46.572 31.954L46.572 32.954M17.206 24.589L15.456 24.589M21.407 23.339L21.407 24.589M15.448 31.103L15.448 29.853M21.748 24.589L21.748 23.339M21.748 23.339L23.498 23.339M23.498 23.339L23.498 24.589M23.498 24.589L21.748 24.589M4.008 19.396L4.201 19.364L4.393 19.333L4.583 19.305L4.77 19.281L4.952 19.261L5.131 19.246L5.307 19.236L5.479 19.23L5.648 19.228L5.814 19.229L5.976 19.235L6.136 19.244L6.292 19.258L6.445 19.275L6.595 19.297L6.741 19.323L6.884 19.353L7.024 19.387L7.161 19.425L7.294 19.466L7.424 19.512L7.551 19.561L7.674 19.615L7.796 19.674L7.914 19.738L8.029 19.806L8.14 19.876L8.245 19.947L8.344 20.019L8.441 20.096L8.539 20.182L8.642 20.284L8.753 20.405L8.868 20.539L8.983 20.682L9.093 20.826L9.194 20.967L9.286 21.105L9.372 21.24L9.451 21.374L9.526 21.507L9.595 21.64L9.659 21.772L9.718 21.903L9.77 22.033L9.817 22.162L9.858 22.289L9.893 22.415L9.922 22.54L9.946 22.663L9.964 22.786L9.976 22.908L9.983 23.029L9.983 23.148L9.978 23.266L9.967 23.382L9.951 23.497L9.928 23.61L9.9 23.723L9.867 23.839L9.83 23.957L9.791 24.073L9.754 24.182L9.722 24.28L9.698 24.363L9.679 24.436L9.665 24.502L9.652 24.566L9.639 24.634L9.627 24.705L9.615 24.777L9.604 24.849L9.595 24.92L9.588 24.989L9.582 25.059L9.578 25.127L9.575 25.196L9.573 25.265L9.573 25.333L9.574 25.402L9.576 25.47L9.58 25.537L9.585 25.605L9.592 25.672L9.6 25.739L9.609 25.806L9.62 25.873L9.632 25.939L9.645 26.004L9.66 26.07L9.676 26.135L9.694 26.201L9.713 26.267L9.734 26.333L9.755 26.398L9.778 26.46L9.801 26.519L9.824 26.575L9.847 26.63L9.87 26.685L9.892 26.741L9.914 26.796L9.934 26.852L9.952 26.908L9.969 26.964L9.985 27.019L9.999 27.074L10.011 27.129L10.022 27.183L10.031 27.238L10.039 27.292L10.045 27.346L10.05 27.4L10.053 27.454L10.055 27.508L10.056 27.561L10.054 27.615L10.052 27.668L10.048 27.721L10.042 27.774L10.035 27.827L10.026 27.879L10.016 27.932L10.004 27.984L9.991 28.035L9.976 28.086L9.96 28.138L9.942 28.191L9.922 28.244L9.9 28.299L9.876 28.353L9.85 28.408L9.823 28.462L9.794 28.516L9.763 28.569L9.731 28.622L9.697 28.675L9.661 28.728L9.624 28.781L9.584 28.833L9.543 28.886L9.5 28.938L9.456 28.99L9.411 29.042L9.365 29.095L9.318 29.148L9.27 29.202L9.222 29.257L9.174 29.312L9.125 29.367L9.076 29.424L9.025 29.483L8.973 29.543L8.921 29.603L8.869 29.663L8.819 29.72L8.771 29.775L8.723 29.832L8.668 29.895L8.605 29.969L8.528 30.058L8.442 30.159L8.35 30.266L8.256 30.376L8.163 30.485L8.071 30.593L7.979 30.701L7.886 30.811L7.792 30.923L7.695 31.037L7.596 31.154L7.497 31.273L7.396 31.394L7.294 31.516L7.191 31.639L7.086 31.762L6.98 31.884L6.872 32.004L6.762 32.119L6.65 32.227L6.535 32.326L6.419 32.417L6.299 32.5L6.178 32.575L6.053 32.642L5.927 32.703L5.799 32.756L5.67 32.802L5.541 32.84L5.409 32.871L5.272 32.894L5.127 32.909L4.974 32.916L4.813 32.915L4.647 32.905L4.478 32.887L4.309 32.858L4.137 32.82L3.963 32.772L3.785 32.714L3.602 32.646L3.418 32.569L3.234 32.486L3.055 32.397L2.883 32.304L2.718 32.208L2.562 32.109L2.413 32.007L2.274 31.902L2.142 31.795L2.019 31.684L1.905 31.571L1.798 31.454L1.7 31.335L1.61 31.213L1.528 31.088L1.455 30.962L1.39 30.833L1.333 30.699L1.285 30.56L1.245 30.414L1.213 30.267L1.189 30.122L1.173 29.984L1.166 29.857L1.165 29.738L1.169 29.622L1.178 29.506L1.191 29.387L1.205 29.265L1.223 29.142L1.242 29.02L1.262 28.9L1.285 28.782L1.309 28.666L1.335 28.551L1.363 28.437L1.393 28.324L1.424 28.212L1.458 28.1L1.493 27.99L1.53 27.882L1.569 27.774L1.61 27.667L1.653 27.562L1.698 27.457L1.745 27.354L1.793 27.252L1.843 27.152L1.895 27.052L1.949 26.953L2.005 26.855L2.063 26.757L2.124 26.66L2.185 26.566L2.247 26.475L2.309 26.388L2.37 26.305L2.432 26.224L2.494 26.143L2.556 26.063L2.616 25.983L2.674 25.904L2.729 25.825L2.778 25.747L2.823 25.67L2.864 25.594L2.9 25.518L2.933 25.443L2.963 25.369L2.988 25.296L3.009 25.223L3.027 25.151L3.04 25.079L3.05 25.009L3.056 24.939L3.057 24.869L3.055 24.801L3.049 24.733L3.039 24.666L3.025 24.6L3.007 24.535L2.985 24.47L2.959 24.405L2.928 24.34L2.893 24.276L2.856 24.214L2.816 24.155L2.776 24.1L2.734 24.047L2.689 23.997L2.642 23.947L2.59 23.898L2.535 23.848L2.478 23.798L2.42 23.749L2.361 23.699L2.303 23.649L2.246 23.598L2.192 23.546L2.139 23.494L2.089 23.44L2.041 23.386L1.995 23.33L1.951 23.274L1.909 23.217L1.869 23.159L1.831 23.1L1.795 23.04L1.761 22.98L1.728 22.918L1.698 22.856L1.67 22.792L1.644 22.728L1.62 22.663L1.598 22.597L1.577 22.532L1.559 22.465L1.543 22.397L1.529 22.325L1.516 22.25L1.505 22.172L1.496 22.092L1.49 22.01L1.486 21.929L1.484 21.846L1.485 21.763L1.489 21.679L1.494 21.594L1.503 21.508L1.513 21.42L1.526 21.331L1.541 21.24L1.559 21.149L1.579 21.059L1.602 20.97L1.627 20.884L1.654 20.799L1.684 20.718L1.717 20.638L1.752 20.561L1.79 20.487L1.83 20.415L1.872 20.346L1.915 20.28L1.961 20.216L2.011 20.154L2.066 20.093L2.126 20.032L2.187 19.975L2.247 19.923L2.3 19.878L2.345 19.844L2.384 19.816L2.42 19.793L2.456 19.771L2.495 19.748L2.537 19.724L2.581 19.7L2.626 19.677L2.671 19.655L2.716 19.634L2.762 19.615L2.809 19.596L2.857 19.578L2.906 19.561L2.955 19.545L3.006 19.529L3.057 19.515L3.11 19.501L3.163 19.488L3.217 19.476L3.271 19.464L3.327 19.454L3.384 19.444L3.441 19.436L3.499 19.428L3.558 19.42L3.618 19.414L3.679 19.409L3.741 19.405L3.804 19.401L3.867 19.398L3.931 19.396M12.122 37.953L13.049 37.953L13.049 38.201L12.122 38.201L12.122 37.953ZM37.547 9.991L38.747 9.991L38.747 11.091L37.547 11.091L37.547 9.991ZM1.63 44.014L2.83 44.014L2.83 45.114L1.63 45.114L1.63 44.014ZM11.887 37.462L13.087 37.462L13.087 38.562L11.887 38.562L11.887 37.462ZM26.028 21.87L27.228 21.87L27.228 22.97L26.028 22.97L26.028 21.87ZM26.737 22.177L26.674 22.082L26.337 22.305L26.4 22.4L26.737 22.177M26.81 22.38L27.1 22.38L27.1 22.5L26.81 22.5L26.81 22.38ZM1.645 45.626L2.845 45.626L2.845 46.726L1.645 46.726L1.645 45.626ZM12.029 29.962L13.229 29.962L13.229 31.062L12.029 31.062L12.029 29.962ZM12.126 30.375L12.647 30.375L12.647 30.673L12.126 30.673L12.126 30.375ZM12.647 30.475L12.755 30.475L12.755 30.592L12.647 30.592L12.647 30.475ZM12.759 30.15L12.8 30.15L12.8 30.9L12.759 30.9L12.759 30.15ZM7.497 44.017L8.697 44.017L8.697 45.117L7.497 45.117L7.497 44.017ZM12.03 17.922L13.23 17.922L13.23 19.022L12.03 19.022L12.03 17.922ZM30.515 21.917L31.715 21.917L31.715 23.017L30.515 23.017L30.515 21.917ZM37.563 25.505L38.763 25.505L38.763 26.605L37.563 26.605L37.563 25.505ZM33.8 27.0L34.5 27.0L34.5 27.2L33.8 27.2L33.8 27.0ZM33.8 27.3L34.5 27.3M34.5 27.3L34.136 27.705M34.136 27.705L33.8 27.3M7.775 45.948L8.475 45.948L8.475 46.148L7.775 46.148L7.775 45.948ZM17.964 3.595L18.564 3.595L18.564 3.995L17.964 3.995L17.964 3.595ZM17.964 3.595L18.564 3.995M18.564 3.595L17.964 3.995M10.7 3.7L11.3 3.7L11.3 4.1L10.7 4.1L10.7 3.7ZM10.7 3.7L11.3 4.1M11.3 3.7L10.7 4.1M6.133 8.048L6.733 8.048L6.733 8.448L6.133 8.448L6.133 8.048ZM6.133 8.048L6.733 8.448M6.733 8.048L6.133 8.448M8.118 14.022L8.718 14.022L8.718 14.422L8.118 14.422L8.118 14.022ZM8.118 14.022L8.718 14.422M8.718 14.022L8.118 14.422M12.5 14.0L13.1 14.0L13.1 14.4L12.5 14.4L12.5 14.0ZM12.5 14.0L13.1 14.4M13.1 14.0L12.5 14.4M12.571 44.35L13.171 44.35L13.171 44.75L12.571 44.75L12.571 44.35ZM12.571 44.35L13.171 44.75M13.171 44.35L12.571 44.75M17.1 24.8L17.7 24.8L17.7 25.2L17.1 25.2L17.1 24.8ZM17.1 24.8L17.7 25.2M17.7 24.8L17.1 25.2M21.3 24.8L21.9 24.8L21.9 25.2L21.3 25.2L21.3 24.8ZM21.3 24.8L21.9 25.2M21.9 24.8L21.3 25.2M17.1 31.3L17.7 31.3L17.7 31.7L17.1 31.7L17.1 31.3ZM17.1 31.3L17.7 31.7M17.7 31.3L17.1 31.7M21.3 31.3L21.9 31.3L21.9 31.7L21.3 31.7L21.3 31.3ZM21.3 31.3L21.9 31.7M21.9 31.3L21.3 31.7M15.447 32.855L15.9 33.5M15.9 33.5L15.451 34.103M15.9 33.5L16.7 33.5M16.7 33.5L17.197 32.855M16.7 33.5L17.2 34.1M13.898 45.353L13.898 46.603M12.148 45.353L13.898 45.353M13.898 46.603L12.148 46.603M12.148 46.603L12.148 45.353M12.147 45.355L12.6 46.0M12.6 46.0L12.151 46.603M12.6 46.0L13.4 46.0M13.4 46.0L13.897 45.355M13.4 46.0L13.9 46.6M17.547 32.855L18.0 33.5M18.0 33.5L17.551 34.103M18.0 33.5L18.8 33.5M18.8 33.5L19.297 32.855M18.8 33.5L19.3 34.1M19.647 32.855L20.1 33.5M20.1 33.5L19.651 34.103M20.1 33.5L20.9 33.5M20.9 33.5L21.397 32.855M20.9 33.5L21.4 34.1M21.799 32.877L22.252 33.522M22.252 33.522L21.804 34.125M22.252 33.522L23.052 33.522M23.052 33.522L23.549 32.878M23.052 33.522L23.552 34.122M15.447 29.855L15.9 30.5M15.9 30.5L15.451 31.103M15.9 30.5L16.7 30.5M16.7 30.5L17.197 29.855M16.7 30.5L17.2 31.1M17.547 29.855L18.0 30.5M18.0 30.5L17.551 31.103M18.0 30.5L18.8 30.5M18.8 30.5L19.297 29.855M18.8 30.5L19.3 31.1M19.647 29.855L20.1 30.5M20.1 30.5L19.651 31.103M20.1 30.5L20.9 30.5M20.9 30.5L21.397 29.855M20.9 30.5L21.4 31.1M21.785 29.863L22.238 30.508M22.238 30.508L21.789 31.111M22.238 30.508L23.038 30.508M23.038 30.508L23.535 29.864M23.038 30.508L23.538 31.108M15.447 26.355L15.9 27.0M15.9 27.0L15.451 27.603M15.9 27.0L16.7 27.0M16.7 27.0L17.197 26.355M16.7 27.0L17.2 27.6M17.547 26.355L18.0 27.0M18.0 27.0L17.551 27.603M18.0 27.0L18.8 27.0M18.8 27.0L19.297 26.355M18.8 27.0L19.3 27.6M19.647 26.355L20.1 27.0M20.1 27.0L19.651 27.603M20.1 27.0L20.9 27.0M20.9 27.0L21.397 26.355M20.9 27.0L21.4 27.6M21.747 26.355L22.2 27.0M22.2 27.0L21.751 27.603M22.2 27.0L23.0 27.0M23.0 27.0L23.497 26.355M23.0 27.0L23.5 27.6M15.447 23.355L15.9 24.0M15.9 24.0L15.451 24.603M15.9 24.0L16.7 24.0M16.7 24.0L17.197 23.355M16.7 24.0L17.2 24.6M17.547 23.355L18.0 24.0M18.0 24.0L17.551 24.603M18.0 24.0L18.8 24.0M18.8 24.0L19.297 23.355M18.8 24.0L19.3 24.6M19.647 23.355L20.1 24.0M20.1 24.0L19.651 24.603M20.1 24.0L20.9 24.0M20.9 24.0L21.397 23.355M20.9 24.0L21.4 24.6M21.747 23.355L22.2 24.0M22.2 24.0L21.751 24.603M22.2 24.0L23.0 24.0M23.0 24.0L23.497 23.355M23.0 24.0L23.5 24.6M6.411 11.42L6.864 12.065M6.864 12.065L6.416 12.668M6.864 12.065L7.664 12.065M7.664 12.065L8.162 11.42M7.664 12.065L8.164 12.665M8.651 11.41L9.104 12.056M9.104 12.056L8.655 12.658M9.104 12.056L9.904 12.056M9.904 12.056L10.401 11.411M9.904 12.056L10.404 12.656M10.844 11.406L11.297 12.051M11.297 12.051L10.848 12.654M11.297 12.051L12.097 12.051M12.097 12.051L12.594 11.406M12.097 12.051L12.597 12.651M13.041 11.406L13.494 12.051M13.494 12.051L13.046 12.654M13.494 12.051L14.294 12.051M14.294 12.051L14.792 11.406M14.294 12.051L14.794 12.651M8.747 2.455L9.2 3.1M9.2 3.1L8.751 3.703M9.2 3.1L10.0 3.1M10.0 3.1L10.497 2.455M10.0 3.1L10.5 3.7M11.505 2.462L11.958 3.108M11.958 3.108L11.51 3.71M11.958 3.108L12.758 3.108M12.758 3.108L13.255 2.463M12.758 3.108L13.258 3.708M13.747 2.455L14.2 3.1M14.2 3.1L13.751 3.703M14.2 3.1L15.0 3.1M15.0 3.1L15.497 2.455M15.0 3.1L15.5 3.7M15.947 2.455L16.4 3.1M16.4 3.1L15.951 3.703M16.4 3.1L17.2 3.1M17.2 3.1L17.697 2.455M17.2 3.1L17.7 3.7M18.747 2.455L19.2 3.1M19.2 3.1L18.751 3.703M19.2 3.1L20.0 3.1M20.0 3.1L20.497 2.455M20.0 3.1L20.5 3.7M21.647 2.455L22.1 3.1M22.1 3.1L21.651 3.703M22.1 3.1L22.9 3.1M22.9 3.1L23.397 2.455M22.9 3.1L23.4 3.7M24.601 2.431L25.054 3.076M25.054 3.076L24.605 3.679M25.054 3.076L25.854 3.076M25.854 3.076L26.351 2.432M25.854 3.076L26.354 3.676M7.671 6.119L7.026 6.572M7.026 6.572L6.423 6.123M7.026 6.572L7.026 7.372M7.026 7.372L7.67 7.869M7.026 7.372L6.426 7.872M7.685 8.625L7.039 9.078M7.039 9.078L6.437 8.63M7.039 9.078L7.039 9.878M7.039 9.878L7.684 10.375M7.039 9.878L6.439 10.378M4.608 10.629L3.963 11.082M3.963 11.082L3.36 10.633M3.963 11.082L3.963 11.882M3.963 11.882L4.608 12.379M3.963 11.882L3.363 12.382M4.608 8.306L3.963 8.759M3.963 8.759L3.36 8.311M3.963 8.759L3.963 9.559M3.963 9.559L4.608 10.056M3.963 9.559L3.363 10.059M4.6 6.01L3.954 6.463M3.954 6.463L3.351 6.014M3.954 6.463L3.954 7.263M3.954 7.263L4.599 7.76M3.954 7.263L3.354 7.763M37.8 28.0L37.8 29.0M40.0 28.0L40.0 29.0M42.0 28.0L42.0 29.0M44.4 28.0L44.4 29.0M37.799 29.931L37.799 30.931M39.999 29.931L39.999 30.931M41.999 29.931L41.999 30.931M44.399 29.931L44.399 30.931M37.799 31.954L37.799 32.954M39.999 31.954L39.999 32.954M41.999 31.954L41.999 32.954M44.399 31.954L44.399 32.954M37.8 33.947L37.8 34.947M40.0 33.947L40.0 34.947M42.0 33.947L42.0 34.947M44.4 33.947L44.4 34.947","route":"M34.132 26.085L34.146 34.783M34.139 30.434L35.572 30.432M34.142 32.456L35.572 32.454M30.125 22.489L30.125 16.756M34.146 34.449L35.572 34.447M35.572 32.954L35.572 31.954M12.586 37.515L12.586 18.49M12.586 18.49L26.552 18.49M31.082 26.09L38.123 26.078M30.125 22.489L31.076 22.489M38.123 26.078L38.123 10.468M41.098 20.984L41.098 16.484M34.136 28.502L35.572 28.5M35.572 34.947L35.572 33.947M38.123 18.961L41.098 18.961M31.076 22.489L31.082 26.09M35.105 16.756L29.605 16.756M5.622 4.5L26.177 4.5M35.572 29.0L35.572 28.0M16.147 18.49L16.147 13.5M5.622 13.5L5.622 4.5M12.586 25.476L23.304 25.476M16.147 13.5L5.622 13.5M35.572 30.932L35.572 29.932M12.586 31.961L23.304 31.961M27.231 22.48L30.125 22.489M26.552 18.49L26.554 21.873","fill":"M7.775 45.948L8.475 45.948L8.475 46.148L7.775 46.148L7.775 45.948ZM7.775 46.248L8.475 46.248L8.111 46.653L7.775 46.248ZM33.8 27.0L34.5 27.0L34.5 27.2L33.8 27.2L33.8 27.0ZM33.8 27.3L34.5 27.3L34.136 27.705L33.8 27.3ZM38.597 26.043L38.592 26.068L38.578 26.088L38.558 26.101L38.534 26.106L38.509 26.101L38.489 26.088L38.475 26.068L38.47 26.043L38.475 26.018L38.489 25.998L38.509 25.985L38.534 25.98L38.558 25.985L38.578 25.998L38.592 26.018L38.597 26.043ZM38.597 25.743L38.592 25.768L38.578 25.788L38.558 25.801L38.534 25.806L38.509 25.801L38.489 25.788L38.475 25.768L38.47 25.743L38.475 25.718L38.489 25.698L38.509 25.685L38.534 25.68L38.558 25.685L38.578 25.698L38.592 25.718L38.597 25.743ZM38.597 26.343L38.592 26.368L38.578 26.388L38.558 26.401L38.534 26.406L38.509 26.401L38.489 26.388L38.475 26.368L38.47 26.343L38.475 26.318L38.489 26.298L38.509 26.285L38.534 26.28L38.558 26.285L38.578 26.298L38.592 26.318L38.597 26.343ZM37.659 25.918L38.18 25.918L38.18 26.216L37.659 26.216L37.659 25.918ZM38.18 26.018L38.289 26.018L38.289 26.135L38.18 26.135L38.18 26.018ZM38.292 25.693L38.334 25.693L38.334 26.443L38.292 26.443L38.292 25.693ZM31.549 22.456L31.544 22.48L31.531 22.5L31.511 22.514L31.486 22.519L31.462 22.514L31.441 22.5L31.428 22.48L31.423 22.456L31.428 22.431L31.441 22.411L31.462 22.397L31.486 22.392L31.511 22.397L31.531 22.411L31.544 22.431L31.549 22.456ZM31.549 22.156L31.544 22.18L31.531 22.2L31.511 22.214L31.486 22.219L31.462 22.214L31.441 22.2L31.428 22.18L31.423 22.156L31.428 22.131L31.441 22.111L31.462 22.097L31.486 22.092L31.511 22.097L31.531 22.111L31.544 22.131L31.549 22.156ZM31.549 22.756L31.544 22.78L31.531 22.8L31.511 22.814L31.486 22.819L31.462 22.814L31.441 22.8L31.428 22.78L31.423 22.756L31.428 22.731L31.441 22.711L31.462 22.697L31.486 22.692L31.511 22.697L31.531 22.711L31.544 22.731L31.549 22.756ZM30.612 22.331L31.133 22.331L31.133 22.628L30.612 22.628L30.612 22.331ZM31.133 22.431L31.242 22.431L31.242 22.548L31.133 22.548L31.133 22.431ZM31.245 22.105L31.286 22.105L31.286 22.856L31.245 22.856L31.245 22.105ZM13.064 18.46L13.059 18.485L13.046 18.505L13.026 18.518L13.001 18.523L12.976 18.518L12.956 18.505L12.943 18.485L12.938 18.46L12.943 18.436L12.956 18.416L12.976 18.402L13.001 18.397L13.026 18.402L13.046 18.416L13.059 18.436L13.064 18.46ZM13.064 18.16L13.059 18.185L13.046 18.205L13.026 18.218L13.001 18.223L12.976 18.218L12.956 18.205L12.943 18.185L12.938 18.16L12.943 18.136L12.956 18.116L12.976 18.102L13.001 18.097L13.026 18.102L13.046 18.116L13.059 18.136L13.064 18.16ZM13.064 18.76L13.059 18.785L13.046 18.805L13.026 18.818L13.001 18.823L12.976 18.818L12.956 18.805L12.943 18.785L12.938 18.76L12.943 18.736L12.956 18.716L12.976 18.702L13.001 18.697L13.026 18.702L13.046 18.716L13.059 18.736L13.064 18.76ZM12.127 18.335L12.648 18.335L12.648 18.633L12.127 18.633L12.127 18.335ZM12.648 18.436L12.756 18.436L12.756 18.553L12.648 18.553L12.648 18.436ZM12.76 18.11L12.801 18.11L12.801 18.86L12.76 18.86L12.76 18.11ZM8.531 44.555L8.526 44.58L8.512 44.6L8.492 44.614L8.468 44.618L8.443 44.614L8.423 44.6L8.409 44.58L8.404 44.555L8.409 44.531L8.423 44.511L8.443 44.497L8.468 44.492L8.492 44.497L8.512 44.511L8.526 44.531L8.531 44.555ZM8.531 44.255L8.526 44.28L8.512 44.3L8.492 44.314L8.468 44.318L8.443 44.314L8.423 44.3L8.409 44.28L8.404 44.255L8.409 44.231L8.423 44.211L8.443 44.197L8.468 44.192L8.492 44.197L8.512 44.211L8.526 44.231L8.531 44.255ZM8.531 44.855L8.526 44.88L8.512 44.9L8.492 44.914L8.468 44.918L8.443 44.914L8.423 44.9L8.409 44.88L8.404 44.855L8.409 44.831L8.423 44.811L8.443 44.797L8.468 44.792L8.492 44.797L8.512 44.811L8.526 44.831L8.531 44.855ZM7.593 44.431L8.114 44.431L8.114 44.728L7.593 44.728L7.593 44.431ZM8.114 44.531L8.223 44.531L8.223 44.648L8.114 44.648L8.114 44.531ZM8.226 44.205L8.268 44.205L8.268 44.955L8.226 44.955L8.226 44.205ZM13.063 30.5L13.058 30.525L13.045 30.545L13.025 30.558L13.0 30.563L12.975 30.558L12.955 30.545L12.942 30.525L12.937 30.5L12.942 30.475L12.955 30.455L12.975 30.442L13.0 30.437L13.025 30.442L13.045 30.455L13.058 30.475L13.063 30.5ZM13.063 30.2L13.058 30.225L13.045 30.245L13.025 30.258L13.0 30.263L12.975 30.258L12.955 30.245L12.942 30.225L12.937 30.2L12.942 30.175L12.955 30.155L12.975 30.142L13.0 30.137L13.025 30.142L13.045 30.155L13.058 30.175L13.063 30.2ZM13.063 30.8L13.058 30.825L13.045 30.845L13.025 30.858L13.0 30.863L12.975 30.858L12.955 30.845L12.942 30.825L12.937 30.8L12.942 30.775L12.955 30.755L12.975 30.742L13.0 30.737L13.025 30.742L13.045 30.755L13.058 30.775L13.063 30.8ZM12.126 30.375L12.647 30.375L12.647 30.673L12.126 30.673L12.126 30.375ZM12.647 30.475L12.755 30.475L12.755 30.592L12.647 30.592L12.647 30.475ZM12.759 30.15L12.8 30.15L12.8 30.9L12.759 30.9L12.759 30.15ZM2.018 46.156L2.01 46.195L1.988 46.227L1.957 46.248L1.918 46.256L1.879 46.248L1.847 46.227L1.826 46.195L1.818 46.156L1.826 46.117L1.847 46.085L1.879 46.064L1.918 46.056L1.957 46.064L1.988 46.085L2.01 46.117L2.018 46.156ZM2.354 45.933L2.291 45.838L1.955 46.061L2.018 46.156L2.354 45.933ZM2.428 46.136L2.718 46.136L2.718 46.256L2.428 46.256L2.428 46.136ZM26.4 22.4L26.392 22.439L26.371 22.471L26.339 22.492L26.3 22.5L26.261 22.492L26.229 22.471L26.208 22.439L26.2 22.4L26.208 22.361L26.229 22.329L26.261 22.308L26.3 22.3L26.339 22.308L26.371 22.329L26.392 22.361L26.4 22.4ZM26.737 22.177L26.674 22.082L26.337 22.305L26.4 22.4L26.737 22.177ZM26.81 22.38L27.1 22.38L27.1 22.5L26.81 22.5L26.81 22.38ZM1.752 44.467L2.679 44.467L2.679 44.715L1.752 44.715L1.752 44.467ZM1.929 44.274L1.921 44.317L1.897 44.352L1.862 44.376L1.819 44.385L1.776 44.376L1.741 44.352L1.717 44.317L1.708 44.274L1.717 44.231L1.741 44.196L1.776 44.172L1.819 44.164L1.862 44.172L1.897 44.196L1.921 44.231L1.929 44.274ZM2.309 44.274L2.3 44.317L2.277 44.352L2.242 44.376L2.199 44.385L2.156 44.376L2.12 44.352L2.097 44.317L2.088 44.274L2.097 44.231L2.12 44.196L2.156 44.172L2.199 44.164L2.242 44.172L2.277 44.196L2.3 44.231L2.309 44.274ZM2.664 44.266L2.655 44.309L2.631 44.344L2.596 44.368L2.553 44.376L2.51 44.368L2.475 44.344L2.451 44.309L2.443 44.266L2.451 44.223L2.475 44.188L2.51 44.164L2.553 44.155L2.596 44.164L2.631 44.188L2.655 44.223L2.664 44.266ZM1.938 44.902L1.929 44.945L1.905 44.98L1.87 45.004L1.827 45.013L1.784 45.004L1.749 44.98L1.726 44.945L1.717 44.902L1.726 44.859L1.749 44.824L1.784 44.801L1.827 44.792L1.87 44.801L1.905 44.824L1.929 44.859L1.938 44.902ZM2.317 44.902L2.309 44.945L2.285 44.98L2.25 45.004L2.207 45.013L2.164 45.004L2.129 44.98L2.105 44.945L2.096 44.902L2.105 44.859L2.129 44.824L2.164 44.801L2.207 44.792L2.25 44.801L2.285 44.824L2.309 44.859L2.317 44.902ZM2.672 44.894L2.663 44.937L2.64 44.972L2.604 44.996L2.561 45.004L2.518 44.996L2.483 44.972L2.46 44.937L2.451 44.894L2.46 44.851L2.483 44.816L2.518 44.792L2.561 44.784L2.604 44.792L2.64 44.816L2.663 44.851L2.672 44.894ZM37.669 10.444L38.596 10.444L38.596 10.692L37.669 10.692L37.669 10.444ZM37.847 10.251L37.838 10.294L37.814 10.329L37.779 10.353L37.736 10.362L37.693 10.353L37.658 10.329L37.634 10.294L37.626 10.251L37.634 10.208L37.658 10.173L37.693 10.149L37.736 10.141L37.779 10.149L37.814 10.173L37.838 10.208L37.847 10.251ZM38.226 10.251L38.218 10.294L38.194 10.329L38.159 10.353L38.116 10.362L38.073 10.353L38.038 10.329L38.014 10.294L38.005 10.251L38.014 10.208L38.038 10.173L38.073 10.149L38.116 10.141L38.159 10.149L38.194 10.173L38.218 10.208L38.226 10.251ZM38.581 10.243L38.572 10.286L38.548 10.321L38.513 10.345L38.47 10.353L38.427 10.345L38.392 10.321L38.369 10.286L38.36 10.243L38.369 10.2L38.392 10.165L38.427 10.141L38.47 10.132L38.513 10.141L38.548 10.165L38.572 10.2L38.581 10.243ZM37.855 10.879L37.846 10.922L37.823 10.957L37.788 10.981L37.745 10.99L37.702 10.981L37.666 10.957L37.643 10.922L37.634 10.879L37.643 10.836L37.666 10.801L37.702 10.778L37.745 10.769L37.788 10.778L37.823 10.801L37.846 10.836L37.855 10.879ZM38.235 10.879L38.226 10.922L38.202 10.957L38.167 10.981L38.124 10.99L38.081 10.981L38.046 10.957L38.022 10.922L38.014 10.879L38.022 10.836L38.046 10.801L38.081 10.778L38.124 10.769L38.167 10.778L38.202 10.801L38.226 10.836L38.235 10.879ZM38.589 10.871L38.581 10.914L38.557 10.949L38.522 10.973L38.479 10.981L38.436 10.973L38.401 10.949L38.377 10.914L38.368 10.871L38.377 10.828L38.401 10.793L38.436 10.769L38.479 10.761L38.522 10.769L38.557 10.793L38.581 10.828L38.589 10.871ZM12.122 37.953L13.049 37.953L13.049 38.201L12.122 38.201L12.122 37.953ZM12.299 37.76L12.29 37.803L12.267 37.838L12.232 37.862L12.189 37.87L12.146 37.862L12.111 37.838L12.087 37.803L12.078 37.76L12.087 37.717L12.111 37.682L12.146 37.658L12.189 37.65L12.232 37.658L12.267 37.682L12.29 37.717L12.299 37.76ZM12.679 37.76L12.67 37.803L12.646 37.838L12.611 37.862L12.568 37.87L12.525 37.862L12.49 37.838L12.467 37.803L12.458 37.76L12.467 37.717L12.49 37.682L12.525 37.658L12.568 37.65L12.611 37.658L12.646 37.682L12.67 37.717L12.679 37.76ZM13.033 37.752L13.025 37.795L13.001 37.83L12.966 37.853L12.923 37.862L12.88 37.853L12.845 37.83L12.821 37.795L12.812 37.752L12.821 37.709L12.845 37.673L12.88 37.65L12.923 37.641L12.966 37.65L13.001 37.673L13.025 37.709L13.033 37.752ZM12.307 38.388L12.299 38.431L12.275 38.466L12.24 38.49L12.197 38.499L12.154 38.49L12.119 38.466L12.095 38.431L12.087 38.388L12.095 38.345L12.119 38.31L12.154 38.286L12.197 38.278L12.24 38.286L12.275 38.31L12.299 38.345L12.307 38.388ZM12.687 38.388L12.678 38.431L12.655 38.466L12.62 38.49L12.577 38.499L12.534 38.49L12.499 38.466L12.475 38.431L12.466 38.388L12.475 38.345L12.499 38.31L12.534 38.286L12.577 38.278L12.62 38.286L12.655 38.31L12.678 38.345L12.687 38.388ZM13.042 38.38L13.033 38.423L13.009 38.458L12.974 38.481L12.931 38.49L12.888 38.481L12.853 38.458L12.83 38.423L12.821 38.38L12.83 38.337L12.853 38.302L12.888 38.278L12.931 38.269L12.974 38.278L13.009 38.302L13.033 38.337L13.042 38.38Z","circles":[[12.189,37.76,0.11],[12.568,37.76,0.11],[12.923,37.752,0.11],[12.197,38.388,0.11],[12.577,38.388,0.11],[12.931,38.38,0.11],[26.3,22.4,0.1],[13.0,30.5,0.063],[13.0,30.2,0.063],[13.0,30.8,0.063],[34.123,27.255,0.5],[8.098,46.203,0.5]],"texts":[[41.696,18.502,0.6,1,["INDUSTRIAL"]],[30.479,15.144,0.6,1,["COMERCIAL"]],[40.003,4.789,0.75,2,["DISTRIBUTION","SUBSTATION B"]],[4.805,25.136,0.75,1,["POND"]],[16.606,28.369,0.6,1,["RESIDENTIAL 1"]],[8.911,7.675,0.6,1,["RESIDENTIAL 2"]],[32.35,40.821,0.75,1,["SEL 2240 RTAC"]],[6.659,37.049,0.75,2,["DISTRIBUTION","SUBSTATION A"]],[34.066,29.688,0.01,1,["RESET"]],[26.016,43.73,0.25,1,["RESET"]],[9.269,32.997,0.25,1,["FAULT Z1"]],[10.429,27.711,0.25,1,["FAULT Z2"]],[19.333,17.45,0.25,1,["FAULT Z3"]],[27.639,21.55,0.25,1,["FAULT Z4"]],[34.833,25.35,0.25,1,["FAULT Z5"]],[31.233,29.75,0.25,1,["FAULT DER"]],[35.933,16.15,0.25,1,["FAULT Z6"]],[3.084,44.197,0.25,1,["DISTRIBUTION FEEDER","CIRCUIT BREAKER"]],[16.919,42.608,0.75,1,["LEGEND"]],[3.054,45.83,0.25,1,["NORMALLY OPEN","TIE SWITCH"]],[9.157,44.236,0.25,1,["PAD-MOUNTED","SWITCH GEAR"]],[9.134,45.894,0.25,1,["DER","RECLOSER"]],[41.052,26.028,0.6,1,["DER","SOLAR ARRAY"]],[13.592,44.259,0.25,1,["PAD-MOUNTED","TRANSFORMER"]],[14.556,45.75,0.25,1,["HOUSE"]]]},"pixels":[[12.58,42.971,0,-90.0],[12.58,42.315,0,-90.0],[12.58,41.659,0,-90.0],[12.58,41.003,0,-90.0],[12.58,40.347,0,-90.0],[12.58,39.69,0,-90.0],[12.58,39.034,0,-90.0],[12.58,38.378,0,-90.0],[12.58,37.712,0,-90.0],[12.58,37.037,0,-90.0],[12.58,36.361,0,-90.0],[12.58,35.686,0,-90.0],[12.58,35.01,0,-90.0],[12.58,34.334,0,-90.0],[12.58,33.659,0,-90.0],[12.58,32.983,0,-90.0],[12.58,32.308,0,-90.0],[12.897,31.97,1,-0.0],[13.531,31.97,1,-0.0],[14.165,31.97,1,-0.0],[14.799,31.97,1,-0.0],[15.434,31.97,1,-0.0],[16.068,31.97,1,-0.0],[16.702,31.97,1,-0.0],[17.336,31.97,1,-0.0],[17.97,31.97,1,-0.0],[18.604,31.97,1,-0.0],[19.238,31.97,1,-0.0],[19.872,31.97,1,-0.0],[20.506,31.97,1,-0.0],[21.141,31.97,1,-0.0],[21.775,31.97,1,-0.0],[22.409,31.97,1,-0.0],[23.043,31.97,1,-0.0],[23.043,32.42,2,-180.0],[22.409,32.42,2,-180.0],[21.775,32.42,2,-180.0],[21.141,32.42,2,-180.0],[20.506,32.42,2,-180.0],[19.872,32.42,2,-180.0],[19.238,32.42,2,-180.0],[18.604,32.42,2,-180.0],[17.97,32.42,2,-180.0],[17.336,32.42,2,-180.0],[16.702,32.42,2,-180.0],[16.068,32.42,2,-180.0],[15.434,32.42,2,-180.0],[14.799,32.42,2,-180.0],[14.165,32.42,2,-180.0],[13.531,32.42,2,-180.0],[12.897,32.42,2,-180.0],[12.579,31.645,3,-90.176],[12.577,30.995,3,-90.176],[12.575,30.345,3,-90.176],[12.573,29.695,3,-90.176],[12.571,29.045,3,-90.176],[12.569,28.395,3,-90.176],[12.567,27.745,3,-90.176],[12.565,27.095,3,-90.176],[12.563,26.445,3,-90.176],[12.561,25.795,3,-90.176],[12.876,25.469,4,-0.107],[13.508,25.468,4,-0.107],[14.139,25.467,4,-0.107],[14.771,25.466,4,-0.107],[15.403,25.465,4,-0.107],[16.035,25.464,4,-0.107],[16.666,25.462,4,-0.107],[17.298,25.461,4,-0.107],[17.93,25.46,4,-0.107],[18.562,25.459,4,-0.107],[19.194,25.458,4,-0.107],[19.825,25.456,4,-0.107],[20.457,25.455,4,-0.107],[21.089,25.454,4,-0.107],[21.721,25.453,4,-0.107],[22.352,25.452,4,-0.107],[22.984,25.451,4,-0.107],[22.985,25.901,5,179.893],[22.353,25.902,5,179.893],[21.721,25.903,5,179.893],[21.09,25.904,5,179.893],[20.458,25.905,5,179.893],[19.826,25.906,5,179.893],[19.194,25.908,5,179.893],[18.563,25.909,5,179.893],[17.931,25.91,5,179.893],[17.299,25.911,5,179.893],[16.667,25.912,5,179.893],[16.036,25.914,5,179.893],[15.404,25.915,5,179.893],[14.772,25.916,5,179.893],[14.14,25.917,5,179.893],[13.508,25.918,5,179.893],[12.877,25.919,5,179.893],[12.562,25.102,6,-89.61],[12.568,24.367,6,-89.61],[12.571,23.694,7,-89.792],[12.573,23.082,7,-89.792],[12.576,22.469,7,-89.792],[12.578,21.857,7,-89.792],[12.58,21.245,7,-89.792],[12.582,20.633,7,-89.792],[12.584,20.021,7,-89.792],[12.587,19.408,7,-89.792],[12.589,18.796,7,-89.792],[12.885,18.489,8,-0.162],[13.475,18.487,8,-0.162],[14.065,18.486,8,-0.162],[14.655,18.484,8,-0.162],[15.245,18.483,8,-0.162],[15.835,18.481,8,-0.162],[16.131,18.17,9,-89.769],[16.134,17.55,9,-89.769],[16.136,16.93,9,-89.769],[16.139,16.31,9,-89.769],[16.141,15.69,9,-89.769],[16.144,15.07,9,-89.769],[16.146,14.45,9,-89.769],[16.149,13.83,9,-89.769],[15.669,13.518,10,-179.784],[14.706,13.515,10,-179.784],[13.743,13.511,10,-179.784],[12.78,13.507,10,-179.784],[11.818,13.504,10,-179.784],[10.855,13.5,10,-179.784],[9.892,13.496,10,-179.784],[8.93,13.493,10,-179.784],[7.967,13.489,10,-179.784],[7.004,13.485,10,-179.784],[6.041,13.482,10,-179.784],[5.559,13.16,11,-90.192],[5.557,12.52,11,-90.192],[5.555,11.88,11,-90.192],[5.553,11.24,11,-90.192],[5.55,10.6,11,-90.192],[5.548,9.96,11,-90.192],[5.546,9.32,11,-90.192],[5.544,8.68,11,-90.192],[5.542,8.04,11,-90.192],[5.54,7.4,11,-90.192],[5.537,6.76,11,-90.192],[5.535,6.12,11,-90.192],[5.533,5.48,11,-90.192],[5.531,4.84,11,-90.192],[5.899,4.52,12,-0.0],[6.637,4.52,12,-0.0],[7.376,4.52,12,-0.0],[8.114,4.52,12,-0.0],[8.852,4.52,12,-0.0],[9.59,4.52,12,-0.0],[10.328,4.52,12,-0.0],[11.067,4.52,12,-0.0],[11.805,4.52,12,-0.0],[12.543,4.52,12,-0.0],[13.281,4.52,12,-0.0],[14.019,4.52,12,-0.0],[14.758,4.52,12,-0.0],[15.496,4.52,12,-0.0],[16.234,4.52,12,-0.0],[16.972,4.52,12,-0.0],[17.711,4.52,12,-0.0],[18.449,4.52,12,-0.0],[19.187,4.52,12,-0.0],[19.925,4.52,12,-0.0],[20.663,4.52,12,-0.0],[21.402,4.52,12,-0.0],[22.14,4.52,12,-0.0],[22.878,4.52,12,-0.0],[23.616,4.52,12,-0.0],[24.354,4.52,12,-0.0],[25.093,4.52,12,-0.0],[25.831,4.52,12,-0.0],[26.371,5.052,13,125.805],[25.984,5.589,13,125.805],[25.597,6.126,13,125.805],[25.209,6.662,13,125.805],[24.822,7.199,13,125.805],[24.435,7.736,13,125.805],[24.047,8.273,13,125.805],[23.66,8.81,13,125.805],[23.273,9.347,13,125.805],[22.886,9.884,13,125.805],[22.498,10.421,13,125.805],[22.111,10.958,13,125.805],[21.724,11.495,13,125.805],[21.336,12.032,13,125.805],[20.949,12.569,13,125.805],[20.562,13.106,13,125.805],[20.174,13.642,13,125.805],[19.787,14.179,13,125.805],[19.4,14.716,13,125.805],[19.012,15.253,13,125.805],[18.625,15.79,13,125.805],[18.238,16.327,13,125.805],[17.851,16.864,13,125.805],[17.463,17.401,13,125.805],[17.076,17.938,13,125.805],[16.689,18.475,13,125.805],[16.458,18.482,14,0.291],[17.114,18.485,14,0.291],[17.77,18.488,14,0.291],[18.425,18.492,14,0.291],[19.081,18.495,14,0.291],[19.737,18.498,14,0.291],[20.393,18.502,14,0.291],[21.049,18.505,14,0.291],[21.705,18.508,14,0.291],[22.36,18.512,14,0.291],[23.016,18.515,14,0.291],[23.672,18.518,14,0.291],[24.319,18.52,15,-0.0],[24.956,18.52,15,-0.0],[25.594,18.52,15,-0.0],[26.231,18.52,15,-0.0],[26.55,18.852,16,90.0],[26.55,19.517,16,90.0],[26.55,20.183,16,90.0],[26.55,20.848,16,90.0],[26.55,21.513,16,90.0],[26.55,22.178,16,90.0],[26.852,22.51,17,-0.0],[27.455,22.51,17,-0.0],[28.058,22.51,17,-0.0],[28.662,22.51,17,-0.0],[29.265,22.51,17,-0.0],[29.868,22.51,17,-0.0],[30.17,22.189,18,-90.0],[30.17,21.548,18,-90.0],[30.17,20.907,18,-90.0],[30.17,20.266,18,-90.0],[30.17,19.625,18,-90.0],[30.17,18.984,18,-90.0],[30.17,18.343,18,-90.0],[30.17,17.702,18,-90.0],[30.17,17.061,18,-90.0],[30.62,17.028,19,90.0],[30.62,17.605,19,90.0],[30.62,18.182,19,90.0],[30.62,18.759,19,90.0],[30.62,19.337,19,90.0],[30.62,19.913,19,90.0],[30.62,20.491,19,90.0],[30.62,21.068,19,90.0],[30.62,21.645,19,90.0],[30.62,22.222,19,90.0],[30.323,22.758,20,58.307],[30.63,23.255,20,58.307],[30.937,23.752,20,58.307],[30.851,23.485,21,-62.407],[31.171,22.873,21,-62.407],[31.491,22.261,21,-62.407],[31.811,21.649,21,-62.407],[32.131,21.036,21,-62.407],[32.451,20.424,21,-62.407],[32.771,19.812,21,-62.407],[33.091,19.2,21,-62.407],[33.411,18.587,21,-62.407],[33.731,17.975,21,-62.407],[34.051,17.363,21,-62.407],[34.371,16.75,21,-62.407],[34.691,16.138,21,-62.407],[35.011,15.526,21,-62.407],[35.331,14.914,21,-62.407],[35.651,14.301,21,-62.407],[35.971,13.689,21,-62.407],[36.291,13.077,21,-62.407],[36.611,12.465,21,-62.407],[36.931,11.852,21,-62.407],[37.251,11.24,21,-62.407],[37.571,10.628,21,-62.407],[38.13,10.882,22,90.0],[38.13,11.585,22,90.0],[38.13,12.288,22,90.0],[38.13,12.992,22,90.0],[38.13,13.695,22,90.0],[38.13,14.398,22,90.0],[38.13,15.102,22,90.0],[38.13,15.805,22,90.0],[38.13,16.508,22,90.0],[38.13,17.212,22,90.0],[38.13,17.915,22,90.0],[38.13,18.618,22,90.0],[38.376,18.97,23,-0.0],[38.869,18.97,23,-0.0],[39.361,18.97,23,-0.0],[39.854,18.97,23,-0.0],[38.13,19.329,25,90.0],[38.13,20.048,25,90.0],[38.13,20.766,25,90.0],[38.13,21.485,25,90.0],[38.13,22.204,25,90.0],[38.13,22.922,25,90.0],[38.13,23.641,25,90.0],[38.129,24.259,26,90.277],[38.126,24.776,26,90.277],[38.124,25.294,26,90.277],[38.121,25.811,26,90.277],[37.827,26.07,27,-180.0],[37.24,26.07,27,-180.0],[36.653,26.07,27,-180.0],[36.067,26.07,27,-180.0],[35.48,26.07,27,-180.0],[34.893,26.07,27,-180.0],[34.307,26.07,27,-180.0],[33.72,26.07,27,-180.0],[33.133,26.07,27,-180.0],[32.547,26.07,27,-180.0],[31.96,26.07,27,-180.0],[31.373,26.07,27,-180.0],[31.082,25.725,28,-89.723],[31.085,25.035,28,-89.723],[31.088,24.345,28,-89.723],[31.481,23.722,29,34.164],[31.759,23.91,29,34.164],[32.036,24.098,29,34.164],[32.313,24.286,29,34.164],[32.59,24.474,29,34.164],[32.868,24.663,29,34.164],[33.145,24.851,29,34.164],[33.422,25.039,29,34.164],[33.7,25.227,29,34.164],[33.977,25.415,29,34.164],[34.254,25.604,29,34.164],[34.14,26.392,30,90.0],[34.14,27.035,30,90.0],[34.14,27.678,30,90.0],[34.14,28.321,30,90.0],[34.14,28.964,30,90.0],[34.14,29.607,30,90.0],[34.14,30.25,30,90.0],[34.14,30.893,30,90.0],[34.14,31.536,30,90.0],[34.14,32.179,30,90.0],[34.14,32.822,30,90.0],[34.14,33.465,30,90.0],[34.14,34.108,30,90.0]],"runs":[{"id":"1","from":"N1","to":"N2","note":"BUSA -> Z1 see note on run 1 below, splits at 8 px","over":1,"pieces":[[12.58,43.299,12.58,38.05],[12.58,38.05,12.58,31.97]]},{"id":"2","from":"N2","to":"N3","note":"Z1         RES-1 south street","over":1,"pieces":[[12.58,31.97,23.36,31.97]]},{"id":"3","from":"N3","to":"N2","note":"hidden     return under the board","over":0,"pieces":[[23.36,32.42,12.58,32.42]]},{"id":"4","from":"N2","to":"N4","note":"Z1 -> Z2   CROSSES DEV_A1 at 2 px","over":1,"pieces":[[12.58,31.97,12.56,25.47]]},{"id":"5","from":"N4","to":"N5","note":"Z2         RES-1 north street","over":1,"pieces":[[12.56,25.47,23.3,25.45]]},{"id":"6","from":"N5","to":"N4","note":"hidden     return under the board","over":0,"pieces":[[23.301,25.9,12.561,25.92]]},{"id":"7","from":"N4","to":"N32","note":"Z2         trunk up to the y = 24 seam","over":1,"pieces":[[12.56,25.47,12.57,24.0]]},{"id":"8","from":"N32","to":"N30","note":"Z2         seam up to the DEV_A2 corner","over":1,"pieces":[[12.57,24.0,12.59,18.49]]},{"id":"9","from":"N30","to":"N6","note":"Z3         DEV_A2 corner out to the RES-2 tap","over":1,"pieces":[[12.59,18.49,16.13,18.48]]},{"id":"10","from":"N6","to":"N7","note":"Z3         RES-2 lateral north","over":1,"pieces":[[16.13,18.48,16.15,13.52]]},{"id":"11","from":"N7","to":"N8","note":"Z3         RES-2 west","over":1,"pieces":[[16.15,13.52,5.56,13.48]]},{"id":"12","from":"N8","to":"N9","note":"Z3         RES-2 north","over":1,"pieces":[[5.56,13.48,5.53,4.52]]},{"id":"13","from":"N9","to":"N10","note":"Z3         RES-2 top street","over":1,"pieces":[[5.53,4.52,26.2,4.52]]},{"id":"14","from":"N10","to":"N6","note":"hidden     return under the board","over":0,"pieces":[[26.565,4.783,16.495,18.743]]},{"id":"15","from":"N6","to":"N33","note":"Z3         trunk east to the x = 24 seam","over":1,"pieces":[[16.13,18.48,24.0,18.52]]},{"id":"16","from":"N33","to":"N11","note":"Z3         seam east to the corner","over":1,"pieces":[[24.0,18.52,26.55,18.52]]},{"id":"17","from":"N11","to":"N12","note":"Z3         corner south to the TIE","over":1,"pieces":[[26.55,18.52,26.55,22.51]]},{"id":"18","from":"N12","to":"N13","note":"Z4         TIE east toward DEV_B2","over":1,"pieces":[[26.55,22.51,30.17,22.51]]},{"id":"19","from":"N13","to":"N14","note":"Z4         COMMERCIAL lateral, taps ahead of DEV_B2","over":1,"pieces":[[30.17,22.51,30.17,16.74]]},{"id":"20","from":"N14","to":"N13","note":"hidden     return under the board","over":0,"pieces":[[30.62,16.74,30.62,22.51]]},{"id":"21","from":"N13","to":"N35","note":"Z4 -> Z5   THE DIAGONAL, crosses DEV_B2 at 1 px","over":1,"pieces":[[30.17,22.51,31.09,24.0]]},{"id":"22","from":"N35","to":"N29","note":"hidden     under the board to Substation B","over":0,"pieces":[[30.691,23.792,37.731,10.322]]},{"id":"23","from":"N29","to":"N27","note":"Z6         SUB_B_BKR south to the industrial tap","over":1,"pieces":[[38.13,10.53,38.13,18.97]]},{"id":"24","from":"N27","to":"N28","note":"Z6         INDUSTRIAL lateral","over":1,"pieces":[[38.13,18.97,40.1,18.97]]},{"id":"J1","from":"N28","to":"N27","note":"hidden     JUMPER, plain wire N28 -> N27, 0 pixels","over":0,"pieces":[[40.1,19.42,38.13,19.42]]},{"id":"25","from":"N27","to":"N34","note":"Z6         tap south to the y = 24 seam","over":1,"pieces":[[38.13,18.97,38.13,24.0]]},{"id":"26","from":"N34","to":"N26","note":"Z6         seam south to DEV_B1","over":1,"pieces":[[38.13,24.0,38.12,26.07]]},{"id":"27","from":"N26","to":"N16","note":"Z5         DEV_B1 west toward DEV_B2","over":1,"pieces":[[38.12,26.07,31.08,26.07]]},{"id":"28","from":"N16","to":"N35","note":"Z5         north to the seam","over":1,"pieces":[[31.08,26.07,31.09,24.0]]},{"id":"29","from":"N35","to":"N17","note":"hidden     under the board to the DER tap","over":0,"pieces":[[31.343,23.628,34.393,25.698]]},{"id":"30","from":"N17","to":"N24","note":"Z5 -> DER  CROSSES DER_PCC at 2 px","over":1,"pieces":[[34.14,26.07,34.14,34.43]]}],"buttons":[{"label":"FAULT Z1","pin":2,"define":"PIN_BTN_FAULT_Z1","x":10.092,"y":32.153,"r":0.5},{"label":"FAULT Z2","pin":3,"define":"PIN_BTN_FAULT_Z2","x":11.109,"y":26.907,"r":0.5},{"label":"FAULT Z3","pin":4,"define":"PIN_BTN_FAULT_Z3","x":20.106,"y":16.734,"r":0.5},{"label":"FAULT Z4","pin":5,"define":"PIN_BTN_FAULT_Z4","x":28.396,"y":20.744,"r":0.5},{"label":"FAULT Z5","pin":6,"define":"PIN_BTN_FAULT_Z5","x":35.598,"y":24.496,"r":0.5},{"label":"FAULT Z6","pin":7,"define":"PIN_BTN_FAULT_Z6","x":36.598,"y":15.428,"r":0.5},{"label":"FAULT DER","pin":8,"define":"PIN_BTN_FAULT_DER","x":32.264,"y":28.931,"r":0.5},{"label":"RESET","pin":9,"define":"PIN_BTN_RESET","x":26.464,"y":42.868,"r":0.5}],"devices":[{"name":"SUB_A_BKR","element":"E1","pins":[11],"ex":12.59,"ey":38.88,"x":13.34,"y":38.28},{"name":"DEV_A1","element":"E2","pins":[12],"ex":12.59,"ey":30.42,"x":13.34,"y":29.82},{"name":"DEV_A2","element":"E3","pins":[13],"ex":12.59,"ey":18.62,"x":13.34,"y":18.02},{"name":"TIE","element":"E4","pins":[14],"ex":26.55,"ey":22.5,"x":27.3,"y":21.9},{"name":"DEV_B2","element":"E5","pins":[15],"ex":30.08,"ey":22.5,"x":30.83,"y":21.9},{"name":"DEV_B1","element":"E7","pins":[16],"ex":38.1,"ey":26.09,"x":38.85,"y":25.49},{"name":"SUB_B_BKR","element":"E6","pins":[17],"ex":38.1,"ey":10.56,"x":38.85,"y":9.96},{"name":"DER_PCC","element":"R1","pins":[18],"ex":34.15,"ey":27.35,"x":34.9,"y":26.75}],"pinLabels":{"2":"D2","3":"D3","4":"D4","5":"D5","6":"D6","7":"D7","8":"D8","9":"D9","11":"D11","12":"D12","13":"D13","14":"A0","15":"A1","16":"A2","17":"A3","18":"A4","10":"D10"}};
+const META = {"built":"2026-09-13 22:15","title":"FLISR Trainer Test Bench","ino":"FLISR_Trainer.ino","dxf":"Cardboard Layout REV1 backup_9.12.20.dxf","xlsx":"JEA Cardboard Prototype Tabulated REV1.xlsx","logicSha":"18edf6abae7d42c43cb6e0b21900112321dac56a6d81f98042918718a120eb65","checks":["firmware.js matches the .ino logic section (sha256 18edf6abae7d)","56 config values and 5 tables extracted from the .ino","SEG_LEN sums to NUM_LEDS = 337","31 runs agree on From/To between the .ino and the xlsx LED sheet","every visible-run node sits on a DXF route line (N1, N12 inside a DXF device symbol)","placed 337 pixels along the LED sheet runs","8 buttons found in the DXF and matched to their pins","8 device LEDs placed at their Element sheet positions"],"warnings":[]};
+</script>
+<script>
+/* ===========================================================================
+ * FLISR_Trainer firmware port
+ * ---------------------------------------------------------------------------
+ * A line-for-line JavaScript port of the LOGIC section of
+ * FLISR_Trainer/FLISR_Trainer.ino, meaning everything below the line
+ * "NOTHING BELOW HERE NEEDS EDITING". Function names, statement order and
+ * integer widths follow the sketch so the two can be read side by side.
+ *
+ * Nothing configurable is typed in here. Pins, colors, timing, and the
+ * segment table come from `cfg`, which build_sim.py extracts from the .ino
+ * itself. If the logic section of the .ino changes, build_sim.py refuses to
+ * build until this port is updated and PORTED_LOGIC_SHA256 below is bumped.
+ *
+ * Library behavior the sketch depends on is ported from the installed
+ * FastLED 3.10.5 source (power_mgt.cpp.hpp, hsv2rgb.cpp.hpp, scale8.h).
+ *
+ * Runs in the browser (window.FLISR) and in Node (module.exports).
+ * =========================================================================== */
+(function (root) {
+'use strict';
+
+const PORTED_LOGIC_SHA256 = '18edf6abae7d42c43cb6e0b21900112321dac56a6d81f98042918718a120eb65';
+
+const u8  = v => v & 0xFF;
+const u16 = v => v & 0xFFFF;
+const u32 = v => v >>> 0;
+
+const LOW = 0, HIGH = 1;
+const INPUT = 0, OUTPUT = 1, INPUT_PULLUP = 2;
+
+/* ---------------------------------------------------------------------------
+ * FastLED pieces the sketch touches
+ * ------------------------------------------------------------------------- */
+
+/* scale8, FASTLED_SCALE8_FIXED == 1 (fastled_config.h) */
+function scale8(i, scale) { return ((i * (1 + scale)) >> 8) & 0xFF; }
+
+/* scale32by8, FASTLED_SCALE8_FIXED == 1 */
+function scale32by8(i, scale) {
+  if (scale === 0) return 0;
+  return Math.floor((i * (1 + scale)) / 256) >>> 0;
+}
+
+/* hsv2rgb_rainbow with Y1=1, Y2=0, G2=0, Gscale=0. CRGB = CHSV routes here
+ * (fl/gfx/crgb_extra.cpp.hpp). The sketch only ever passes sat=255, val=255,
+ * so the desaturate and dim tails are not ported and are guarded instead.  */
+function hsv2rgb_rainbow(hue, sat, val) {
+  if (sat !== 255 || val !== 255)
+    throw new Error('hsv2rgb_rainbow: only sat=255 val=255 is ported');
+  const offset8 = ((hue & 0x1F) << 3) & 0xFF;
+  const third = scale8(offset8, 85);                 /* 256 / 3 */
+  let r, g, b;
+  if (!(hue & 0x80)) {
+    if (!(hue & 0x40)) {
+      if (!(hue & 0x20)) { r = 255 - third; g = third;      b = 0; }
+      else               { r = 171;         g = 85 + third; b = 0; }
+    } else {
+      if (!(hue & 0x20)) {
+        const twothirds = scale8(offset8, 170);         /* 512 / 3 */
+        r = 171 - twothirds; g = 170 + third; b = 0;
+      } else             { r = 0; g = 255 - third; b = third; }
+    }
+  } else {
+    if (!(hue & 0x40)) {
+      if (!(hue & 0x20)) {
+        const twothirds = scale8(offset8, 170);
+        r = 0; g = 171 - twothirds; b = 85 + twothirds;
+      } else             { r = third; g = 0; b = 255 - third; }
+    } else {
+      if (!(hue & 0x20)) { r = 85 + third;  g = 0; b = 171 - third; }
+      else               { r = 170 + third; g = 0; b = 85 - third; }
+    }
+  }
+  return [u8(r), u8(g), u8(b)];
+}
+
+/* CFastLED as used by the sketch: one controller, brightness, and the
+ * setMaxPowerInVoltsAndMilliamps() limiter. show() hands the frame to the
+ * board along with the scale FastLED would actually clock out.            */
+function makeFastLED(onShow) {
+  let leds = null, numLeds = 0, brightness = 255, maxPower_mW = 0, correction = null;
+  return {
+    addLeds(type, dataPin, order, buffer, n) {
+      leds = buffer; numLeds = n;
+      const ctl = { type, dataPin, order, setCorrection(c) { correction = c; return ctl; } };
+      return ctl;
+    },
+    setBrightness(b) { brightness = u8(b); },
+    setMaxPowerInVoltsAndMilliamps(volts, milliamps) { maxPower_mW = u32(u8(volts) * milliamps); },
+    show() {
+      let scale = brightness, requested_mW = 0, total_mW = 0;
+      if (maxPower_mW) {
+        /* calculate_max_brightness_for_power_mW(target, max_mW), 2-arg form */
+        let r = 0, g = 0, b = 0;
+        for (let i = 0; i < numLeds; i++) { r += leds[i * 3]; g += leds[i * 3 + 1]; b += leds[i * 3 + 2]; }
+        r = u32(r * 80) >>> 8;  g = u32(g * 55) >>> 8;  b = u32(b * 75) >>> 8;
+        total_mW = 125 /* gMCU_mW */ + r + g + b + 5 * numLeds;
+        requested_mW = scale32by8(total_mW, scale);
+        if (!(requested_mW < maxPower_mW))
+          scale = u8(Math.floor((scale * maxPower_mW) / requested_mW));
+      }
+      onShow(leds, numLeds, scale, { requested_mW, total_mW, maxPower_mW, brightness, correction });
+    }
+  };
+}
+
+function fill_solid(leds, n, rgb) {
+  for (let i = 0; i < n; i++) { leds[i * 3] = rgb[0]; leds[i * 3 + 1] = rgb[1]; leds[i * 3 + 2] = rgb[2]; }
+}
+
+/* Arduino Print: print(x) writes x, numbers in decimal. F() is identity. */
+function makeSerial(write) {
+  const s = v => (typeof v === 'number' ? String(Math.trunc(v)) : String(v));
+  return {
+    begin() {},
+    print(v)       { write(s(v)); },
+    println(v)     { write((v === undefined ? '' : s(v)) + '\r\n'); }
+  };
+}
+const F = s => s;
+
+/* ===========================================================================
+ * The sketch
+ * =========================================================================== */
+function createFirmware(cfg, hal) {
+  const D = cfg.defines, T = cfg.tables;
+  const { millis, pinMode, digitalRead, digitalWrite, pgm_read_byte } = hal;
+  const Serial = hal.Serial, FastLED = hal.FastLED;
+  const NUM_LEDS = D.NUM_LEDS, NUM_SEGMENTS = D.NUM_SEGMENTS;
+  const BLACK = [0, 0, 0];
+
+  /* ---- device chain ---------------------------------------------------- */
+  const DEV_SUB_A_BKR = 0, DEV_A1 = 1, DEV_A2 = 2, DEV_TIE = 3, DEV_B2 = 4,
+        DEV_B1 = 5, DEV_SUB_B_BKR = 6, DEV_DER_PCC = 7, NUM_DEVICES = 8;
+
+  /* ---- states ---------------------------------------------------------- */
+  const ZS_A = 0, ZS_B = 1, ZS_DEAD = 2, ZS_FAULT = 3;
+  const DS_CLOSED = 0, DS_OPEN = 1, DS_TRIPPED = 2, DS_LOCKOUT = 3;
+
+  /* ---- steps ----------------------------------------------------------- */
+  const ST_NORMAL = 0, ST_FAULT = 1, ST_LOCKOUT = 2, ST_ISOLATE = 3, ST_RESTORE = 4, ST_LAST = 4;
+
+  /* ---- fault selection ------------------------------------------------- */
+  const FAULT_NONE = 0, FAULT_DER = 7;
+
+  /* ---- buttons --------------------------------------------------------- */
+  const NUM_BUTTONS = 8, BTN_DER_IDX = 6, BTN_RESET_IDX = 7;
+
+  const BTN_PIN = [
+    D.PIN_BTN_FAULT_Z1, D.PIN_BTN_FAULT_Z2, D.PIN_BTN_FAULT_Z3, D.PIN_BTN_FAULT_Z4,
+    D.PIN_BTN_FAULT_Z5, D.PIN_BTN_FAULT_Z6, D.PIN_BTN_FAULT_DER, D.PIN_BTN_RESET
+  ];
+
+  const DEV_PIN = D.DEVICE_LED_MODE === 1 ? [
+    D.PIN_DEV_SUB_A_BKR, D.PIN_DEV_DEV_A1, D.PIN_DEV_DEV_A2, D.PIN_DEV_TIE,
+    D.PIN_DEV_DEV_B2, D.PIN_DEV_DEV_B1, D.PIN_DEV_SUB_B_BKR, D.PIN_DEV_DER_PCC
+  ] : null;
+  const DEV_PIN_G = D.DEVICE_LED_MODE === 1 ? null : [
+    D.PIN_DEVG_SUB_A_BKR, D.PIN_DEVG_DEV_A1, D.PIN_DEVG_DEV_A2, D.PIN_DEVG_TIE,
+    D.PIN_DEVG_DEV_B2, D.PIN_DEVG_DEV_B1, D.PIN_DEVG_SUB_B_BKR, D.PIN_DEVG_DER_PCC
+  ];
+  const DEV_PIN_R = D.DEVICE_LED_MODE === 1 ? null : [
+    D.PIN_DEVR_SUB_A_BKR, D.PIN_DEVR_DEV_A1, D.PIN_DEVR_DEV_A2, D.PIN_DEVR_TIE,
+    D.PIN_DEVR_DEV_B2, D.PIN_DEVR_DEV_B1, D.PIN_DEVR_SUB_B_BKR, D.PIN_DEVR_DER_PCC
+  ];
+
+  /* ---- runtime state (globals are zero-initialized, as in C) ----------- */
+  const leds = new Uint8Array(NUM_LEDS * 3);
+
+  let faultSel = FAULT_NONE;
+  let stepNow  = ST_NORMAL;
+
+  const zoneState = new Uint8Array(7);          /* index 1..6 used, 0 unused */
+  const devState  = new Uint8Array(NUM_DEVICES);
+  let derFaulted = false;
+
+  let stepStartedAt = 0;
+  const btnStable    = new Array(NUM_BUTTONS).fill(false);
+  const btnLast      = new Array(NUM_BUTTONS).fill(false);
+  const btnChangedAt = new Uint32Array(NUM_BUTTONS);
+
+  const setLed = (i, rgb) => { leds[i * 3] = rgb[0]; leds[i * 3 + 1] = rgb[1]; leds[i * 3 + 2] = rgb[2]; };
+
+  /* ======================================================================
+   * FLISR MODEL
+   * ==================================================================== */
+  function computeModel() {
+    for (let k = 1; k <= 6; k++) zoneState[k] = (k <= 3) ? ZS_A : ZS_B;
+    for (let d = 0; d < NUM_DEVICES; d++) devState[d] = DS_CLOSED;
+    devState[DEV_TIE] = DS_OPEN;
+    derFaulted = false;
+
+    if (stepNow === ST_NORMAL || faultSel === FAULT_NONE) return;
+
+    if (faultSel === FAULT_DER) {
+      derFaulted = true;
+      devState[DEV_DER_PCC] = (stepNow >= ST_LOCKOUT) ? DS_LOCKOUT : DS_TRIPPED;
+      return;
+    }
+
+    const f       = faultSel;
+    const aSide   = (f <= 3);
+    const trip    = aSide ? u8(f - 1) : f;
+    const farSide = aSide ? f : u8(f - 1);
+
+    if (aSide) { for (let k = f; k <= 3; k++) zoneState[k] = ZS_DEAD; }
+    else       { for (let k = 4; k <= f; k++) zoneState[k] = ZS_DEAD; }
+    zoneState[f] = ZS_FAULT;
+
+    devState[trip] = (stepNow >= ST_LOCKOUT) ? DS_LOCKOUT : DS_TRIPPED;
+
+    if (stepNow >= ST_ISOLATE) devState[farSide] = DS_OPEN;
+
+    if (stepNow >= ST_RESTORE) {
+      const lo = aSide ? u8(f + 1) : 4;
+      const hi = aSide ? 3 : u8(f - 1);
+      if (lo <= hi) {
+        devState[DEV_TIE] = DS_CLOSED;
+        for (let k = lo; k <= hi; k++) zoneState[k] = aSide ? ZS_B : ZS_A;
+      }
+    }
+
+    if (zoneState[5] === ZS_DEAD || zoneState[5] === ZS_FAULT)
+      devState[DEV_DER_PCC] = DS_TRIPPED;
+  }
+
+  function derDisplayState() {
+    if (derFaulted)                          return ZS_FAULT;
+    if (devState[DEV_DER_PCC] !== DS_CLOSED) return ZS_DEAD;
+    return zoneState[5];
+  }
+
+  /* ======================================================================
+   * RENDER
+   * ==================================================================== */
+  function colorForState(s, blinkOn) {
+    switch (s) {
+      case ZS_A:     return D.COLOR_SRC_A;
+      case ZS_B:     return D.COLOR_SRC_B;
+      case ZS_FAULT: return blinkOn ? D.COLOR_FAULT : D.COLOR_DEAD;
+      default:       return D.COLOR_DEAD;
+    }
+  }
+
+  function colorForZone(zn, blinkOn) {
+    if (zn === D.ZN_HID)  return D.COLOR_DEAD;
+    if (zn === D.ZN_BUSA) return D.COLOR_SRC_A;
+    if (zn === D.ZN_DER)  return colorForState(derDisplayState(), blinkOn);
+    return colorForState(zoneState[zn], blinkOn);
+  }
+
+  function render() {
+    const blinking = (stepNow === ST_FAULT || stepNow === ST_LOCKOUT);
+    const blinkOn  = blinking ? ((Math.floor(millis() / D.FAULT_BLINK_MS) & 1) !== 0) : true;
+
+    let idx = 0;
+    for (let s = 0; s < NUM_SEGMENTS; s++) {
+      const len   = pgm_read_byte(T.SEG_LEN, s);
+      const over  = pgm_read_byte(T.SEG_OVER, s);
+      const split = pgm_read_byte(T.SEG_SPLIT, s);
+      const zHead = pgm_read_byte(T.SEG_ZONE, s);
+      const zTail = pgm_read_byte(T.SEG_ZONE2, s);
+
+      for (let i = 0; i < len; i = u8(i + 1)) {
+        if (idx >= NUM_LEDS) break;
+        let zn = (split && i >= split) ? zTail : zHead;
+        if (!over) zn = D.ZN_HID;
+        setLed(idx, colorForZone(zn, blinkOn)); idx = u16(idx + 1);
+      }
+    }
+    while (idx < NUM_LEDS) { setLed(idx, D.COLOR_DEAD); idx = u16(idx + 1); }
+
+    FastLED.show();
+  }
+
+  function renderDeviceLeds() {
+    const slow = (Math.floor(millis() / D.DEV_TRIP_BLINK_MS) & 1) !== 0;
+    const fast = (Math.floor(millis() / D.DEV_LOCK_BLINK_MS) & 1) !== 0;
+
+    for (let d = 0; d < NUM_DEVICES; d++) {
+      if (D.DEVICE_LED_MODE === 1) {
+        let lit = (devState[d] === DS_CLOSED);
+        if (devState[d] === DS_TRIPPED) lit = slow;
+        if (devState[d] === DS_LOCKOUT) lit = fast;
+        digitalWrite(pgm_read_byte(DEV_PIN, d), lit ? HIGH : LOW);
+      } else {
+        const closed = (devState[d] === DS_CLOSED);
+        let opened = (devState[d] === DS_OPEN);
+        if (devState[d] === DS_TRIPPED) opened = slow;
+        if (devState[d] === DS_LOCKOUT) opened = fast;
+        digitalWrite(pgm_read_byte(DEV_PIN_G, d), closed ? HIGH : LOW);
+        digitalWrite(pgm_read_byte(DEV_PIN_R, d), opened ? HIGH : LOW);
+      }
+    }
+  }
+
+  /* ======================================================================
+   * SERIAL NARRATION
+   * ==================================================================== */
+  function printDeviceName(d) {
+    switch (d) {
+      case DEV_SUB_A_BKR: Serial.print(F('SUB_A_BKR')); break;
+      case DEV_A1:        Serial.print(F('DEV_A1'));    break;
+      case DEV_A2:        Serial.print(F('DEV_A2'));    break;
+      case DEV_TIE:       Serial.print(F('TIE'));       break;
+      case DEV_B2:        Serial.print(F('DEV_B2'));    break;
+      case DEV_B1:        Serial.print(F('DEV_B1'));    break;
+      case DEV_SUB_B_BKR: Serial.print(F('SUB_B_BKR')); break;
+      default:            Serial.print(F('DER_PCC'));   break;
+    }
+  }
+
+  function printZState(z) {
+    switch (z) {
+      case ZS_A:     Serial.print(F('A'));    break;
+      case ZS_B:     Serial.print(F('B'));    break;
+      case ZS_FAULT: Serial.print(F('FLT'));  break;
+      default:       Serial.print(F('dead')); break;
+    }
+  }
+
+  function printState() {
+    Serial.println();
+    Serial.print(F('STEP 0'));
+    Serial.print(stepNow);
+    Serial.print(F('  '));
+    switch (stepNow) {
+      case ST_NORMAL:  Serial.println(F('NORMAL'));  break;
+      case ST_FAULT:   Serial.println(F('FAULT'));   break;
+      case ST_LOCKOUT: Serial.println(F('LOCKOUT')); break;
+      case ST_ISOLATE: Serial.println(F('ISOLATE')); break;
+      default:         Serial.println(F('RESTORE')); break;
+    }
+
+    Serial.print(F('  fault   : '));
+    if      (faultSel === FAULT_NONE) Serial.println(F('none'));
+    else if (faultSel === FAULT_DER)  Serial.println(F('DER branch'));
+    else  { Serial.print(F('Z')); Serial.println(faultSel); }
+
+    Serial.print(F('  zones   : '));
+    for (let k = 1; k <= 6; k++) {
+      Serial.print(F('Z')); Serial.print(k); Serial.print(F('='));
+      printZState(zoneState[k]);
+      Serial.print(F(' '));
+    }
+    Serial.print(F('DER='));
+    printZState(derDisplayState());
+    Serial.println();
+
+    Serial.print(F('  devices : '));
+    for (let d = 0; d < NUM_DEVICES; d++) {
+      printDeviceName(d);
+      Serial.print(F('='));
+      switch (devState[d]) {
+        case DS_CLOSED:  Serial.print(F('CLOSED'));  break;
+        case DS_OPEN:    Serial.print(F('OPEN'));    break;
+        case DS_TRIPPED: Serial.print(F('TRIPPED')); break;
+        default:         Serial.print(F('LOCKOUT')); break;
+      }
+      Serial.print(F(' '));
+    }
+    Serial.println();
+  }
+
+  /* ======================================================================
+   * STATE TRANSITIONS
+   * ==================================================================== */
+  function goToStep(s) {
+    stepNow = u8(s);
+    stepStartedAt = millis();
+    computeModel();
+    printState();
+  }
+
+  function startFault(f) {
+    faultSel = u8(f);
+    goToStep(ST_FAULT);
+  }
+
+  function resetAll() {
+    faultSel = FAULT_NONE;
+    goToStep(ST_NORMAL);
+  }
+
+  /* ======================================================================
+   * BUTTONS
+   * ==================================================================== */
+  function initButtons() {
+    for (let b = 0; b < NUM_BUTTONS; b++) {
+      pinMode(pgm_read_byte(BTN_PIN, b), INPUT_PULLUP);
+      btnStable[b]    = true;
+      btnLast[b]      = true;
+      btnChangedAt[b] = 0;
+    }
+  }
+
+  function pollButtons() {
+    let pressed = 255;
+    const now = millis();
+
+    for (let b = 0; b < NUM_BUTTONS; b++) {
+      const raw = (digitalRead(pgm_read_byte(BTN_PIN, b)) === HIGH);
+      if (raw !== btnLast[b]) {
+        btnLast[b]      = raw;
+        btnChangedAt[b] = now;
+      }
+      else if (u32(now - btnChangedAt[b]) >= D.DEBOUNCE_MS && raw !== btnStable[b]) {
+        btnStable[b] = raw;
+        if (!raw && pressed === 255) pressed = b;
+      }
+    }
+    return pressed;
+  }
+
+  function handleButton(b) {
+    if (b === BTN_RESET_IDX) { resetAll(); return; }
+
+    const f = (b === BTN_DER_IDX) ? FAULT_DER : u8(b + 1);
+
+    if (f === faultSel && stepNow !== ST_NORMAL) {
+      if (stepNow < ST_LAST) goToStep(stepNow + 1);
+    } else {
+      startFault(f);
+    }
+  }
+
+  /* ======================================================================
+   * SETUP AND LOOP
+   * setup() is a generator so delay(ms) can hand time back to the board:
+   * `yield ms` is delay(ms).
+   * ==================================================================== */
+  function* segmentTest() {
+    let startIdx = 0;
+    for (let s = 0; s < NUM_SEGMENTS; s++) {
+      const len = pgm_read_byte(T.SEG_LEN, s);
+      if (len === 0) continue;
+
+      fill_solid(leds, NUM_LEDS, BLACK);
+      for (let i = 0; i < len && u16(startIdx + i) < NUM_LEDS; i++)
+        setLed(startIdx + i, hsv2rgb_rainbow(u8(Math.floor((s * 255) / NUM_SEGMENTS)), 255, 255));
+      FastLED.show();
+
+      Serial.print(F('segment '));  Serial.print(s + 1);
+      Serial.print(F('  px '));     Serial.print(startIdx);
+      Serial.print(F(' .. '));      Serial.print(startIdx + len - 1);
+      Serial.print(F('  len '));    Serial.println(len);
+
+      startIdx = u16(startIdx + len);
+      yield D.SEGMENT_TEST_MS;
+    }
+  }
+
+  function* setup() {
+    Serial.begin(115200);
+    yield 200;
+
+    Serial.println(F('\n=== JEA Tabletop FLISR Trainer ==='));
+
+    let sum = 0;
+    for (let s = 0; s < NUM_SEGMENTS; s++) sum = u16(sum + pgm_read_byte(T.SEG_LEN, s));
+    Serial.print(F('segment table total : ')); Serial.println(sum);
+    Serial.print(F('NUM_LEDS            : ')); Serial.println(NUM_LEDS);
+    if (sum !== NUM_LEDS) {
+      Serial.println(F('[!] MISMATCH. Set NUM_LEDS to the segment table total above.'));
+    } else {
+      Serial.println(F('[OK] segment table matches NUM_LEDS'));
+    }
+
+    initButtons();
+
+    if (D.DEVICE_LED_MODE === 1) {
+      for (let d = 0; d < NUM_DEVICES; d++) {
+        pinMode(pgm_read_byte(DEV_PIN, d), OUTPUT);
+        digitalWrite(pgm_read_byte(DEV_PIN, d), LOW);
+      }
+    } else {
+      for (let d = 0; d < NUM_DEVICES; d++) {
+        pinMode(pgm_read_byte(DEV_PIN_G, d), OUTPUT);
+        pinMode(pgm_read_byte(DEV_PIN_R, d), OUTPUT);
+        digitalWrite(pgm_read_byte(DEV_PIN_G, d), LOW);
+        digitalWrite(pgm_read_byte(DEV_PIN_R, d), LOW);
+      }
+    }
+
+    FastLED.addLeds(D.LED_TYPE, D.LED_DATA_PIN, D.COLOR_ORDER, leds, NUM_LEDS)
+           .setCorrection('TypicalLEDStrip');
+    FastLED.setBrightness(D.BRIGHTNESS);
+    FastLED.setMaxPowerInVoltsAndMilliamps(5, D.MAX_MILLIAMPS);
+    fill_solid(leds, NUM_LEDS, BLACK);
+    FastLED.show();
+
+    if (D.SEGMENT_TEST_MODE) {
+      Serial.println(F('[!] SEGMENT_TEST_MODE is on. Set it to 0 for normal operation.'));
+      yield* segmentTest();
+    }
+
+    resetAll();
+  }
+
+  let lastFrame = 0;                 /* static uint32_t lastFrame in loop() */
+  function loop() {
+    const b = pollButtons();
+    if (b !== 255) handleButton(b);
+
+    if (D.AUTO_ADVANCE) {
+      if (stepNow !== ST_NORMAL && stepNow < ST_LAST &&
+          u32(millis() - stepStartedAt) >= D.STEP_INTERVAL_MS) {
+        goToStep(stepNow + 1);
+      }
+    }
+
+    renderDeviceLeds();
+
+    if (u32(millis() - lastFrame) >= D.FRAME_INTERVAL_MS) {
+      lastFrame = millis();
+      render();
+    }
+  }
+
+  return { setup, loop };
+}
+
+/* ===========================================================================
+ * The board: pins, clock, strip latch, serial line. Not part of the sketch.
+ *
+ * Time model: a virtual millisecond clock starting at 0 on power-up or reset.
+ * setup() runs first, with delay(ms) advancing the clock. After that loop()
+ * runs once per virtual millisecond. Button contacts are timestamped events
+ * applied when the clock reaches them, so a press shorter than DEBOUNCE_MS
+ * is ignored exactly as the debounce code would ignore it.
+ * =========================================================================== */
+function createBoard(cfg, io) {
+  let now = 0;
+  const mode  = new Uint8Array(256);
+  const level = new Uint8Array(256);
+  const contact = io.contacts || new Uint8Array(256); /* 1 = button closed to GND */
+  const events = [];
+
+  const hal = {
+    millis: () => u32(now),
+    pinMode(p, m) { mode[p] = m; if (m !== OUTPUT) level[p] = LOW; },
+    digitalWrite(p, v) { level[p] = v ? HIGH : LOW; },
+    digitalRead(p) {
+      if (contact[p]) return LOW;
+      return mode[p] === INPUT_PULLUP ? HIGH : LOW;
+    },
+    pgm_read_byte: (arr, i) => arr[i],
+    Serial: makeSerial(io.onSerial || (() => {})),
+    FastLED: makeFastLED(io.onShow || (() => {}))
+  };
+
+  const fw = createFirmware(cfg, hal);
+  const setupIt = fw.setup();
+  let inSetup = true, delayUntil = 0;
+
+  function applyEvents() {
+    while (events.length && events[0].t <= now) {
+      const e = events.shift();
+      contact[e.pin] = e.closed ? 1 : 0;
+    }
+  }
+
+  return {
+    get now() { return now; },
+    get inSetup() { return inSetup; },
+    contacts: contact,
+    /* Close or open a button contact at virtual time t (defaults to now). */
+    setContact(pin, closed, t) {
+      events.push({ pin, closed, t: Math.max(t === undefined ? now : t, now) });
+    },
+    pinMode: p => mode[p],
+    pinLevel: p => (mode[p] === OUTPUT ? level[p] : hal.digitalRead(p)),
+    /* Run the MCU until the virtual clock reaches t. */
+    runUntil(t) {
+      while (now < t) {
+        applyEvents();
+        if (inSetup) {
+          if (now < delayUntil) { now = Math.min(delayUntil, t); continue; }
+          const r = setupIt.next();
+          if (r.done) inSetup = false; else delayUntil = now + r.value;
+          continue;
+        }
+        fw.loop();
+        now += 1;
+      }
+      applyEvents();
+    }
+  };
+}
+
+const api = { PORTED_LOGIC_SHA256, createBoard, createFirmware, makeFastLED, hsv2rgb_rainbow,
+              LOW, HIGH, INPUT, OUTPUT, INPUT_PULLUP };
+if (typeof module !== 'undefined' && module.exports) module.exports = api;
+else root.FLISR = api;
+
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function () {
+'use strict';
+const D = CFG.defines, T = CFG.tables, G = GEOM;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const PL = p => G.pinLabels[p] || ('D' + p);
+const hex2 = v => v.toString(16).toUpperCase().padStart(2, '0');
+const rgbCss = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+const ZN = {};
+for (const k in D) if (k.startsWith('ZN_')) ZN[D[k]] = k.slice(3);
+
+/* ---- title block, key, checks --------------------------------------- */
+const autoTxt = D.AUTO_ADVANCE ? `auto every ${D.STEP_INTERVAL_MS} ms` : 'manual only';
+$('#titleblock').innerHTML = [                  /* values are HTML */
+  ['Sketch', esc(META.ino)], ['Logic sha256', esc(META.logicSha.slice(0, 16))],
+  ['Layout', esc(META.dxf)], ['Tables', esc(META.xlsx)],
+  ['Strip', `${esc(D.LED_TYPE)} ${esc(D.COLOR_ORDER)} &middot; ${D.NUM_LEDS} px &middot; ${PL(D.LED_DATA_PIN)}`],
+  ['Device LEDs', `mode ${D.DEVICE_LED_MODE} &middot; ${D.DEVICE_LED_MODE === 1 ? '1 pin' : '2 pins'} each`],
+  ['Steps', esc(autoTxt)], ['Built', esc(META.built)]
+].map(([k, v]) => `<div class="tb-cell"><div class="lbl">${k}</div><div class="v">${v}</div></div>`).join('');
+
+$('#key').innerHTML = [
+  ['COLOR_SRC_A', D.COLOR_SRC_A], ['COLOR_SRC_B', D.COLOR_SRC_B],
+  ['COLOR_FAULT', D.COLOR_FAULT], ['COLOR_DEAD', D.COLOR_DEAD]
+].map(([n, c]) => `<span><i class="sw" style="background:${rgbCss(c)}"></i>${n.slice(6)}</span>`).join('');
+
+$('#checks').innerHTML =
+  META.warnings.map(w => `<li><span class="t w">[!]</span><span>${esc(w)}</span></li>`).join('') +
+  META.checks.map(c => `<li><span class="t">[OK]</span><span>${esc(c)}</span></li>`).join('');
+
+/* ---- board drawing -------------------------------------------------- */
+const svg = $('#board');
+const S = G.board;
+svg.setAttribute('viewBox', `-0.6 -0.6 ${S + 1.2} ${S + 1.2}`);
+
+const runStart = [];
+{ let n = 0; T.SEG_LEN.forEach((len, s) => { runStart[s] = n; n += len; }); }
+
+function textSvg(t) {
+  const [x, y, h, att, lines] = t;
+  const col = (att - 1) % 3, row = Math.floor((att - 1) / 3);
+  const lh = h * 5 / 3, total = h + (lines.length - 1) * lh;
+  const top = row === 0 ? y : row === 1 ? y - total / 2 : y - total;
+  const anchor = ['start', 'middle', 'end'][col];
+  return lines.map((ln, i) =>
+    `<text class="dxf-text" x="${x}" y="${(top + h + i * lh).toFixed(3)}" font-size="${(h * 1.42).toFixed(3)}" text-anchor="${anchor}">${esc(ln)}</text>`).join('');
+}
+
+function tapeSvg(run) {
+  return run.pieces.map(p =>
+    `<line class="tape-edge" x1="${p[0]}" y1="${p[1]}" x2="${p[2]}" y2="${p[3]}"/>` +
+    `<line class="tape" x1="${p[0]}" y1="${p[1]}" x2="${p[2]}" y2="${p[3]}"/>`).join('');
+}
+
+function pixelSvg(p, i) {
+  return `<g class="px" data-i="${i}" transform="translate(${p[0]} ${p[1]}) rotate(${p[3]})">` +
+    `<circle class="px-glow" r=".36"/><rect class="px-chip" x="-.115" y="-.115" width=".23" height=".23" rx=".03"/></g>`;
+}
+
+const o = [];
+o.push(`<rect class="b-ground" x="0" y="0" width="${S}" height="${S}"/>`);
+o.push(`<path class="dxf-route" d="${G.drawing.route}"/>`);
+o.push(`<path class="dxf-fill" d="${G.drawing.fill}"/>`);
+o.push(`<path class="dxf-ink" d="${G.drawing.ink}"/>`);
+o.push(G.drawing.circles.map(c => `<circle class="dxf-ink" cx="${c[0]}" cy="${c[1]}" r="${c[2]}"/>`).join(''));
+o.push(G.drawing.texts.map(textSvg).join(''));
+
+/* under-board runs, hidden unless toggled */
+o.push('<g id="under" hidden>');
+G.runs.forEach((r, s) => { if (!r.over) o.push(tapeSvg(r)); });
+G.pixels.forEach((p, i) => { if (!G.runs[p[2]].over) o.push(pixelSvg(p, i)); });
+o.push('</g>');
+
+/* visible strip */
+o.push('<g id="strip">');
+G.runs.forEach(r => { if (r.over) o.push(tapeSvg(r)); });
+G.pixels.forEach((p, i) => { if (G.runs[p[2]].over) o.push(pixelSvg(p, i)); });
+o.push('</g>');
+
+/* device LEDs */
+const mode2 = D.DEVICE_LED_MODE !== 1;
+o.push(G.devices.map(dv => {
+  const leds = dv.pins.map((pin, k) => {
+    const cx = (dv.x + k * 0.42).toFixed(3), c = mode2 ? (k === 0 ? 'green' : 'red') : 'amber';
+    return `<circle class="dev-halo" id="dh-${pin}" cx="${cx}" cy="${dv.y}" r=".34"/>` +
+           `<circle class="dev-led" id="dl-${pin}" data-c="${c}" cx="${cx}" cy="${dv.y}" r=".13"/>`;
+  }).join('');
+  const lx = (dv.x + 0.26 + (dv.pins.length - 1) * 0.42).toFixed(3);
+  return `<g class="dev"><line class="dev-lead" x1="${dv.ex}" y1="${dv.ey}" x2="${dv.x}" y2="${dv.y}"/>` +
+    `<circle class="dev-mark" cx="${dv.ex}" cy="${dv.ey}" r=".06"/>${leds}` +
+    `<text class="dev-lbl" x="${lx}" y="${(dv.y + 0.13).toFixed(3)}">${dv.name} ${dv.pins.map(PL).join('/')}</text></g>`;
+}).join(''));
+
+/* buttons */
+o.push(G.buttons.map(b =>
+  `<g class="btn${b.define === 'PIN_BTN_RESET' ? ' reset' : ''}" tabindex="0" role="button" aria-label="${b.label} button on ${PL(b.pin)}" data-pin="${b.pin}" transform="translate(${b.x} ${b.y})">` +
+  `<circle class="btn-body" r="${b.r}"/><circle class="btn-cap" r="${(b.r * 0.66).toFixed(3)}"/></g>`).join(''));
+
+svg.innerHTML = o.join('');
+
+const pxEls = [];
+svg.querySelectorAll('.px').forEach(g => { pxEls[+g.dataset.i] = { g, glow: g.firstChild, chip: g.lastChild }; });
+const btnEls = new Map();
+svg.querySelectorAll('.btn').forEach(g => btnEls.set(+g.dataset.pin, g));
+
+$('#show-under').addEventListener('change', e => { $('#under').hidden = !e.target.checked; });
+
+/* ---- side tables ---------------------------------------------------- */
+$('#inputs').innerHTML = G.buttons.map(b =>
+  `<tr><td class="pin">${PL(b.pin)}</td><td class="nm">${b.label}</td><td class="lv"><span class="lvl" id="in-${b.pin}">not set</span></td></tr>`).join('');
+const outRows = [];
+G.devices.forEach(dv => dv.pins.forEach((pin, k) => {
+  outRows.push({ pin, name: dv.name + (mode2 ? (k === 0 ? ' green' : ' red') : ''), c: mode2 ? (k === 0 ? 'lit-g' : 'lit-r') : 'lit' });
+}));
+$('#outputs').innerHTML = outRows.map(r =>
+  `<tr><td class="pin">${PL(r.pin)}</td><td class="nm">${r.name}</td><td class="lv"><span class="lvl" id="out-${r.pin}">not set</span></td></tr>`).join('');
+$('#stats').innerHTML = [
+  ['show() calls', 'st-count'], ['last show()', 'st-last'],
+  ['strip power', 'st-power'], ['brightness out', 'st-scale']
+].map(([k, id]) => `<div class="stat"><div class="lbl">${k}</div><div class="v" id="${id}">&ndash;</div></div>`).join('');
+
+/* ---- the board ------------------------------------------------------ */
+const contacts = new Uint8Array(256);
+const holders = new Map();            /* pin -> Set of pointer ids / 'key' */
+const strip = new Uint8Array(D.NUM_LEDS * 3);
+let frameSeq = 0;                     /* bumps whenever the strip latch changes */
+let showCalls = 0, lastShowAt = null, lastScale = null, lastPower = null;
+let serialBuf = '';
+let board = null, bootWall = 0;
+
+function onShow(leds, n, scale, power) {
+  strip.set(leds.subarray(0, n * 3));
+  frameSeq++; showCalls++; lastShowAt = board.now; lastScale = scale; lastPower = power;
+}
+function onSerial(s) { serialBuf += s; }
+
+function boot(powerCycle) {
+  if (powerCycle) { strip.fill(0); frameSeq++; }   /* no power, strip goes dark */
+  showCalls = 0; lastShowAt = null; lastScale = null; lastPower = null;
+  contacts.fill(0);
+  holders.forEach((set, pin) => { if (set.size) contacts[pin] = 1; });
+  board = FLISR.createBoard(CFG, { contacts, onShow, onSerial });
+  bootWall = performance.now();
+}
+const vnow = () => Math.floor(performance.now() - bootWall);
+
+$('#btn-reset').addEventListener('click', () => boot(false));
+$('#btn-power').addEventListener('click', () => boot(true));
+
+/* ---- buttons: hold to close the contact ----------------------------- */
+function hold(pin, who, closed) {
+  let set = holders.get(pin);
+  if (!set) holders.set(pin, set = new Set());
+  const was = set.size > 0;
+  closed ? set.add(who) : set.delete(who);
+  const is = set.size > 0;
+  if (was !== is) {
+    board.setContact(pin, is, vnow());
+    btnEls.get(pin).classList.toggle('down', is);
+  }
+}
+btnEls.forEach((g, pin) => {
+  g.addEventListener('pointerdown', e => {
+    if (e.button !== undefined && e.button !== 0) return;
+    e.preventDefault(); g.focus({ preventScroll: true });
+    g.setPointerCapture(e.pointerId);
+    hold(pin, e.pointerId, true);
+  });
+  const up = e => hold(pin, e.pointerId, false);
+  g.addEventListener('pointerup', up);
+  g.addEventListener('pointercancel', up);
+  g.addEventListener('lostpointercapture', up);
+  g.addEventListener('contextmenu', e => e.preventDefault());
+  g.addEventListener('keydown', e => {
+    if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); hold(pin, 'key', true); }
+  });
+  g.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); hold(pin, 'key', false); } });
+  g.addEventListener('blur', () => hold(pin, 'key', false));
+});
+
+/* ---- probe ---------------------------------------------------------- */
+let probeIdx = -1;
+function probeText(i) {
+  const s = G.pixels[i][2], r = G.runs[s], local = i - runStart[s];
+  const split = T.SEG_SPLIT[s];
+  let zn = (split && local >= split) ? T.SEG_ZONE2[s] : T.SEG_ZONE[s];
+  const zoneTxt = r.over ? `zone <b>${ZN[zn] || zn}</b>` : `under board, held dark`;
+  const c = [strip[i * 3], strip[i * 3 + 1], strip[i * 3 + 2]];
+  return `<b>px ${i}</b> &middot; run ${r.id} (${r.from} &rarr; ${r.to}), pixel ${local + 1} of ${T.SEG_LEN[s]} &middot; ${zoneTxt}` +
+    ` &middot; leds[${i}] = <i class="sw" style="background:${rgbCss(c)}"></i><b>${hex2(c[0])} ${hex2(c[1])} ${hex2(c[2])}</b>` +
+    `<br><span style="color:var(--ink3)">${esc(r.note)}</span>`;
+}
+function setProbe(i) {
+  if (probeIdx >= 0 && pxEls[probeIdx]) pxEls[probeIdx].g.classList.remove('probed');
+  probeIdx = i;
+  pxEls[i].g.classList.add('probed');
+  $('#probe').innerHTML = probeText(i);
+}
+svg.addEventListener('pointerover', e => { const g = e.target.closest('.px'); if (g) setProbe(+g.dataset.i); });
+svg.addEventListener('pointerdown', e => { const g = e.target.closest('.px'); if (g) setProbe(+g.dataset.i); });
+
+/* ---- paint ---------------------------------------------------------- */
+const painted = new Int32Array(D.NUM_LEDS).fill(-1);
+let paintedSeq = -1, paintedCalls = -1;
+const outState = new Map(), inState = new Map();
+const serialEl = $('#serial');
+
+function paint() {
+  if (paintedSeq !== frameSeq) {
+    paintedSeq = frameSeq;
+    for (let i = 0; i < D.NUM_LEDS; i++) {
+      const r = strip[i * 3], g = strip[i * 3 + 1], b = strip[i * 3 + 2];
+      const packed = (r << 16) | (g << 8) | b;
+      if (packed === painted[i]) continue;
+      painted[i] = packed;
+      const el = pxEls[i];
+      const lit = packed !== 0;
+      el.g.classList.toggle('lit', lit);
+      el.chip.style.fill = lit ? `rgb(${r},${g},${b})` : '';
+      el.glow.style.fill = lit ? `rgb(${r},${g},${b})` : '';
+    }
+    if (probeIdx >= 0) $('#probe').innerHTML = probeText(probeIdx);
+  }
+  if (paintedCalls !== showCalls) {
+    paintedCalls = showCalls;
+    $('#st-count').textContent = showCalls ? showCalls.toLocaleString('en-US') : '–';
+    $('#st-last').textContent = lastShowAt === null ? '–' : `at ${lastShowAt.toLocaleString('en-US')} ms`;
+    $('#st-power').textContent = lastPower ? `${lastPower.requested_mW.toLocaleString('en-US')} / ${lastPower.maxPower_mW.toLocaleString('en-US')} mW` : '–';
+    $('#st-scale').textContent = lastScale === null ? '–' :
+      `${lastScale} of ${lastPower.brightness}${lastScale < lastPower.brightness ? ' (limited)' : ''}`;
+  }
+
+  for (const r of outRows) {
+    const set = board.pinMode(r.pin) === FLISR.OUTPUT;
+    const hi = set && board.pinLevel(r.pin) === FLISR.HIGH;
+    const key = set ? (hi ? 2 : 1) : 0;
+    if (outState.get(r.pin) === key) continue;
+    outState.set(r.pin, key);
+    const lv = $('#out-' + r.pin);
+    lv.className = 'lvl' + (hi ? ' ' + r.c : '');
+    lv.textContent = set ? (hi ? 'HIGH' : 'LOW') : 'not set';
+    const led = $('#dl-' + r.pin), halo = $('#dh-' + r.pin);
+    const col = r.c === 'lit-g' ? '#2fd35c' : r.c === 'lit-r' ? '#ff3b2f' : '#ffb21e';
+    led.style.fill = hi ? col : ''; halo.style.fill = hi ? col : '';
+    led.classList.toggle('on', hi); halo.classList.toggle('on', hi);
+  }
+
+  for (const b of G.buttons) {
+    const set = board.pinMode(b.pin) === FLISR.INPUT_PULLUP;
+    const hi = set && board.pinLevel(b.pin) === FLISR.HIGH;
+    const key = set ? (hi ? 2 : 1) : 0;
+    if (inState.get(b.pin) === key) continue;
+    inState.set(b.pin, key);
+    const lv = $('#in-' + b.pin);
+    lv.className = 'lvl' + (set ? (hi ? ' hi' : ' lo') : '');
+    lv.textContent = set ? (hi ? 'HIGH' : 'LOW') : 'not set';
+  }
+
+  $('#millis').textContent = board.now.toLocaleString('en-US');
+  $('#phase').textContent = board.inSetup ? 'setup()' : 'loop()';
+
+  if (serialBuf) {
+    serialEl.append(document.createTextNode(serialBuf.replace(/\r\n/g, '\n').replace(/\r/g, '')));
+    serialBuf = '';
+    while (serialEl.childNodes.length > 1 && serialEl.textContent.length > 250000) serialEl.firstChild.remove();
+    if ($('#autoscroll').checked) serialEl.scrollTop = serialEl.scrollHeight;
+  }
+}
+$('#btn-clear').addEventListener('click', () => { serialEl.textContent = ''; });
+
+/* ---- clock ---------------------------------------------------------- */
+let hiddenAt = null;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) hiddenAt = performance.now();
+  else if (hiddenAt !== null) { bootWall += performance.now() - hiddenAt; hiddenAt = null; }
+});
+function tick() {
+  if (!document.hidden) {
+    let target = vnow();
+    if (target - board.now > 2000) { bootWall += target - board.now - 2000; target = vnow(); }
+    board.runUntil(target);
+    paint();
+  }
+  requestAnimationFrame(tick);
+}
+boot(true);
+requestAnimationFrame(tick);
+})();
+</script>
