@@ -1,0 +1,25 @@
+GANTT CHART EXPORT MANIFEST
+========================================================================
+Source        : JEA Project - Gantt Chart.xlsx
+Revision      : rev1
+Exported      : 09/14/2026 11:00
+Timeline      : Aug 27, 2026 - Apr 06, 2027
+Page size     : letter
+Weeks on pg 1 : 3  (task list eats width; later pages fit more days at the same scale)
+Pages         : 9
+File          : gantt_chart_rev1_9.14.26_11.pdf
+
+Pages are in order left to right -- print and lay them out to read the full timeline.
+Trim each page's blank side margin before taping for a seamless join.
+
+PAGE  DAYS  DATE RANGE
+------------------------------------------------------------------------
+1     21    Aug 24, 2026 - Sep 13, 2026
+2     29    Sep 14, 2026 - Oct 12, 2026
+3     29    Oct 13, 2026 - Nov 10, 2026
+4     29    Nov 11, 2026 - Dec 09, 2026
+5     29    Dec 10, 2026 - Jan 07, 2027
+6     29    Jan 08, 2027 - Feb 05, 2027
+7     29    Feb 06, 2027 - Mar 06, 2027
+8     29    Mar 07, 2027 - Apr 04, 2027
+9     29    Apr 05, 2027 - May 03, 2027

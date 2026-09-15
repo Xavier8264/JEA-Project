@@ -8,12 +8,17 @@ self-contained HTML page:
   Cardboard Layout REV1 backup_9.12.20.dxf     board drawing, button positions
   JEA Cardboard Prototype Tabulated REV1.xlsx  node, element, fault and LED run coordinates
 
-Each sketch's logic is ported by hand (firmware.js, firmware_rev1.js). This
-script hashes the logic section of the .ino and refuses to build if it no
-longer matches the hash that port was written against.
+Each sketch's logic is ported by hand (firmware.js, firmware_rev1.js,
+firmware_rev2.js). This script hashes the logic section of the .ino and
+refuses to build if it no longer matches the hash that port was written against.
 
 Usage:  python build_sim.py                          (FLISR_Trainer)
         python build_sim.py --sketch FLISR_Trainer_REV1
+        python build_sim.py --sketch FLISR_Trainer_REV2
+
+The xlsx LED sheet is shared. Since the 2026-09-14 LED sheet (J1 replaced by
+LED 25, IDs shifted), only FLISR_Trainer_REV2 matches it; the older sketches
+fail the run cross-check and their built pages should be left as they are.
 """
 
 import argparse
@@ -40,6 +45,8 @@ SKETCHES = {
                            "cfg": "sim_config.json",      "title": "FLISR Trainer Test Bench"},
     "FLISR_Trainer_REV1": {"port": "firmware_rev1.js", "out": "FLISR_Trainer_REV1_Sim.html",
                            "cfg": "sim_config_rev1.json", "title": "FLISR Trainer REV1 Test Bench"},
+    "FLISR_Trainer_REV2": {"port": "firmware_rev2.js", "out": "FLISR_Trainer_REV2_Sim.html",
+                           "cfg": "sim_config_rev2.json", "title": "FLISR Trainer REV2 Test Bench"},
 }
 INO = FIRMWARE = OUT = CFG_OUT = None       # set from --sketch in main()
 TITLE = ""

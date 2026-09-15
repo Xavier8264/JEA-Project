@@ -1726,3 +1726,202 @@ section that is neither faulted nor restored.
 No new numbered items. Items 26 to 31 from the 11:09 entry stand.
 
 ---
+
+## 2026-09-14 20:11 CDT - xlsx LED sheet update audited: J1 is now a real run, IDs shifted; flagged before any code change
+
+### What was asked
+
+User updated `JEA Cardboard Prototype Tabulated REV1.xlsx` (saved 20:03): added a pixel length where the
+0-length J1 jumper was, so no 0-length run remains and later LED IDs shift up by one; also changed several
+run lengths "for reasons that are largely irrelevant." Instruction: look for inconsistencies in the
+dimensions; **if any, flag them and the user will address them; if none, revise the FLISR Trainer code.**
+Questions welcome. `[V]`
+
+### Sources read this session
+
+- `PROJECT_MEMORY.md` (header, standing facts, 2026-09-13 21:22 entry onward). `[V]`
+- The xlsx, all five sheets, diffed against the committed version (git `8564e16`). `[V]`
+- `FLISR_Trainer_REV1/FLISR_Trainer_REV1.ino` (all), `FLISR_Trainer_Sim/build_sim.py` (all). `[V]`
+- `Cardboard Layout REV1 backup_9.12.20.dxf`, Sketch3 route lines and entities near Substation A, the
+  industrial lateral and the RES-2 top street, via ezdxf. `[V]`
+
+### What changed in the xlsx
+
+Only the LED sheet. Element, Node, Line and Fault sheets have identical cell values to the commit. `[V]`
+
+| LED ID (new) | Was | Now | Note |
+|---|---|---|---|
+| 1 | 17 | 14 | N1 -> N2 |
+| 6 | 17 | 18 | hidden return |
+| 8 | 9 | 8 | N32 -> N30 |
+| 11 | 11 | 17 | resolves open item 14 for LED 11 (geometry 16.1) |
+| 13 | 28 | 29 | still short of geometry, see below |
+| 14 | 26 | 28 | hidden return |
+| 17 | 6 | 7 | N11 -> N12 |
+| 24 | 4 | 5 | industrial lateral |
+| 25 (new) | J1, 0 px | 7 px, Over 0, N28 -> N27 | replaces the jumper |
+| 26 - 31 | were 25 - 30 | same From/To/len/Over | ID shift only |
+
+Totals: **352 px** (was 337), visible 239, hidden 113. Chain is still continuous (every To = next From). `[V]`
+A new column F holds the bare text `note` on the LED 26 row (F27), no cell comment. `[V]`
+
+**Array indices in the sketch do not move:** new LED 25 takes J1's slot at index 24, so SEG_FROM/SEG_TO,
+TAP_SEG, DEV_SEG and FAULT_SEG stay valid and every run is now index = LED ID - 1. `[V]`
+
+### Inconsistencies flagged to the user
+
+1. **N28 x is 40.10 in the Node sheet; the DXF industrial lateral ends at (41.10, 29.04).** Every other
+   visible-run node is within 0.09 in of its DXF endpoint (N1, N12 and the seam/tap nodes excepted, all
+   explained). Likely a one-digit typo, like the old N1 25.58. At 41.10 the lateral is 2.97 in = 4.5 px, so
+   LED 24's new 5 px fits; at 40.10 it is 3.0 px and 5 px overruns by 2. `[V]` for the numbers, `[I]` for
+   typo. The bench's "node on a DXF route line" check cannot catch this: N28 at 40.10 still lies on the line.
+2. **LED 13 (N9 -> N10, RES-2 top street) is 29 px; nodes and DXF both give about 20.6 in = 31.3 to
+   31.5 px.** 2.5 px (about 1.5 in) short. Could be a real strip that stops short of the corners. `[V]` for
+   numbers.
+3. Minor, pre-existing, unchanged: LED 22 (hidden, N35 -> N29) is 22 px = 14.4 in, shorter than the 15.2 in
+   straight line between its nodes, so it needs lead wire somewhere. `[V]` numbers, `[I]` wire.
+
+### Questions asked
+
+- LED 1 = 14 px: confirm **5 px south of N1 (bus) + 9 px N1 -> N2**, i.e. SEG_SPLIT[0] 8 -> 5. N1 -> N2 is
+  fixed at 9.3 px, so that is the only consistent split. `[I]`
+- What the `note` in LED!F27 is meant to say.
+- Default stated: revise **REV1 only** (plus its bench); REV0 still models discrete LEDs that do not exist.
+
+### Revision scope once cleared (not started)
+
+- Sketch: SEG_LEN (9 values), NUM_LEDS 337 -> 352, block [4] doc table renumbered, SEG_SPLIT[0], header
+  and comment pixel counts.
+- **Two table entries now point past the end of their runs:** DEV_PX DEV_A2 = 8 on an 8 px run (valid
+  0-7), and FAULT_PX Z1 = 16 on a 14 px run. Status and fault pixels need recomputing (SUB_A_BKR, DEV_A2,
+  Z1 at least).
+- SRAM: leds[] grows 45 B, so about 485 B free for stack, down from 530. `[I]` until compiled.
+- Bench: rebuild, update hand-typed strip numbers in `test_firmware_rev1.js`, republish REV1 bench.
+
+### Not done
+
+No code, xlsx, DXF or bench changes. No git commit.
+
+---
+
+## 2026-09-14 20:48 CDT - FLISR_Trainer_REV2: REV1 copied and updated to the 352 px LED sheet; REV2 bench published and pinned
+
+Follows the 20:11 entry. **Supersedes** its "Revision scope once cleared (not started)" section, and the
+pin state in the 2026-09-13 22:25 entry (REV1 bench pinned).
+
+### What was asked
+
+User answers to the 20:11 flags and questions: `[V]`
+- N28 x corrected in the xlsx. Re-read: now (41.10, 29.03); no other cell changed.
+- LED 13 = 29 px is correct.
+- LED 1 = 5 px south of N1 (Sub A bus) + 9 px N1 -> N2, as assumed.
+- The `note` in LED!F27 is obsolete. It was left in the workbook; this session did not edit the xlsx.
+
+Then: **copy REV1 to a new REV2, do not touch REV1, update the copy, update the artifact and repin it.**
+Interpretation, stated to the user `[I]`: the REV2 bench is a new artifact (as REV1 was for REV0), it gets
+the pin, and the REV1 bench is unpinned but stays published. REV0 was not touched.
+
+### FLISR_Trainer_REV2/FLISR_Trainer_REV2.ino
+
+A byte copy of REV1, then edited. The logic section differs from REV1 **only in the boot banner**
+(`=== JEA Tabletop FLISR Trainer REV2 ===`); checked by diffing the two logic sections. `[V]`
+
+Config changes: `[V]`
+- `NUM_LEDS` 337 -> 352. `SEG_LEN` = 14,17,17,10,17,18,2,8,6,8, 17,14,29,28,12,4,7,6,9,10,
+  3,22,12,5,7,7,4,12,3,11, 13.
+- Index 24 is now LED 25 (7 px, Over 0, hidden) instead of J1. **Every run's array index is LED ID - 1.**
+  SEG_OVER, SEG_ZONE, SEG_ZONE2, SEG_FROM, SEG_TO, TAP (index 27 px 7), TIE_NODE unchanged.
+- `SEG_SPLIT[0]` 8 -> 5 (BUSA 5 px, then Z1 9 px). Other splits unchanged (index 3 = 2, 20 = 1, 30 = 2).
+- New REV2 CHANGES block in the header; block [4] doc table renumbered (J1 row gone, 25 - 31); notes on
+  run 1, N30 and run 13 updated; pixel counts in comments 337 -> 352.
+
+Re-picked tables, computed with the bench's own pixel placement and the rules already written in blocks
+[2] and [4c]: `[V]` computation, `[I]` physical fit
+
+| Item | REV1 (index, px, strip) | REV2 (index, px, strip) | Why |
+|---|---|---|---|
+| Z1 fault start | 0, 16, 16 | **0, 13, 13** | run 1 is 14 px; px 13 is 0.15 in from the Fault sheet point |
+| SUB_A_BKR status | 0, 7, 7 | **0, 4, 4** | last bus pixel before N1 |
+| DEV_A2 status | 7, 8, 105 | **7, 7, 102** | run 8 is 8 px; old px 8 is past its end |
+| TIE status | 17, 0, 221 | **16, 6, 227** | rule flip: run 17 px 6 is 0.275 in from E4, run 18 px 0 is 0.302 in. Run 17 grew 6 -> 7 px. Close call. |
+| DEV_A1, DEV_B2, DEV_B1, SUB_B_BKR, DER_PCC | same index/px | strip 50, 253, 313, 278, 340 | shift only |
+| Z2 - Z6, DER fault starts | same | strip 55, 211, 231, 317, 284, 343 | shift only |
+
+REV1's pick for TIE (17, 0) still passes every bench check with 0 warnings, so either is valid; the board
+decides. `[V]`
+
+### Bench (FLISR_Trainer_Sim/)
+
+- `build_sim.py`: added a `FLISR_Trainer_REV2` entry and a docstring note. No logic change.
+- `firmware_rev2.js`: copy of `firmware_rev1.js`, banner changed, `PORTED_LOGIC_SHA256`
+  `1bb43e0321657ddbce6d245b26fbfd68cf16c76f9cdd821da2647adc8a50bc43`.
+- `test_firmware_rev2.js`: copy of the REV1 tests.
+  - Hand-typed `DEV_STRIP` = 4, 50, 102, 227, 253, 313, 278, 340; banner and 352 checks; bad-entry table
+    updated; identifiers renamed REV2 / CFG2 / r2.
+  - **The REV0 reference now runs on the REV2 strip:** REV0's own config with NUM_LEDS and the SEG_*
+    tables swapped for REV2's. The test first asserts every other define REV0 and REV2 share is identical.
+- Built: `FLISR_Trainer_REV2_Sim.html`, `sim_config_rev2.json`.
+
+### Verification actually performed
+
+1. **Bench build** REV2: 12 of 12 checks, 0 warnings. All 31 rows match the xlsx on From/To, len and
+   Over. `[V]`
+2. **Tests:** REV2 18 of 18, REV1 18 of 18, REV0 20 of 20. `[V]`
+3. **Mutation checks, config side.** REV1-era values planted in a scratch copy of the REV2 .ino, then
+   built. 8 of 8 caught: `[V]`
+   - fail: Z1 px 16, Z1 px 12 (valid pixel, not the nearest), DEV_A2 px 8, LED 17 len 6
+   - warn: split 8, SUB_A_BKR px 7, NUM_LEDS 337, LED 25 Over 1
+4. **Mutation check, test side.** TIE table moved back to (17, 0) in a scratch `sim_config_rev2.json`:
+   15 of 18 REV2 tests fail. `[V]`
+5. **Compiled for Uno.** The build script was rebuilt in the scratchpad: avr-gcc 7.3.0, core 1.8.8, IDE
+   flags from `platform.txt` (`-Os -flto -std=gnu++11`), FastLED `src/fl/build/*.cpp`. `[V]`
+   - Recipe check: REV1 reproduces the 11:18 entry exactly, flash 10,894 B / SRAM 1,518 B.
+   - **REV2: 0 warnings with `-Wall -Wextra`, flash 10,894 B, SRAM 1,563 B, 485 B free.**
+   - A planted unused variable produced 1 warning, so warnings were on.
+6. **REV1 untouched:** md5 of `FLISR_Trainer_REV1.ino`, `firmware_rev1.js`, `test_firmware_rev1.js`,
+   `sim_config_rev1.json`, `FLISR_Trainer_REV1_Sim.html` and `sim_template.html` all equal the hashes taken
+   before any edit. `[V]`
+7. **REV1 and REV0 benches can no longer be rebuilt against the xlsx.** Both fail with
+   `run 25: .ino says N27->N34, xlsx says N28->N27`. Run in a scratch copy, so their built pages were not
+   overwritten. `[V]`
+8. **One headless Chrome screenshot** of the REV2 page before publishing:
+   - 352 px, REV2 banner
+   - 7 white status pixels, TIE amber at px 227
+   - industrial lateral drawn out to x 41.10
+   `[V]`
+9. Not run on hardware.
+
+### Deliverables
+
+| Thing | Where |
+|---|---|
+| REV2 sketch | `FLISR_Trainer_REV2/FLISR_Trainer_REV2.ino` |
+| REV2 bench, published and **pinned** | `https://claude.ai/artifact/UqFf6AK9WtKi7aw1s8myjj`, source `FLISR_Trainer_Sim/FLISR_Trainer_REV2_Sim.html` |
+| REV1 bench, **unpinned**, still published | `https://claude.ai/code/artifact/e104d46c-45b6-412a-890d-59185b0d97d4` (the unpin result reported it as `https://claude.ai/artifact/Unc5QR4dM4g4VPegPFouwy`) |
+| Bench sources | `build_sim.py` (edited), `firmware_rev2.js`, `test_firmware_rev2.js`, `sim_config_rev2.json` (new) |
+
+Scratchpad only, gone after the session: `avr_build.sh` (recipe in item 5), `tables.py` (pick computation),
+mutation copies.
+
+### Open items, flagged not resolved
+
+Continues the list:
+
+32. **Pick one master xlsx per revision if old benches matter.** The shared LED sheet now matches only REV2,
+    so REV0 and REV1 benches cannot be rebuilt (item 7 above). Their published pages still work.
+33. **TIE status pixel changed sides** (now the last pixel of LED 17, on the Z3 side of N12). Add it to the
+    item 26 board check. To go back: block [2], TIE `DEV_SEG` 17, `DEV_PX` 0.
+34. Items 22 and 17 updated: SRAM headroom for REV2 is **485 B**.
+35. `#Cardboard Layout REV1 backup_9.12.20.dxf` (the `#` copy) shows modified in git, mtime 20:41 today. This
+    session did not write it, and the bench reads the non-`#` file. Probably an AutoCAD save. `[I]`
+36. Item 20 is narrower: FastLED `src/` now holds 13 top-level `.cpp` files, all dated 2026-03-07, not 136.
+    They are still old-version files, so an IDE upload may still fail until FastLED is reinstalled. `[V]`
+    count and dates, `[I]` effect.
+37. Items 28 and 31 stand: REV0 is still unretired, and `__pycache__/build_sim.cpython-314.pyc` changed again.
+
+### Not done
+
+- No change to REV1, REV0, the xlsx, either DXF, or the plan set artifact.
+- No hardware test. No git commit.
+
+---
