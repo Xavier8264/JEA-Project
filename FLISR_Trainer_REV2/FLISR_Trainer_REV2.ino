@@ -397,6 +397,13 @@ enum DState : uint8_t { DS_CLOSED, DS_OPEN, DS_TRIPPED, DS_LOCKOUT };
 #define DIST_NONE     255  /* not reachable                                 */
 #define SRC_IS_TIE    255  /* animSrcSeg value when the source is TIE_NODE  */
 
+/* A straight stretch of pixels lo..hi with a point at each end. See LINE
+ * WALKING below for what the fields mean and how pieces are built.
+ * It has to be declared up here, above the first function in the sketch:
+ * the .ino preprocessor writes the auto-generated function prototypes in
+ * just above that first function, and three of them take a Piece &.      */
+struct Piece { uint8_t lo, hi, a, b; };
+
 const uint8_t BTN_PIN[NUM_BUTTONS] PROGMEM = {
   PIN_BTN_FAULT_Z1, PIN_BTN_FAULT_Z2, PIN_BTN_FAULT_Z3, PIN_BTN_FAULT_Z4,
   PIN_BTN_FAULT_Z5, PIN_BTN_FAULT_Z6, PIN_BTN_FAULT_DER, PIN_BTN_RESET
@@ -514,8 +521,10 @@ ZState derDisplayState()
  * Distances count pixels. A point's distance is that of the last pixel
  * before it, so the first pixel past a point is one more. The source pixel
  * is 0. The line is radial, so relaxing the pieces settles in a few passes.
+ *
+ * struct Piece itself is declared near the top of the sketch, above the first
+ * function. See the note there.
  * =========================================================================== */
-struct Piece { uint8_t lo, hi, a, b; };
 
 /* Piece k of run s, counted from the run's first pixel. False when none. */
 bool getPiece(uint8_t s, uint8_t k, Piece &p)

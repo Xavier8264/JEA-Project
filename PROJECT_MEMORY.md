@@ -1925,3 +1925,160 @@ Continues the list:
 - No hardware test. No git commit.
 
 ---
+
+## 2026-09-14 22:45 CDT - FastLED install cleaned: 631 leftover 3.10.3 files archived. The IDE compile then stops on a separate sketch bug in REV2 and REV1
+
+### Request
+
+"address the fastLED library problem" (items 20 and 36). The user also said:
+- It is fine that the REV0 and REV1 benches cannot be rebuilt. REV2 is the only physical design now, and the
+  REV0 and REV1 boards no longer exist. Item 32 closed.
+- Leaving the `#` DXF alone was correct. Item 35 closed, no action.
+
+### Diagnosis `[V]`
+
+- **The IDE's download cache still has both versions.** `C:\Users\jprun\AppData\Local\Arduino15\staging\libraries`
+  holds `FastLED-3.10.3.zip` (2026-03-07 21:39) and `FastLED-3.10.5.zip` (2026-07-28 09:02).
+- **The install was all of 3.10.5 plus 631 files of 3.10.3.** 4,611 files:
+  - All 3,980 files of the 3.10.5 zip were present and sha256-identical.
+  - The 631 extras all matched the 3.10.3 zip by path and size. Content was confirmed after archiving.
+  - 209 of the extras were OneDrive online-only placeholders (Offline + RecallOnDataAccess).
+- **140 compilable leftovers** (.cpp/.c/.S) under `src/`, 13 of them at the top level. Item 36's "13, not 136"
+  compared a top-level count with a recursive one. The recursive count never dropped. Item 36 was wrong.
+- **55 FastLED folders had mtime 2026-07-28 18:39**, 9.5 h after the 09:02 install. `[I]`, medium: OneDrive put
+  the 3.10.3 files the IDE had deleted back into the new install.
+- **Correction to the toolchain note (21:22 entry):** the Arduino IDE is at `C:\Program Files\Arduino IDE`, not
+  `AppData\Local\Programs`.
+  - It bundles arduino-cli 1.4.1 at `resources\app\lib\backend\resources\arduino-cli.exe`, so "no arduino-cli"
+    was wrong.
+  - IDE config: `C:\Users\jprun\.arduinoIDE\arduino-cli.yaml`. Sketchbook `c:\Users\jprun\OneDrive\Documents\Arduino`.
+  - IDE-equivalent compile: `arduino-cli compile --config-file <that yaml> --fqbn arduino:avr:uno --build-path <scratch> <sketch dir>`
+
+### Reproduced before fixing `[V]`
+
+1. **Unmodified REV2 fails in the sketch first,** before any library is compiled. 3 errors:
+   `'Piece' has not been declared` / `'Piece' does not name a type`, at getPiece, distInPiece, colorForPixel.
+   - The IDE inserts generated prototypes above the first function (`computeModel()`, .ino line 443).
+   - `struct Piece` is declared later, at line 518.
+2. **With the sketch problem out of the way, FastLED fails.** A scratch copy of REV2 with only the
+   `struct Piece` line moved above `computeModel()` gives 1,172 errors, all inside FastLED:
+   - old headers such as `src/fl/move.h` and `src/fl/type_traits.h` redefine types that 3.10.5 keeps in
+     `src/fl/stl/`
+   - old `src/cled_controller.cpp` is compiled too
+
+### Fix
+
+- **631 leftover files archived through `vault.ps1`,** as 511 entries: 39 folders that held only leftovers, plus
+  472 files from mixed folders.
+  - Reason on every entry: `FastLED 3.10.3 leftover mixed into the 3.10.5 install; breaks Arduino IDE compile (2026-09-14)`
+  - Manifest: `C:\Users\jprun\.claude-vault\c-Users-jprun-Downloads-JEA Project\manifest.jsonl`
+  - To undo: run `vault.ps1 restore <id>` for every manifest line with that reason.
+- **The 3.10.5 files were not touched.** No reinstall was needed, because they already matched the IDE's own zip.
+- Scripts `compare.py`, `archive_batch.ps1`, `verify_after.py`, `poll.py` lived in the scratchpad.
+
+### Verification actually performed
+
+1. **Install equals the 3.10.5 zip:** 3,980 of 3,980 files identical, 0 extra, 0 missing. 28 compilable files
+   under `src/`. `[V]`
+2. **Vault copies are complete:** 511 entries, 631 files, all sha256-equal to the 3.10.3 zip, none left as a
+   placeholder. `[V]`
+3. **Compiled with the IDE's arduino-cli, `--warnings all`:** `[V]`
+   - Scratch REV2 with `Piece` moved: OK. Flash 10,894 B, SRAM 1,563 B, 485 B free. These equal the manual
+     avr-gcc recipe from the 20:48 entry.
+   - REV0 unmodified: OK. Flash 9,176 B, SRAM 1,439 B, 609 B free.
+   - Both: 0 warnings from the sketch. 29 come from inside FastLED and 4 from the core's `new.cpp`. The IDE's
+     default warning level hides them.
+   - REV2 and REV1 unmodified: fail with the 3 `Piece` errors each, and nothing else.
+4. **OneDrive recreated 19 empty folders** about 50 s after they were archived. Example: `src\fx` archived
+   22:38:07, recreated 22:38:57. No files came back in a 16-sample poll from 22:40:30 to 22:45:32 (3,980 files,
+   0 dated 2026-03-07, 0 online-only throughout). The empty folders hold no files, so nothing compiles from them.
+   `[V]` for that window only.
+5. **Not uploaded to a board.** The IDE GUI was not used. The CLI is the build engine the IDE runs.
+
+### Open items, flagged not resolved
+
+Items 20 and 36 are resolved. Item 32 closed by the user. Item 35 closed.
+
+38. **REV2 and REV1 do not compile in the Arduino IDE** (reproduction step 1). `[V]`
+    - Fix: move `struct Piece { uint8_t lo, hi, a, b; };` above `computeModel()`.
+    - That line is in the logic section, so `PORTED_LOGIC_SHA256` in `firmware_rev2.js` must be updated and the
+      bench rebuilt. The behavior is unchanged.
+    - REV1 was left alone: the user said not to touch it.
+    - Not done: not requested.
+39. **OneDrive may put the leftovers back again,** as it apparently did on 2026-07-28, that time 9.5 h later.
+    - Check: any FastLED file dated 2026-03-07, or a compile error naming `src/fl/move.h`.
+    - Root cause `[I]`: the Arduino sketchbook lives in OneDrive, which fights the IDE's delete-then-install
+      library updates.
+40. **Compile checks should use arduino-cli from now on.** The manual avr-gcc recipe (11:18 and 20:48 entries)
+    compiled the `.ino` as plain C++. It skips the IDE's prototype generation, so it could not catch item 38.
+
+---
+
+## 2026-09-15 - Item 38 fixed in REV2: struct Piece moved above the first function. REV2 bench build now blocked on its logic hash
+
+Jordan hit the three `Piece` errors compiling REV2 in the Arduino IDE and asked for them to be addressed.
+This is open item 38, fixed exactly as that item specified. REV1 was left alone, per the standing instruction.
+
+### The mechanism
+
+The `.ino` preprocessor writes the auto-generated function prototypes in just above the **first** function
+definition in the sketch, `void computeModel()`. `struct Piece` was declared at .ino line 518, far below it, so
+the three prototypes that take a `Piece &` were emitted against a type that did not exist yet. The generated
+`.cpp` carries a `#line` directive per prototype pointing back at the corresponding **definition**, which is why
+the IDE reported 521 / 563 / 699 (the definitions) rather than the insertion point. That is what made this look
+like a contradiction: the struct is plainly above line 521 in the file you are reading. `[V]`
+
+### The change
+
+`FLISR_Trainer_REV2/FLISR_Trainer_REV2.ino`, one line moved, nothing else:
+
+- `struct Piece { uint8_t lo, hi, a, b; };` moved from line 518 up to line 405, just after `SRC_IS_TIE` and
+  above `computeModel()`. A comment there explains why it cannot live with the LINE WALKING block.
+- The LINE WALKING banner gained a two-line pointer to the new location.
+
+Behavior is unchanged. This is a declaration-order move only.
+
+### Verification actually performed
+
+arduino-cli is still not installed (item 40 asks for it), and no arduino-cli ships inside
+`%LOCALAPPDATA%\Programs\Arduino IDE`. So the check was built to close the exact gap item 40 named: a script
+that **emulates the prototype hoisting** (inserts all 27 prototypes above `computeModel()`, prepends
+`#include <Arduino.h>`) and then runs avr-g++ `-fsyntax-only -std=gnu++11 -mmcu=atmega328p`, with the 1.8.8 core
+and the installed FastLED on the include path.
+
+1. **Reproduced against the HEAD copy of REV2:** the same 3 errors, at the same columns 37, 49 and 60, on the
+   hoisted prototypes for `getPiece`, `distInPiece` and `colorForPixel`. Nothing else. `[V]`
+2. **The fixed file passes:** exit 0, no errors. `[V]`
+3. FastLED did **not** produce the 1,172-error wall from the 22:45 entry, so that cleanup is still holding.
+   Only 2 warnings appeared, both unrelated: the `util/delay.h` "optimizations disabled" warning, which is an
+   artifact of `-fsyntax-only` with no `-Os`, and a FastLED experimental-code `#warning`. `[V]`
+4. **Not compiled to a binary and not uploaded.** `-fsyntax-only` produces no object file, so there are no new
+   flash or SRAM figures. The 20:48 and 22:45 entries measured 10,894 B flash on a scratch copy with this same
+   line moved, so the size is expected to be unchanged, but that is `[I]` for this file.
+
+### Consequence, confirmed not fixed
+
+The moved line sits below `NOTHING BELOW HERE NEEDS EDITING`, so it is inside the hashed logic section, as item
+38 warned. `python build_sim.py --sketch FLISR_Trainer_REV2` now stops at the guard:
+
+    .ino logic sha256 : bd1ebd379f75ce7aa460702cdb5ad551d6755fc58926ebb8000eb2a5f596b605
+    port written for  : 1bb43e0321657ddbce6d245b26fbfd68cf16c76f9cdd821da2647adc8a50bc43
+
+The guard fires before anything is written, so no bench file was touched. `firmware_rev2.js` needs no ported
+logic change (a struct moving does not change behavior); it needs `PORTED_LOGIC_SHA256` set to the `bd1ebd37`
+value and the bench rebuilt. Not done: not requested.
+
+### Open items
+
+Item 38 is resolved for REV2 and is now split:
+
+38. **RESOLVED for REV2.** REV1 still does not compile in the Arduino IDE, same 3 errors, same cause, same
+    one-line fix. Left alone deliberately: the user said not to touch REV1. `[V]`
+41. **The REV2 bench will not build until `PORTED_LOGIC_SHA256` in `firmware_rev2.js` is bumped to
+    `bd1ebd379f75ce7aa460702cdb5ad551d6755fc58926ebb8000eb2a5f596b605`** and the page rebuilt. The published and
+    pinned `FLISR_Trainer_REV2_Sim.html` is stale by one declaration move, which does not affect what it
+    simulates. `[V]`
+40. **Still open, but partly mitigated.** The emulated-hoist script above does catch prototype-order bugs, which
+    the plain avr-gcc recipe could not. A real arduino-cli is still the better answer.
+
+---
