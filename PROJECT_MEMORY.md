@@ -2342,3 +2342,63 @@ sketches to the file browser's "Simulator" group -- they were absent from the de
 them was not asked.
 
 ---
+
+## 2026-09-17 12:00 CDT - Sensitive-information sweep
+
+### What was asked
+
+Search the working directory for potential sensitive information.
+
+### Findings `[V]`
+
+**Note on where this entry can be published:** this file is itself tracked in git and pushed to
+`github.com/Xavier8264/JEA-Project`, which is confirmed **public** (`GET /repos/Xavier8264/JEA-Project` returns
+`"private": false"`). Deliberately not repeating the actual PII below -- see the chat session (2026-09-17) for
+the redacted-in-chat detail, or the two files themselves in git history, if it needs to be looked at again.
+
+1. **`01_Admin_Meetings/JEA Contacts.docx` -- real JEA staff PII, currently live in git history.** Contains four
+   named JEA employees with their titles, work emails (`@jaxenergy.com`) and phone numbers. The file was
+   committed in `8b63a71` ("Organize JEA Project into numbered category folders") and is currently shown as
+   `deleted` (unstaged) in the working tree per `git status` -- but that deletion has **not been committed or
+   pushed**, so the file with full contact details is still present in the public repo's history and on
+   `origin/main` right now. Deleting the working-copy file alone does not remove it from history or from GitHub.
+2. **Presentation slide with sponsor contact info, currently committed and live.**
+   `08_Presentations_Concepts/Tabletop Smart Grid & Distribution Automation Trainer REV2.pptx` has a slide
+   containing Zach Wadley's `@jaxenergy.com` email and phone number. This is in the current HEAD and on
+   `origin/main`, not just history. May be intentional (a contact slide for a real presentation) rather than a
+   leak -- worth confirming with the user rather than assuming it should be scrubbed.
+3. No other credential-class findings: no API keys, passwords, private keys, WiFi/IP secrets, or SSH/PGP key
+   material anywhere in the tree (firmware, DXF tools, `_ds` design-system scaffold, sim HTML, xlsx/docx/pdf
+   internals all checked). The only "password/secret/token" grep hits were false positives (CSS/design-system
+   "token" terminology, template placeholder tokens in `build_sim.py`).
+4. `jea_power_delivery_oneline_reference.md` states real utility statistics (JEA = Jackson Energy Authority,
+   Madison County TN, ~35,000 customers, 29 substations, 53 transformers, 700+ mi distribution). Not
+   classified, likely near what JEA publishes itself, but it is real named-utility infrastructure detail sitting
+   in a public repo. No GPS/street-level/customer-address data found anywhere -- the "no GIS, nothing locatable"
+   directive from the 8/27 kickoff (Standing Facts above) appears to have been honored everywhere except the
+   two files above.
+
+### Verification actually performed
+
+- `git show 8b63a71:"01_Admin_Meetings/JEA Contacts.docx"` extracted and its `word/document.xml` parsed directly
+  to confirm real names/emails/phones, not a template placeholder.
+- `curl https://api.github.com/repos/Xavier8264/JEA-Project` confirmed `"private": false"` / `"visibility":
+  "public"` unauthenticated -- i.e., actually publicly readable right now, not just "has a remote."
+- pptx slide XML parsed directly (regex over `ppt/slides/slide*.xml`) for the email/phone hit, not inferred from
+  a filename.
+- Broad regex sweep (email, phone, `password|secret|api_key|token|credential|private_key`, PEM/SSH headers,
+  AWS key prefix, WiFi/IP literals) run across every text-bearing file type in the tree, plus targeted
+  extraction of docx/xlsx/pptx internal XML, which plain-text grep cannot see into.
+
+### Open items, flagged not resolved
+
+12. **Public PII exposure needs a decision from the user**, not just a local file deletion. Two options if the
+    user wants it gone: (a) have GitHub scrub it (repo owner is `Xavier8264`, not this session's git identity,
+    so this session cannot push a history rewrite there without being asked and without write access being
+    confirmed), or (b) treat it as already public and just finish the local cleanup (commit the `JEA Contacts.docx`
+    deletion, decide on the pptx slide) while accepting the exposure already happened. Not decided here --
+    flagged for the user.
+13. Confirm whether the pptx contact slide is intentional (a normal presentation contact slide) before treating
+    it as a finding rather than a feature.
+
+---
