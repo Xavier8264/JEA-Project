@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-1e5685ad-55b7-4b09-aebc-d9d638a0ee4d/styles.css">
+<script src="_ds/industry-1e5685ad-55b7-4b09-aebc-d9d638a0ee4d/_ds_bundle.js"></script>
+<style>
+body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)}
+a{color:var(--color-accent-700)}a:hover{color:var(--color-accent-900)}
+*{box-sizing:border-box}
+:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+</style>
+</helmet>
+
+<div style="max-width:1180px;margin:0 auto;padding:0 20px 0">
+
+  <header style="display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--color-divider)">
+    <div style="display:flex;align-items:baseline;gap:10px">
+      <span style="font-family:var(--font-heading);font-size:19px;letter-spacing:.06em;text-transform:uppercase">FLISR Tabletop Trainer</span>
+      <span style="font:400 12px/1 var(--font-body);color:var(--color-neutral-600);letter-spacing:.14em;text-transform:uppercase">Open source</span>
+    </div>
+    <nav style="display:flex;gap:18px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-family:var(--font-heading)">
+      <a href="#sim" style="text-decoration:none">Simulator</a>
+      <a href="#how" style="text-decoration:none">How it works</a>
+      <a href="#files" style="text-decoration:none">Files</a>
+    </nav>
+  </header>
+
+  <section style="padding:52px 0 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:44px;align-items:start">
+    <div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+        <span class="tag tag-accent">Senior capstone</span>
+        <span class="tag tag-outline">Jackson Energy Authority</span>
+        <span class="tag tag-outline">SEL-2240 Axion</span>
+      </div>
+      <h1 style="font-size:clamp(38px,6vw,68px);line-height:.95;margin:0 0 20px;letter-spacing:-.01em;text-wrap:balance">Fault Location,<br>Isolation &amp;<br>Service Restoration</h1>
+      <p style="font-size:18px;line-height:1.55;max-width:56ch;margin:0 0 14px;text-wrap:pretty">A tabletop FLISR trainer built with real SEL distribution automation hardware for Jackson Energy Authority. It shows how a modern distribution grid finds a fault, isolates the damaged segment, and reroutes power to restore service in seconds.</p>
+      <p style="font-size:15px;line-height:1.55;max-width:56ch;margin:0 0 28px;color:var(--color-neutral-700)">Every file behind it — drawings, firmware, one-lines, scripts, meeting notes — is published here. Nothing is held back.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <a class="btn btn-primary blueprint" href="#sim" style="padding:12px 22px;font-size:15px;letter-spacing:.04em;text-transform:uppercase"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Run the simulator</a>
+        <a class="btn btn-secondary" href="https://github.com/Xavier8264/JEA-Project/archive/refs/heads/main.zip" style="padding:12px 20px;font-size:15px;letter-spacing:.04em;text-transform:uppercase">Download all files (.zip)</a>
+        <a class="btn btn-ghost" href="https://github.com/Xavier8264/JEA-Project" target="_blank" rel="noopener" style="font-size:15px">View on GitHub &#8599;</a>
+      </div>
+    </div>
+
+    <div class="blueprint" style="padding:0;background:transparent">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div class="duotone" style="border-bottom:1px solid var(--color-divider)">
+        <img src="04_Cardboard_Layout/Cardboard Layout REV3.png" alt="Cardboard layout revision 3 of the four-panel tabletop" style="display:block;width:100%;height:auto">
+      </div>
+      <dl style="margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+        <div style="padding:14px 16px;border-right:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)">
+          <dt style="font:400 11px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-600)">Footprint</dt>
+          <dd style="margin:6px 0 0;font-family:var(--font-heading);font-size:26px;line-height:1">4&#8242; &times; 4&#8242;</dd>
+        </div>
+        <div style="padding:14px 16px;border-bottom:1px solid var(--color-divider)">
+          <dt style="font:400 11px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-600)">Panels</dt>
+          <dd style="margin:6px 0 0;font-family:var(--font-heading);font-size:26px;line-height:1">4 &times; 2&#8242;</dd>
+        </div>
+        <div style="padding:14px 16px;border-right:1px solid var(--color-divider)">
+          <dt style="font:400 11px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-600)">Fault zones</dt>
+          <dd style="margin:6px 0 0;font-family:var(--font-heading);font-size:26px;line-height:1">6 + DER</dd>
+        </div>
+        <div style="padding:14px 16px">
+          <dt style="font:400 11px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-600)">Addressable LEDs</dt>
+          <dd style="margin:6px 0 0;font-family:var(--font-heading);font-size:26px;line-height:1">352</dd>
+        </div>
+      </dl>
+      <p style="margin:0;padding:10px 16px;border-top:1px solid var(--color-divider);font:400 11px/1.4 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600)">Fig. 1 &mdash; Cardboard layout REV3</p>
+    </div>
+  </section>
+
+  <section id="sim" style="padding:12px 0 56px;scroll-margin-top:16px">
+    <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;border-top:1px solid var(--color-text);padding-top:14px;margin-bottom:22px">
+      <div>
+        <p style="margin:0 0 6px;font:400 11px/1 var(--font-body);letter-spacing:.18em;text-transform:uppercase;color:var(--color-neutral-600)">01 &mdash; Try it</p>
+        <h2 style="margin:0;font-size:clamp(28px,3.4vw,42px);line-height:1">The trainer, running in your browser</h2>
+      </div>
+      <a class="btn btn-secondary" href="05_Firmware/FLISR_Trainer_Sim/FLISR_Trainer_REV2_Sim.html" target="_blank" rel="noopener" style="padding:9px 16px;font-size:13px;letter-spacing:.06em;text-transform:uppercase">Open full screen &#8599;</a>
+    </div>
+    <p style="max-width:70ch;margin:0 0 14px;font-size:16px;line-height:1.55">This is the same firmware logic that will run on the physical table, wired to a simulated one-line instead of LEDs and relay contacts. Press a fault button to inject a fault into a zone and watch the FLISR sequence play out. <strong>REV2</strong> is the current revision; earlier revisions are in the files below.</p>
+    <p style="max-width:70ch;margin:0 0 20px;padding:11px 14px;border:1px solid var(--color-accent-400);background:var(--color-accent-100);font-size:15px;line-height:1.5">On a phone, tap <a href="05_Firmware/FLISR_Trainer_Sim/FLISR_Trainer_REV2_Sim.html" target="_blank" rel="noopener"><strong>Open full screen</strong></a> &mdash; the simulator is a tall control board and needs the whole display.</p>
+    <div class="blueprint" style="padding:0;background:var(--color-neutral-100)">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <iframe src="05_Firmware/FLISR_Trainer_Sim/FLISR_Trainer_REV2_Sim.html" title="FLISR Trainer REV2 simulator" loading="lazy" style="display:block;width:100%;height:min(88vh,1100px);min-height:760px;border:0"></iframe>
+    </div>
+    <p style="margin:10px 0 0;font:400 11px/1.4 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600)">Fig. 2 &mdash; FLISR_Trainer_REV2_Sim.html &middot; runs offline, no install</p>
+  </section>
+</div>
+
+<section id="how" style="background:var(--color-accent-900);color:#f2f2f3;scroll-margin-top:16px">
+  <div style="max-width:1180px;margin:0 auto;padding:56px 20px 60px">
+    <p style="margin:0 0 6px;font:400 11px/1 var(--font-body);letter-spacing:.18em;text-transform:uppercase;color:var(--color-accent-300)">02 &mdash; How it works</p>
+    <h2 style="margin:0 0 12px;font-size:clamp(28px,3.4vw,42px);line-height:1">Five seconds of grid automation, slowed down</h2>
+    <p style="max-width:68ch;margin:0 0 38px;font-size:16px;line-height:1.55;color:#dfe6ee">A distribution system is built as a loop but operated as a radial line: two feeders reach toward each other and are deliberately held open at a tie point. Closing that tie after the fault is isolated is the &ldquo;R&rdquo; in FLISR.</p>
+
+    <ol style="list-style:none;margin:0 0 44px;padding:0;display:flex;flex-wrap:wrap;gap:1px;background:rgba(242,242,243,.22);border:1px solid rgba(242,242,243,.22)">
+      <li style="flex:1 1 190px;background:var(--color-accent-900);padding:20px 18px 22px">
+        <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;color:var(--color-accent-300)">STEP 1</span>
+        <h3 style="margin:8px 0 8px;font-size:22px;line-height:1.05">Fault appears</h3>
+        <p style="margin:0;font-size:14px;line-height:1.5;color:#dfe6ee">A cable or piece of equipment fails somewhere on the feeder. On the table, a button injects it into one of six zones.</p>
+      </li>
+      <li style="flex:1 1 190px;background:var(--color-accent-900);padding:20px 18px 22px">
+        <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;color:var(--color-accent-300)">STEP 2</span>
+        <h3 style="margin:8px 0 8px;font-size:22px;line-height:1.05">Upstream device trips</h3>
+        <p style="margin:0;font-size:14px;line-height:1.5;color:#dfe6ee">The substation feeder breaker or recloser sees the fault current and opens. Everything downstream goes dark.</p>
+      </li>
+      <li style="flex:1 1 190px;background:var(--color-accent-900);padding:20px 18px 22px">
+        <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;color:var(--color-accent-300)">STEP 3</span>
+        <h3 style="margin:8px 0 8px;font-size:22px;line-height:1.05">Segment is isolated</h3>
+        <p style="margin:0;font-size:14px;line-height:1.5;color:#dfe6ee">During the dead interval, pad-mounted switchgear either side of the faulted segment opens, fencing it off.</p>
+      </li>
+      <li style="flex:1 1 190px;background:var(--color-accent-900);padding:20px 18px 22px">
+        <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;color:var(--color-accent-300)">STEP 4</span>
+        <h3 style="margin:8px 0 8px;font-size:22px;line-height:1.05">Upstream recloses</h3>
+        <p style="margin:0;font-size:14px;line-height:1.5;color:#dfe6ee">The breaker recloses onto a now-healthy line, restoring every customer between the substation and the fault.</p>
+      </li>
+      <li style="flex:1 1 190px;background:var(--color-accent-900);padding:20px 18px 22px">
+        <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.2em;color:var(--color-accent-300)">STEP 5</span>
+        <h3 style="margin:8px 0 8px;font-size:22px;line-height:1.05">Tie switch closes</h3>
+        <p style="margin:0;font-size:14px;line-height:1.5;color:#dfe6ee">The normally-open tie to the second feeder closes, back-feeding the healthy section beyond the fault from the other substation.</p>
+      </li>
+    </ol>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;align-items:start">
+      <div class="blueprint" style="padding:0;border-color:rgba(242,242,243,.3);background:#f2f2f3">
+        <i class="corner tl" style="color:rgba(242,242,243,.6)"></i><i class="corner tr" style="color:rgba(242,242,243,.6)"></i><i class="corner bl" style="color:rgba(242,242,243,.6)"></i><i class="corner br" style="color:rgba(242,242,243,.6)"></i>
+        <img src="03_OneLine_Diagram/jea_power_delivery_oneline.svg" alt="JEA power delivery one-line diagram, generation through utilization" style="display:block;width:100%;height:auto">
+        <p style="margin:0;padding:10px 14px;border-top:1px solid var(--color-divider);color:var(--color-neutral-700);font:400 11px/1.4 var(--font-body);letter-spacing:.1em;text-transform:uppercase">Fig. 3 &mdash; Power delivery one-line, TVA generation to utilization</p>
+      </div>
+      <div>
+        <h3 style="margin:0 0 14px;font-size:22px;letter-spacing:.02em;text-transform:uppercase">What&rsquo;s inside the table</h3>
+        <dl style="margin:0;display:grid;gap:0;border-top:1px solid rgba(242,242,243,.25)">
+          <div style="display:flex;gap:16px;padding:11px 0;border-bottom:1px solid rgba(242,242,243,.25)"><dt style="flex:0 0 120px;font:400 12px/1.4 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-300)">Controller</dt><dd style="margin:0;font-size:15px;line-height:1.45">SEL-2240 Axion with SEL-2244-2/4 digital input and SEL-2244-3 digital output modules, in a separate vertical relay panel</dd></div>
+          <div style="display:flex;gap:16px;padding:11px 0;border-bottom:1px solid rgba(242,242,243,.25)"><dt style="flex:0 0 120px;font:400 12px/1.4 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-300)">Protection</dt><dd style="margin:0;font-size:15px;line-height:1.45">SEL-351S relay on the substation feeder breaker; pad-mounted switchgear with VCB compartments for underground sectionalizing</dd></div>
+          <div style="display:flex;gap:16px;padding:11px 0;border-bottom:1px solid rgba(242,242,243,.25)"><dt style="flex:0 0 120px;font:400 12px/1.4 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-300)">Visualisation</dt><dd style="margin:0;font-size:15px;line-height:1.45">WS2812B strips in routed channels under frosted acrylic, one ESP32 per panel sensing segment energization through optocouplers</dd></div>
+          <div style="display:flex;gap:16px;padding:11px 0;border-bottom:1px solid rgba(242,242,243,.25)"><dt style="flex:0 0 120px;font:400 12px/1.4 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-300)">Power</dt><dd style="margin:0;font-size:15px;line-height:1.45">A switched 24&nbsp;VDC segment bus driven by Axion output contacts, kept separate from the always-on 5&nbsp;V LED layer</dd></div>
+          <div style="display:flex;gap:16px;padding:11px 0;border-bottom:1px solid rgba(242,242,243,.25)"><dt style="flex:0 0 120px;font:400 12px/1.4 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-300)">Structure</dt><dd style="margin:0;font-size:15px;line-height:1.45">Four 2&#8242;&times;2&#8242; panels on 1010-series aluminium extrusion, joined with tapered dowel pins and 4-pin Neutrik XLR inter-panel connectors</dd></div>
+          <div style="display:flex;gap:16px;padding:11px 0;border-bottom:1px solid rgba(242,242,243,.25)"><dt style="flex:0 0 120px;font:400 12px/1.4 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-300)">System modelled</dt><dd style="margin:0;font-size:15px;line-height:1.45">JEA primary distribution at 12,470Y/7,200&nbsp;V, fed from 46&nbsp;kV subtransmission off a TVA 161&nbsp;kV delivery point</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div style="max-width:1180px;margin:0 auto;padding:0 20px 0">
+  <section id="files" style="padding:56px 0 20px;scroll-margin-top:16px">
+    <div style="border-top:1px solid var(--color-text);padding-top:14px;margin-bottom:22px">
+      <p style="margin:0 0 6px;font:400 11px/1 var(--font-body);letter-spacing:.18em;text-transform:uppercase;color:var(--color-neutral-600)">03 &mdash; Everything</p>
+      <h2 style="margin:0 0 12px;font-size:clamp(28px,3.4vw,42px);line-height:1">All 61 files, grouped by what they&rsquo;re for</h2>
+      <p style="max-width:68ch;margin:0;font-size:16px;line-height:1.55">Open a group to see its contents; every filename links straight to the file on GitHub. Paths shown match the repository&rsquo;s numbered category folders, so a downloaded zip lines up with what you see here.</p>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px">
+      <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
+        <input class="input" type="search" placeholder="Filter files &mdash; try &ldquo;firmware&rdquo; or &ldquo;.py&rdquo;" value="{{ query }}" onInput="{{ onQuery }}" style="flex:1 1 260px;max-width:380px;font-size:15px">
+      </sc-if>
+      <button class="btn btn-secondary" onClick="{{ onToggleAll }}" style="padding:9px 15px;font-size:13px;letter-spacing:.06em;text-transform:uppercase">{{ toggleAllLabel }}</button>
+      <span style="font:400 12px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600)">{{ matchLabel }}</span>
+    </div>
+
+    <div style="display:grid;gap:26px">
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+        <div class="card blueprint" style="padding:0;background:transparent">
+          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          <button onClick="{{ g.toggle }}" style="display:flex;width:100%;gap:14px;align-items:baseline;text-align:left;background:transparent;border:0;border-bottom:{{ g.headBorder }};padding:16px 18px;cursor:pointer;font-family:var(--font-body);color:inherit">
+            <span style="font-family:var(--font-heading);font-size:13px;letter-spacing:.16em;color:var(--color-accent-700);flex:0 0 26px">{{ g.num }}</span>
+            <span style="flex:1 1 auto;min-width:0">
+              <span style="display:block;font-family:var(--font-heading);font-size:24px;line-height:1.05;letter-spacing:.01em">{{ g.name }}</span>
+              <span style="display:block;margin-top:4px;font-size:14px;line-height:1.45;color:var(--color-neutral-700)">{{ g.note }}</span>
+            </span>
+            <span style="flex:0 0 auto;display:flex;align-items:center;gap:12px">
+              <span class="tag tag-neutral" style="white-space:nowrap">{{ g.countLabel }}</span>
+              <span style="font-family:var(--font-heading);font-size:18px;color:var(--color-accent-700);width:14px;text-align:center">{{ g.chev }}</span>
+            </span>
+          </button>
+          <sc-if value="{{ g.isOpen }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <p style="margin:0;padding:10px 18px;border-bottom:1px solid var(--color-divider);font:400 11px/1.4 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--color-neutral-600)">{{ g.path }}</p>
+              <sc-for list="{{ g.files }}" as="f" hint-placeholder-count="4">
+                <a href="{{ f.url }}" target="_blank" rel="noopener" style="display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:baseline;padding:11px 18px;text-decoration:none;color:inherit;border-bottom:1px solid var(--color-divider)" style-hover="background:var(--color-accent-100)">
+                  <span style="font:500 10px/1.6 ui-monospace,Menlo,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--color-accent-700);border:1px solid var(--color-divider);text-align:center">{{ f.ext }}</span>
+                  <span style="min-width:0">
+                    <span style="display:block;font-size:15px;line-height:1.35;word-break:break-word">{{ f.name }}</span>
+                    <span style="display:block;margin-top:2px;font-size:13px;line-height:1.4;color:var(--color-neutral-700)">{{ f.desc }}</span>
+                  </span>
+                  <span style="font:400 12px/1.4 var(--font-body);color:var(--color-neutral-600);white-space:nowrap">{{ f.size }}</span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ noMatches }}" hint-placeholder-val="{{ false }}">
+      <p style="margin:26px 0 0;padding:22px;border:1px dashed var(--color-divider);font-size:15px;color:var(--color-neutral-700)">No files match that filter. Try a shorter word, or an extension like <strong>.md</strong>, <strong>.py</strong>, <strong>.svg</strong>.</p>
+    </sc-if>
+  </section>
+
+  <section style="padding:44px 0 56px">
+    <div class="blueprint" style="padding:26px 24px;background:transparent">
+      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:26px">
+        <div>
+          <h3 style="margin:0 0 10px;font-size:20px;letter-spacing:.04em;text-transform:uppercase">Take the whole thing</h3>
+          <p style="margin:0 0 14px;font-size:15px;line-height:1.5">One zip, every file, current as of the latest commit on <code style="font-family:ui-monospace,Menlo,monospace;font-size:13px">main</code>.</p>
+          <a class="btn btn-primary blueprint" href="https://github.com/Xavier8264/JEA-Project/archive/refs/heads/main.zip" style="padding:11px 20px;font-size:14px;letter-spacing:.05em;text-transform:uppercase"><i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>Download .zip</a>
+        </div>
+        <div>
+          <h3 style="margin:0 0 10px;font-size:20px;letter-spacing:.04em;text-transform:uppercase">Use it, change it</h3>
+          <p style="margin:0 0 8px;font-size:15px;line-height:1.5">Suggested terms, if you&rsquo;d like a recommendation: <strong>MIT</strong> for the code and scripts, <strong>CC&nbsp;BY&nbsp;4.0</strong> for the drawings and written documentation. Both let anyone build on this with attribution.</p>
+          <p style="margin:0;font-size:13px;line-height:1.5;color:var(--color-neutral-700)">Add a <code style="font-family:ui-monospace,Menlo,monospace;font-size:12px">LICENSE</code> file to the repository to make it official &mdash; until then the work is technically all-rights-reserved.</p>
+        </div>
+        <div>
+          <h3 style="margin:0 0 10px;font-size:20px;letter-spacing:.04em;text-transform:uppercase">Start here</h3>
+          <ul style="margin:0;padding:0 0 0 16px;font-size:15px;line-height:1.6">
+            <li><a href="https://github.com/Xavier8264/JEA-Project/blob/main/flisr-capstone-memory-export.md" target="_blank" rel="noopener">Project overview &amp; decisions</a></li>
+            <li><a href="https://github.com/Xavier8264/JEA-Project/blob/main/03_OneLine_Diagram/jea_power_delivery_oneline_reference.md" target="_blank" rel="noopener">One-line &amp; voltage reference</a></li>
+            <li><a href="https://github.com/Xavier8264/JEA-Project/blob/main/04_Cardboard_Layout/jea_tabletop_layout_spec.md" target="_blank" rel="noopener">Tabletop layout spec</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--color-text);padding:22px 0 46px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:baseline">
+    <p style="margin:0;font-size:14px;line-height:1.5;max-width:52ch">Built by <strong>Jordan Prunty</strong> with Gage and Cody &mdash; senior capstone in partnership with Jackson Energy Authority, Madison County, Tennessee.</p>
+    <p style="margin:0;font:400 12px/1.5 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--color-neutral-600)">Scanned a QR code on the table? You&rsquo;re in the right place.</p>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultExpanded&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;File browser&quot;},&quot;showSearch&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;File browser&quot;}}">
+const BASE = "https://github.com/Xavier8264/JEA-Project/blob/main/";
+
+const GROUPS = [
+  {
+    name: "Simulator", path: "05_Firmware/FLISR_Trainer_Sim/",
+    note: "The browser simulator and the firmware logic it shares with the physical table.",
+    files: [
+      ["FLISR_Trainer_REV2_Sim.html", "104 KB", "Current revision — the simulator embedded above"],
+      ["FLISR_Trainer_REV1_Sim.html", "104 KB", "Previous revision"],
+      ["FLISR_Trainer_Sim.html", "97 KB", "First working build"],
+      ["firmware_rev2.js", "28 KB", "FLISR state machine, current revision"],
+      ["firmware_rev1.js", "27 KB", "FLISR state machine, previous revision"],
+      ["firmware.js", "21 KB", "Original firmware logic"],
+      ["sim_config_rev2.json", "3 KB", "Zones, segments, node graph and pin map — REV2"],
+      ["sim_config_rev1.json", "3 KB", "Same tables, previous revision"],
+      ["sim_config.json", "2 KB", "Original config"],
+      ["test_firmware_rev2.js", "19 KB", "Sequence tests against the REV2 logic"],
+      ["test_firmware_rev1.js", "18 KB", "Sequence tests, previous revision"],
+      ["test_firmware.js", "12 KB", "Original test suite"],
+      ["build_sim.py", "29 KB", "Assembles the standalone simulator HTML from template, config and firmware"],
+      ["sim_template.html", "31 KB", "Page shell the build script fills in"]
+    ]
+  },
+  {
+    name: "Drawings & panel layout", path: "03_OneLine_Diagram/, 04_Cardboard_Layout/, 08_Presentations_Concepts/, 09_Assets/",
+    note: "One-lines, panel layouts and the concept art the physical build is cut from.",
+    files: [
+      ["03_OneLine_Diagram/jea_power_delivery_oneline.svg", "23 KB", "Power delivery one-line, generation through utilization (vector)"],
+      ["03_OneLine_Diagram/jea_power_delivery_oneline.png", "299 KB", "Same diagram as a raster image"],
+      ["04_Cardboard_Layout/Cardboard Layout REV3.png", "125 KB", "Current four-panel layout"],
+      ["04_Cardboard_Layout/Cardboard Layout REV1 v2.png", "97 KB", "Layout REV1, second pass"],
+      ["04_Cardboard_Layout/Cardboard Layout REV1 v1.png", "41 KB", "Layout REV1, first pass"],
+      ["04_Cardboard_Layout/Cardboard Layout REV1 snpsht_9.9_22.svg", "36 KB", "Vector snapshot of the REV1 layout"],
+      ["08_Presentations_Concepts/Table-top Trainer AI Concept.png", "3 MB", "Early rendering of the finished table"],
+      ["09_Assets/6aaafefd23a9955c602ca8892d7f77c2.jpg", "26 KB", "Reference photograph"]
+    ]
+  },
+  {
+    name: "Reference documents", path: "repository root, 03_OneLine_Diagram/, 04_Cardboard_Layout/",
+    note: "The written record: domain notes, decisions with their rationale, and the layout spec.",
+    files: [
+      ["PROJECT_MEMORY.md", "124 KB", "Full working record of the project — the deepest documentation here"],
+      ["03_OneLine_Diagram/jea_oneline_component_reference.md", "41 KB", "Every component on the one-line, described"],
+      ["04_Cardboard_Layout/jea_tabletop_layout_spec.md", "15 KB", "Panel geometry, zones and device placement"],
+      ["flisr-capstone-memory-export.md", "11 KB", "Condensed overview: scope, team, locked decisions, open questions"],
+      ["03_OneLine_Diagram/jea_power_delivery_oneline_reference.md", "5 KB", "Voltage tiers, service classes and cross-ties, in plain tables"]
+    ]
+  },
+  {
+    name: "Electrical symbol icon set", path: "09_Assets/Electrical symbol SVG icon set/",
+    note: "A drawn symbol library — switchgear, transformers, reclosers, loads, DER — used across the diagrams.",
+    files: [
+      ["icons/switchgear-vcb.svg", "8 KB", "Pad-mounted switchgear, VCB compartment"],
+      ["icons/switchgear-switch.svg", "8 KB", "Pad-mounted switchgear, load-break switch"],
+      ["icons/breaker-feeder.svg", "8 KB", "Substation feeder breaker"],
+      ["icons/der-recloser.svg", "8 KB", "Recloser at the DER interconnection"],
+      ["icons/substation.svg", "8 KB", "Distribution substation"],
+      ["icons/xfmr-3ph.svg", "8 KB", "Three-phase transformer"],
+      ["icons/xfmr-1ph.svg", "8 KB", "Single-phase transformer"],
+      ["icons/solar-array.svg", "8 KB", "Solar array (DER)"],
+      ["icons/plc-hmi.svg", "8 KB", "Controller and operator interface"],
+      ["icons/jbox-tap.svg", "8 KB", "Junction box, tap"],
+      ["icons/jbox-splice.svg", "8 KB", "Junction box, splice"],
+      ["icons/jbox-seam.svg", "8 KB", "Junction box at a panel seam"],
+      ["icons/house.svg", "8 KB", "Residential load"],
+      ["icons/commercial.svg", "8 KB", "Commercial load"],
+      ["icons/industrial.svg", "8 KB", "Industrial load"],
+      ["icons/btn-fault.svg", "8 KB", "Fault injection button"],
+      ["icons/btn-reset.svg", "8 KB", "Reset button"],
+      ["contact-sheet.svg", "22 KB", "Every symbol on one sheet"],
+      ["legend.svg", "28 KB", "Labelled legend of the set"],
+      ["Icon Set.dc.html", "8 KB", "Browsable page for the set"],
+      ["Feeder Breaker.png", "13 KB", "Raster export of the feeder breaker symbol"],
+      ["support.js", "69 KB", "Runtime for the icon set page"]
+    ]
+  },
+  {
+    name: "Build & export scripts", path: "06_DXF_Tools/, 04_Cardboard_Layout/Backups/, 02_Planning/Gantt_Chart_PDFs/",
+    note: "Python that tiles the full-size drawings onto letter paper so the panels can be printed and cut.",
+    files: [
+      ["06_DXF_Tools/tile_dxf.py", "34 KB", "Tiles a DXF drawing across letter-size pages"],
+      ["06_DXF_Tools/tile_dxf_text.py", "10 KB", "Adds the text layer to the tiled output"],
+      ["06_DXF_Tools/test_tile_dxf.py", "15 KB", "Tests for the tiler"],
+      ["06_DXF_Tools/test_tile_dxf_text.py", "6 KB", "Tests for the text layer"],
+      ["04_Cardboard_Layout/printable_dxf_letter.txt", "6 KB", "Notes on printing the tiled sheets at true scale"],
+      ["04_Cardboard_Layout/Backups/Cardboard Layout REV1 backup_9.9_14_tiled_manifest.txt", "6 KB", "Page manifest for a tiled print run"],
+      ["04_Cardboard_Layout/Backups/Cardboard Layout REV1 backup_9.9_15_tiled_text_manifest.txt", "6 KB", "Page manifest, text layer"],
+      ["02_Planning/Gantt_Chart_PDFs/gantt_chart_pdf_export.py", "14 KB", "Renders the project schedule to PDF"]
+    ]
+  },
+  {
+    name: "Meetings & planning", path: "01_Admin_Meetings/, 02_Planning/Gantt_Chart_PDFs/",
+    note: "Sponsor meetings and the schedule, kept in the open alongside the technical work.",
+    files: [
+      ["01_Admin_Meetings/JEA Meeting Transcript 8.27.txt", "43 KB", "Kickoff meeting with JEA, 27 August"],
+      ["01_Admin_Meetings/JEA Preliminary Presentation.txt", "23 KB", "Preliminary design presentation, as text"],
+      ["02_Planning/Gantt_Chart_PDFs/gantt_chart_rev1_9.14.26_11_manifest.txt", "1 KB", "Schedule REV1, page manifest"],
+      ["02_Planning/Gantt_Chart_PDFs/gantt_chart_rev0_9.14.26_11_manifest.txt", "1 KB", "Schedule REV0, page manifest"]
+    ]
+  }
+];
+
+const ROOT_FOLDER = { "Simulator": "05_Firmware/FLISR_Trainer_Sim/", "Electrical symbol icon set": "09_Assets/Electrical symbol SVG icon set/" };
+
+class Component extends DCLogic {
+  state = { open: {}, query: "", didInit: false };
+
+  openMap() {
+    if (this.state.didInit) return this.state.open;
+    const all = this.props.defaultExpanded ?? false;
+    const m = {};
+    GROUPS.forEach((g, i) => { m[g.name] = all || i === 0; });
+    return m;
+  }
+
+  fileUrl(groupName, name) {
+    const prefix = ROOT_FOLDER[groupName] || "";
+    return BASE + encodeURI(prefix + name).replace(/#/g, "%23");
+  }
+
+  renderVals() {
+    const q = this.state.query.trim().toLowerCase();
+    const open = this.openMap();
+    const showSearch = this.props.showSearch ?? true;
+
+    let matched = 0;
+    const groups = GROUPS.map((g, i) => {
+      const files = g.files
+        .filter(f => !q || (f[0] + " " + f[2] + " " + g.name).toLowerCase().includes(q))
+        .map(f => {
+          const short = f[0].split("/").pop();
+          const dot = short.lastIndexOf(".");
+          return {
+            name: short,
+            desc: f[2],
+            size: f[1],
+            ext: dot > -1 ? short.slice(dot + 1).slice(0, 4) : "file",
+            url: this.fileUrl(g.name, f[0])
+          };
+        });
+      matched += files.length;
+      const isOpen = q ? files.length > 0 : !!open[g.name];
+      return {
+        name: g.name,
+        note: g.note,
+        path: g.path,
+        num: String(i + 1).padStart(2, "0"),
+        files,
+        isOpen,
+        chev: isOpen ? "−" : "+",
+        headBorder: isOpen ? "1px solid var(--color-divider)" : "0",
+        countLabel: files.length + (q ? " match" + (files.length === 1 ? "" : "es") : " file" + (files.length === 1 ? "" : "s")),
+        toggle: () => this.setState(s => ({
+          didInit: true,
+          open: Object.assign({}, this.openMap(), { [g.name]: !this.openMap()[g.name] })
+        }))
+      };
+    }).filter(g => !q || g.files.length > 0);
+
+    const allOpen = GROUPS.every(g => open[g.name]);
+
+    return {
+      groups,
+      showSearch,
+      query: this.state.query,
+      noMatches: !!q && matched === 0,
+      matchLabel: q ? matched + " of 61 files" : "61 files, 6 groups",
+      toggleAllLabel: allOpen ? "Collapse all" : "Expand all",
+      onQuery: e => this.setState({ query: e.target.value }),
+      onToggleAll: () => {
+        const next = {};
+        GROUPS.forEach(g => { next[g.name] = !allOpen; });
+        this.setState({ didInit: true, open: next, query: "" });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

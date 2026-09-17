@@ -2214,3 +2214,131 @@ to the vault, fully recoverable), and no firmware/script logic was touched. Buil
 re-run from the new paths (item 42).
 
 ---
+
+## 2026-09-17 11:15 CDT - Implemented the "JEA FLISR Trainer" Claude Design page locally, fixed for the numbered-folder reorg
+
+### What was asked
+
+Import a Claude Design project (`https://claude.ai/design/p/8abb872b-fc8a-4b2a-a0d0-2c777e5ee9c9`, a
+public landing page for the repo, meant to be reached by scanning a QR code on the physical table) via the
+`DesignSync` MCP tool, and implement `JEA FLISR Trainer.dc.html` in this working directory. `[V]`
+
+### Sources read this session
+
+`jea-project-memory-file.md`, this file's header/Standing Facts and the 2026-09-15 / 09-17 10:12 / 09-17
+10:46 entries, then via `DesignSync get_file` against project `8abb872b-fc8a-4b2a-a0d0-2c777e5ee9c9`: the
+full `JEA FLISR Trainer.dc.html`, `github.md`, and the entire `_ds/industry-1e5685ad-.../` bundle
+(`readme.md`, `_ds_manifest.json`, `styles.css`, `_ds_bundle.js`, `_adherence.oxlintrc.json`) and
+`support.js`. `[V]`
+
+### First blocker, resolved
+
+`DesignSync` initially refused every call: "needs design-system authorization, and `/design-login` cannot
+run in this non-interactive session." Told the user plainly rather than working around it. Jordan ran
+`/design-login` from an interactive session on this machine; `get_project` then succeeded
+(`type: PROJECT_TYPE_PROJECT`, `canEdit: true`, owner Jordan). `[V]`
+
+### The complication: the design was authored against the pre-reorg flat layout
+
+`JEA FLISR Trainer.dc.html` came back from the design project **fully authored already** -- hero, an
+embedded `<iframe>` of the REV2 simulator, a "how it works" section built from the one-line SVG, and a
+React-driven file browser covering all 61 repo files with links to
+`https://github.com/Xavier8264/JEA-Project/blob/main/...`. It was not a stub. But every relative path in it
+(`Cardboard Layout REV3.png`, `FLISR_Trainer_Sim/FLISR_Trainer_REV2_Sim.html`,
+`jea_power_delivery_oneline.svg`, and all 61 file-browser entries) assumed the **flat pre-reorg root**, and
+by the time this session got authorization, the 10:46 CDT reorg above had already moved every one of those
+files into the numbered folders. Verified the git remote is in fact `Xavier8264/JEA-Project`, so the
+file-browser's GitHub links were the right repo, just stale paths. `[V]`
+
+### Decisions and why
+
+- **Placed `JEA FLISR Trainer.dc.html`, `support.js`, and `_ds/industry-1e5685ad-.../` at the true
+  repository root**, alongside `PROJECT_MEMORY.md` and `flisr-capstone-memory-export.md`, not inside a
+  numbered folder. Reasoning: this file's own footer says "Scanned a QR code on the table? You're in the
+  right place" -- it is the repo's public entry point, the same role `PROJECT_MEMORY.md` was deliberately
+  kept at root for in the 10:46 entry. `[I]`, but consistent with that precedent.
+- **Rewrote every relative path** (hero image, one-line SVG, both simulator links, the iframe `src`, the
+  two footer "Start here" doc links, and all 61 entries in the embedded `GROUPS` file-browser data) to
+  match the post-reorg tree, cross-checked against the reorg entry's own folder table. Left the two
+  single-folder groups (`Simulator` -> `05_Firmware/FLISR_Trainer_Sim/`, `Electrical symbol icon set` ->
+  `09_Assets/Electrical symbol SVG icon set/`) on the existing `ROOT_FOLDER`-prefix mechanism; the four
+  groups whose files now span multiple numbered folders (Drawings & panel layout, Reference documents,
+  Build & export scripts, Meetings & planning) got full repo-relative paths written directly into each file
+  tuple instead, with the group `path` label listing the folders it now spans. No file was added to or
+  removed from the original 61; file sizes/descriptions were carried over as authored, not re-measured.
+  `[V]` for the mapping (checked against a fresh `find` of the actual tree), `[I]` that this was the
+  intended fix rather than, say, re-flattening the repo -- not asked, so this was the smaller/safer of the
+  two changes.
+- **Did not write `github.md` locally.** It is the design tool's own sync bookkeeping (last-sync timestamp,
+  a screen map) with no functional role in the page or the repo -- unlike `support.js`/`_ds/`, nothing
+  references it. `[I]`
+- **Did not push the corrected page back to the hosted Claude Design project.** The `DesignSync` write path
+  (`finalize_plan`/`write_files`) exists but is scoped in its own tool description to design-system
+  projects and an explicit user-reviewed plan; this project is `PROJECT_TYPE_PROJECT`, and overwriting the
+  user's hosted design without being asked is a visible, external action outside what was requested.
+  Flagging as a next step rather than doing it. Not done: not requested.
+
+### Verification actually performed
+
+1. `node --check` on `support.js`, `_ds_bundle.js`, and the extracted embedded `<script data-dc-script>`
+   block: all three parse as valid JS. `[V]`
+2. Regex-scanned every static `src=`/`href=` in the written `.dc.html` against the filesystem: all 6 local
+   references (`./support.js`, the two `_ds/` files, the hero PNG, the one-line SVG, the simulator HTML)
+   resolve; the one non-match was `{{ f.url }}`, a runtime template placeholder, not a real path. `[V]`
+3. **Rendered in a real browser**, not just statically checked: installed `puppeteer-core` into the
+   scratchpad (no bundled Chromium download -- pointed it at the existing
+   `C:\Program Files\Google\Chrome\Application\chrome.exe`), served the working directory with
+   `python -m http.server 8934`, and drove the page headlessly.
+   - Initial load: hero, stat plate, and the embedded REV2 simulator iframe all rendered correctly styled
+     (Barlow Condensed headings, blueprint corner marks, steel-accent duotone on the one-line image).
+     Screenshot inspected directly. `[V]`
+   - Console/network: exactly one error, `favicon.ico` 404 (confirmed against the `http.server` access log
+     -- browser default request, not a page asset). Zero other console or `pageerror` events. `[V]`
+   - The iframe's own document was inspected (not just "an iframe exists"): it resolved to
+     `.../05_Firmware/FLISR_Trainer_Sim/FLISR_Trainer_REV2_Sim.html` and its body text read "FLISR Trainer
+     REV2 Test Bench" -- the real simulator, not a blank or error frame. `[V]`
+   - Clicked "Expand all" via a real DOM click (not simulated), then re-screenshotted: all 6 file-browser
+     groups opened, all 61 files listed. `[V]`
+   - Extracted the **runtime-rendered** `href` attributes (not the source template) for all 61
+     file-browser links: every one starts with the expected
+     `https://github.com/Xavier8264/JEA-Project/blob/main/` base, and spaces in filenames
+     (e.g. `Cardboard Layout REV3.png`) are correctly percent-encoded in the live DOM. `[V]`
+4. Killed the verification `http.server` process afterward (`Stop-Process` by PID, matched on the bound
+   port) so nothing was left listening. `[V]`
+
+### Deliverables
+
+- `JEA FLISR Trainer.dc.html` (repo root) -- the implemented, path-corrected landing page.
+- `support.js` (repo root) -- the DC/x-dc runtime (loads React/ReactDOM/Babel from unpkg at runtime; not
+  bundled).
+- `_ds/industry-1e5685ad-55b7-4b09-aebc-d9d638a0ee4d/` (repo root) -- `styles.css`, `_ds_bundle.js`,
+  `_ds_manifest.json`, `readme.md`, `_adherence.oxlintrc.json` -- the "Industry" design system this page is
+  built on.
+- This log entry.
+- Not yet committed to git -- left for the user, per the standing "don't commit unless asked" instruction.
+
+### Open items, flagged not resolved
+
+Continues the list; items 26-27, 33-34, 37-40, 42-43 stand unchanged. Item 41 (REV2 bench
+`PORTED_LOGIC_SHA256`) is unrelated to this entry and still open.
+
+44. **Not synced back to the hosted Claude Design project.** The corrected paths exist only in this working
+    directory. If Jordan edits further in the Claude Design UI, it will still show the stale pre-reorg
+    paths until someone pushes this version back (or re-derives it there). Ask before doing that -- it
+    writes to a project visible outside this repo.
+45. **File sizes and descriptions in the file browser are exactly as authored in the design**, not
+    re-measured against the current files (e.g. `PROJECT_MEMORY.md` is listed as "124 KB" but has grown
+    past that since -- this entry alone adds several KB). Cosmetic; paths (the functional part) were the
+    only thing fixed.
+46. **`github.md`'s own "Last sync" / screen-map bookkeeping was read but not carried locally** -- it is
+    Claude Design's internal state, not repo content the page depends on. Flagging in case that judgment
+    call was wrong.
+
+### Not done
+
+Did not push anything back to the hosted Claude Design project (item 44). Did not commit the new files to
+git. Did not re-measure file sizes in the file-browser data (item 45). Did not add the three `.ino` firmware
+sketches to the file browser's "Simulator" group -- they were absent from the design as authored and adding
+them was not asked.
+
+---
