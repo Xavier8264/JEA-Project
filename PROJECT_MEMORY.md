@@ -2082,3 +2082,135 @@ Item 38 is resolved for REV2 and is now split:
     the plain avr-gcc recipe could not. A real arduino-cli is still the better answer.
 
 ---
+
+## 2026-09-17 10:12 CDT - Question list for the 2026-09-22 JEA meeting
+
+### What was asked
+
+User is presenting the LED display to JEA on Tuesday 2026-09-22 (Zach, possibly Michael). They know two
+things going in: the practical layout has a section that needs revision, and not all necessary components
+are modeled. Asked for a comprehensive list of questions to ask JEA to make progress toward the real
+(full-scale) trainer. No file output requested; delivered as chat text only.
+
+### Sources read this session
+
+`jea-project-memory-file.md` (the standing-instruction memory), this file (Standing Facts plus the full
+log, all entries through the 2026-09-15 struct-Piece fix), `jea_oneline_component_reference.md` in full.
+`[V]`
+
+### What was produced
+
+A ~33-question list, grouped: (A) section/topology layout, (B) components not yet modeled, (C) one-line
+facts still open per the component reference section 8 (transformer ownership, 46 kV loop vs radial,
+delivery-point independence, Viper-ST/SEL-651R pairing, industrial-branch scope), (D) Axion/RTAC hardware
+form factor (mounting orientation, backplane slots, 120 VAC scope, laptop vs DisplayPort), (E) real device
+dimensions for scale sign-off, (F) Milsoft/load-transfer data needs, (G) BOM overhead-vs-underground
+exercise, (H) schedule/budget/procurement, (I) meeting logistics for the 22nd itself. Roughly a third
+flagged `[T]` as Tuesday-priority because they unblock the layout revision or the missing-components list
+directly. Did not invent new facts; every closed-ended question traces to an item already `[V]` or `[I]`
+in this file or the component reference (open items 1-11 list above, and component reference section 8).
+Delivered in chat only, not written to a new file. User was offered a trim-to-Tuesday-only version or a
+printable checklist; not yet requested.
+
+### Not done
+
+No changes to any layout, spec, DXF, xlsx, or firmware file. No new file created for the question list
+itself, per the no-unrequested-documents default; can be added on request.
+
+---
+
+## 2026-09-17 10:46 CDT - Working directory reorganized into numbered category folders
+
+### What was asked
+
+"Organize this JEA Project folder, don't delete anything, just organize it, ask me any questions, if
+none, execute." No content changes implied or made. `[V]`
+
+### Questions asked and answers
+
+- Folder naming style: numbered prefixes (`01_`, `02_`, ...) so File Explorer sorts in workflow order.
+  Chosen over plain names. `[V]`
+- Whether to commit the reorg to git: yes, one commit, moves recorded as renames. `[V]`
+
+### Sources read this session
+
+`jea-project-memory-file.md` (standing instruction), this file's header and the 2026-09-15 / 09-17
+entries, a full recursive listing of the working directory, `git ls-files` and `git status --porcelain`
+(confirmed everything except this file was clean before starting), and `flisr-capstone-memory-export.md`
+(header only, to confirm it is project-relevant memory content, not disposable). `[V]`
+
+### New top-level layout
+
+| Folder | Contents |
+|---|---|
+| `01_Admin_Meetings/` | JEA Contacts, meeting transcript/PDF, preliminary presentation, scope of work docx |
+| `02_Planning/` | Gantt chart xlsx, `Gantt_Chart_PDFs/`, cardboard prototype tabulated xlsx |
+| `03_OneLine_Diagram/` | one-line pdf/png/svg and both component reference `.md` files |
+| `04_Cardboard_Layout/` | current DXFs (REV0, REV1), REV1/REV3 renders, layout spec, `Cardboard Layout Tiles/`, plus a `Backups/` subfolder for every `backup_*`, `.dxf~`, the `#`-prefixed autosave copy, and `JEA Prelim Layout.dxf(~)` |
+| `05_Firmware/` | `FLISR_Trainer/`, `FLISR_Trainer_REV1/`, `FLISR_Trainer_REV2/`, `FLISR_Trainer_Sim/` moved in whole, untouched internally |
+| `06_DXF_Tools/` | `tile_dxf.py`, `tile_dxf_text.py`, `test_tile_dxf.py`, `test_tile_dxf_text.py` |
+| `07_Reference_Datasheets/` | `135187.pdf`, SEL-2240 datasheet/summary, Axion instruction manual and panel drawings |
+| `08_Presentations_Concepts/` | REV2 pptx, AI concept render, UU Senior Design Concept dwg(~) |
+| `09_Assets/` | Electrical symbol SVG icon set (folder + its source zip), the generic house `.jpg` reference image |
+
+`PROJECT_MEMORY.md` and `flisr-capstone-memory-export.md` were deliberately left at the working-directory
+root: the standing memory instruction names this exact path for `PROJECT_MEMORY.md`, and moving it would
+have broken that reference for future sessions. `[V]`
+
+**Judgment call, not asked `[I]`:** `#Cardboard Layout REV1 backup_9.12.20.dxf` was filed under `Backups/`
+alongside its non-`#` twin. Item 35 (2026-09-14 22:45 entry) says leaving this file *alone* was correct
+when the question was whether to touch its *content* — it was not, here, only relocated by `git mv`, byte
+for byte. Flagging in case that reasoning does not extend to a location change.
+
+### Cleanup done via the vault (archived, not deleted)
+
+- `~$A_Senior_Design_Scope_of_Work (1).docx` and `~$Tabletop Smart Grid & Distribution Automation Trainer
+  REV2.pptx` -- Office lock-file artifacts, both were tracked in git (accidentally committed while the
+  real files were open), not real content. Restore ids `42c58a3b` / `c50f8c61`. `[V]`
+- Root `__pycache__/` (5 `.pyc` files, including `prev_tile_dxf.cpython-314.pyc`, an orphan with no
+  matching `.py` source anywhere in the tree) -- disposable bytecode cache; regenerates next time the
+  `06_DXF_Tools` scripts run. Restore id `e3ce40b4`. `[V]`
+- `FLISR_Trainer_Sim/__pycache__/` was left alone; it moved with its parent folder intact.
+
+### Verification actually performed
+
+1. `git status --porcelain` before starting showed only `PROJECT_MEMORY.md` modified; everything else was
+   clean, so every file below was tracked and `git mv` was used throughout (not a plain filesystem move).
+   `[V]`
+2. All 57 planned `git mv` operations reported success; a `MISSING`/`FAILED` guard in the move script
+   never fired. `[V]`
+3. After the moves, `git add -A` plus `git status --porcelain` showed exactly: renames for every moved
+   path (git's own similarity detection, no manual `-M` flag needed), 5 deletions for the archived
+   `__pycache__` files, 2 deletions for the archived lock files, and the pre-existing `PROJECT_MEMORY.md`
+   modification. No unexpected adds, deletes, or path collisions. `[V]`
+4. Root directory listing after the move: exactly the 9 numbered folders plus the two memory `.md` files.
+   `[V]`
+5. Not verified: that every firmware/simulator internal relative path (e.g. anything in `build_sim.py` or
+   the `.ino` sketches referencing sibling files by relative path) still resolves. Folders were moved as
+   whole units with internal structure untouched, so relative references inside them should be unaffected,
+   but this was reasoned, not executed/tested. `[I]`
+
+### Deliverables
+
+- New folder tree described above, committed. Commit message references this reorg.
+- This log entry.
+
+### Open items, flagged not resolved
+
+Continues the list; items 26-27, 33-34, 37-41 stand unchanged.
+
+42. **Firmware build tooling not re-tested after the move.** `05_Firmware/FLISR_Trainer_Sim/build_sim.py`
+    and the arduino-cli emulated-hoist check (2026-09-15 entry) were not re-run from their new path. If
+    either script uses a path relative to the old working directory rather than its own file location,
+    it may need a working-directory argument going forward. `[I]`
+43. **`135187.pdf` (`07_Reference_Datasheets/`) was filed by filename pattern only** -- its content was
+    not opened this session (no PDF renderer available in this environment). If it turns out not to be a
+    datasheet, it should move.
+
+### Not done
+
+No file content was changed, no file was deleted (two lock files and a stale pycache folder were archived
+to the vault, fully recoverable), and no firmware/script logic was touched. Build/test tooling was not
+re-run from the new paths (item 42).
+
+---
