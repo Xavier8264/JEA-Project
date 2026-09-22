@@ -2402,3 +2402,431 @@ the redacted-in-chat detail, or the two files themselves in git history, if it n
     it as a finding rather than a feature.
 
 ---
+
+## 2026-09-20 22:48 CDT - "What is the next task?" Status review against the Gantt and SOW
+
+### What was asked
+
+"What is the next task in order to make progress in this project." Answered in chat only. No files changed
+other than this entry.
+
+### Sources read this session
+
+`jea-project-memory-file.md`, this file (header, Standing Facts, every entry from 2026-09-14 22:45 on, plus a
+grep of all numbered open items), `git log` / `git show --stat` for `064514b` and `0b68fcf`,
+`02_Planning/JEA Project - Gantt Chart.xlsx` (Project schedule sheet, via openpyxl), the rev1 Gantt export
+manifest, and the full text of `01_Admin_Meetings/JEA_Senior_Design_Scope_of_Work (1).docx`. `[V]`
+
+### Findings `[V]` unless marked
+
+- **Gantt, as of today:** "Design UI/UX" 2026-09-14 to 09-27 at 15%. "Prelimiary Design Review (PDR)" on
+  **2026-09-30**. "Draft BOM & Budget Estimation" 10-01 to 10-11, "Get BOM Approved" 10-12, "Order and Receive
+  Components" 10-13 to 10-27. Everything after that has no dates.
+- **The PDR date conflicts.** The Gantt says 2026-09-30; the SOW timeline table and Standing Facts say the week
+  of Oct 5. Not resolved.
+- **The Gantt "ASSIGNED TO" column still holds Vertex42 template names** ("VanArsdel, Ltd.", "Gokce Aslan",
+  "Hayden Cook", ...), not the real team. `[I]`, high: these are the template's stock names.
+- **No requirements document exists in the repo.** The SOW's Phase 1 deliverable is "Requirements doc drafted"
+  (functional requirements, success criteria, constraints). Grep of this file, the capstone export, and the
+  two reference `.md` files found no such document. The SOW's own demo success criterion is: a repeatable
+  fault -> isolation -> restoration sequence run live, plus a clear one-line and short explanation.
+- **REV2 has never been run on the physical board, per this log.** Items 21, 26, 27 and 33 are still open. The
+  2026-09-15 entry shows Jordan compiling REV2 in the IDE, so an upload may have happened since without being
+  logged. `[I]`
+- **Item 41 is still open:** `firmware_rev2.js` line 25 still carries `1bb43e03...`, not `bd1ebd37...`.
+- **Item 12 is partly done:** commit `064514b` removed `JEA Contacts.docx` and changed the REV2 pptx. The
+  history-rewrite decision is still open.
+- **Numbering collision:** the 2026-09-17 12:00 entry numbered its open items 12 and 13, but 12 and 13 were
+  already used in the 2026-09-13 21:22 entry. This entry refers to the new ones as "PII item 12/13". The next
+  free number is 47.
+
+### Recommendation given
+
+1. **Before Tue 2026-09-22:** load REV2 onto the physical board and run all 7 faults (items 21, 26, 27, 33).
+   Supporting task on the code side: close item 41 so the REV2 bench is a working fallback demo. Bring the
+   `[T]` subset of the 2026-09-17 question list.
+2. **Right after the meeting:** log the answers here, then revise the flagged layout section and add the
+   unmodeled components.
+3. **Before PDR:** draft the missing requirements doc, fix the PDR date, then start the BOM (due 10-11).
+
+### Open items
+
+47. **PDR date conflict:** the Gantt says 2026-09-30, the SOW says the week of Oct 5. Confirm with Zach on the 22nd.
+48. **No requirements doc** (SOW Phase 1 deliverable). Needed for the PDR.
+49. **Gantt "ASSIGNED TO" column holds template placeholder names.**
+
+### Not done
+
+No code, bench, xlsx, DXF or Gantt changes. Item 41 not touched. No git commit.
+
+---
+
+## 2026-09-20 22:58 CDT - PDR is Tue 2026-09-22. Gantt chart dates are no longer used for planning
+
+### What Jordan said `[V]`
+
+- **The PDR is 2026-09-22.** That is the Tuesday JEA meeting where the LED display is being shown.
+- **Standing rule:** do not use the Gantt chart dates when planning. Treat its task list as a loose guide only.
+
+### What this supersedes
+
+- **Standing Facts, Schedule:** "PDR with JEA: week of Oct 5" is replaced by **2026-09-22**.
+- **2026-09-17 10:12 entry:** it called the 9/22 meeting an LED display review. It is the PDR.
+- **2026-09-20 22:48 entry:**
+  - Its Gantt findings (dates, the 09-30 PDR) no longer drive planning.
+  - Item 47 (PDR date conflict) is **closed**.
+  - Item 49 (template names in the Gantt) is **closed**: it does not matter under the new rule.
+  - The "before PDR" steps in its recommendation now fall before Tuesday. Item 48 (no requirements doc) stays
+    open, but it is not a Tuesday blocker unless Jordan says it is.
+
+### Rule recorded outside this file too
+
+Saved as auto-memory `jea-gantt-low-weight.md` so future sessions apply it without being told again.
+
+### Not done
+
+No code, bench, xlsx, DXF or Gantt changes. No git commit.
+
+---
+
+## 2026-09-20 23:13 CDT - Cardboard prototype built and working on REV2. Requirements doc drafted for Jordan's review
+
+### What Jordan reported `[V]`
+
+- **The cardboard prototype is built.** Four 24 x 24 x 1 in cardboard panels. The printed layout DXF is taped
+  on top. The strip runs follow the recorded LED order. `FLISR_Trainer_REV2` is uploaded to an Arduino Uno and
+  powered from a PSU. **It worked on the first try**, apart from the compile error fixed on 2026-09-15 (item 38).
+- **The physical model is the source of truth.** The team built the physical model first, then recorded it in
+  the tabulated workbook (`02_Planning/JEA Cardboard Prototype Tabulated REV1.xlsx`).
+
+### What this supersedes
+
+- **2026-09-20 22:48 recommendation 1** (load REV2 onto the board before Tuesday): done.
+- **Item 21** (upload to a real Uno): **closed.** Wave frame rate was not reported separately. `[I]` It looked
+  acceptable, since Jordan called the run a success.
+- **Items 26, 27, 33** (status pixel positions, amber vs red, TIE pixel side): not confirmed one by one. They
+  stay open until Jordan says otherwise.
+- **The framing in the 2026-09-13 21:22 and 2026-09-14 20:11 entries** that the DXF and xlsx are design inputs
+  to check against each other. **The xlsx records the built board, so its pixel counts are correct by
+  definition.** Earlier flags that a run is "short of geometry" (item 14, 20:11 flags 2 and 3) describe the
+  drawing, not a board error. Node coordinate typos such as N28 x (20:11 flag 1) were not addressed. `[I]`
+- **Item 48** (no requirements doc): **drafted**, pending Jordan's review.
+
+### Deliverable: requirements doc
+
+- Claude Doc "JEA FLISR Trainer - Requirements":
+  `https://claude.ai/code/artifact/94a3732b-bc7f-4f85-8734-6e5d9f16ac03`. Private to Jordan until shared.
+- **Sections:**
+  1. Purpose and scope
+  2. Where the project stands
+  3. Stakeholders
+  4. Functional requirements FR-1 to FR-23 (FR-19 to FR-23 are candidates only)
+  5. Physical requirements PR-1 to PR-11
+  6. Electrical and controls requirements ER-1 to ER-10, plus an I/O estimate
+  7. HMI requirements HR-1 to HR-8
+  8. Constraints C-1 to C-9
+  9. Acceptance tests AC-1 to AC-8
+  10. Assumptions A1 to A14, each with a Confirmed / Wrong / Unsure dropdown
+  11. Seven open questions and an out-of-scope list
+- Every row carries `[V]` / `[S]` / `[I]` and its source.
+- One comment is anchored on A2. It asks whether the final LED controller only displays the Axion's decisions
+  or keeps its own FLISR model.
+- **Sources read for it:** this file (Standing Facts, the 2026-09-07 layout entry, the 2026-09-07 import, the
+  2026-09-10, 2026-09-13 and REV2 entries), `flisr-capstone-memory-export.md`, the SOW docx,
+  `jea_oneline_component_reference.md` sections 5 to 9, the REV2 `.ino` header and blocks [1] to [3], and a
+  keyword grep of the 8/27 transcript.
+- **Gantt dates were not used,** per the standing rule.
+
+### Assumptions in the doc most likely to be wrong `[I]`
+
+- A1: the 48 x 48 in footprint is acceptable to JEA.
+- A2: the Axion makes every FLISR decision, and the LEDs only display them.
+- A3: devices are props with a status pixel.
+- A9: aluminum extrusion frames.
+- A11: about $4,000 left.
+- A13: team roster and advisor names.
+- A14: acceptance time targets.
+
+### Open items
+
+No new numbers. The doc's Section 11 restates the existing open items for the full-scale design:
+
+- Axion placement (item 7)
+- the LED link and segment bus (item 8)
+- the connector (items 5 and 9)
+- single vs per-panel chain (item 18)
+- where the logic lives (item 19)
+- scale (item 1)
+
+### Not done
+
+- No code, bench, xlsx, DXF or Gantt changes.
+- Item 41 not touched.
+- No git commit.
+- The doc is not exported to the repo or Google Drive.
+
+---
+
+## 2026-09-21 00:02 CDT - Corrections from Jordan applied to the requirements doc. Section J added to the PDR question list
+
+### What Jordan said `[V]`
+
+- **The board has no 3D models yet.** It has only the printed DXF.
+- **Final build, current plan (not set in stone):** each panel has a 1 x 1 in aluminum extrusion perimeter and a
+  thin wood base. 3D-printed ground, buildings and components go on top. The final product will not be cardboard.
+- **Dr. Pingen is not a faculty advisor.** Team verified: Jordan, Cody and Gage.
+- **Audiences:** high school students, college students and JEA technicians. The JEA executive presentation is
+  a trial run that also serves as practice for the symposium.
+- **Temporary-fault simulation:** Jordan is unsure, so it goes to the PDR questions, not the requirements.
+- **Milsoft specifics are still largely unknown.**
+- Jordan set **A11 to Confirmed** in the doc: about $4,000 remains for non-SEL hardware.
+
+### What this supersedes
+
+- **2026-09-07 21:56 import:**
+  - "Faculty advisors are Dr. Pingen and Dr. Schwindt": Pingen is **wrong**. Schwindt is unconfirmed. `[I]`
+  - "1 in aluminum extrusion frames": now a perimeter frame plus a wood base plus 3D-printed ground.
+- **Item 10:** the team half is closed. Only the advisor's name and spelling stay open.
+- **Requirements doc FR-22** (temporary-fault candidate): **removed**, moved to the PDR questions.
+
+### PDR question document `[V]`
+
+- **Location:** `C:\Users\jprun\OneDrive - Union University\Tuesday Meeting Questions.docx`, last saved
+  2026-09-17 10:27. It is the 2026-09-17 10:12 chat list, saved by Jordan.
+- **Its structure:**
+  - Sections A to G, then I. H is gone (its abstractNum, numbered 28 to 30, is orphaned). `[I]` Jordan deleted H.
+  - Questions are numbered straight through, one list per section, each list starting where the last ended.
+- **Added section J, "Temporary faults and Milsoft scope",** at the end with 7 questions, numbered 34 to 40:
+  - temporary faults worth teaching?
+  - does JEA reclose on underground cable?
+  - how would the operator choose a temporary fault?
+  - which Milsoft outputs are needed?
+  - which Milsoft tool and license, and who sets it up?
+  - what goes in the Milsoft model?
+  - when are results needed, and do they drive allowed transfers?
+- **How it was built:** python-docx, cloning the section I heading and its last question, reusing numId 9 so the
+  numbering continues. Script: scratchpad `add_section_j.py` (temporary).
+- **Checks run:** `[V]`
+  - The first 38 paragraphs, the trailing empty paragraph and sectPr are byte-identical to the original.
+  - Other re-saved parts are C14N-identical. `[Content_Types].xml` has the same entries, reordered.
+  - The new text is all ASCII.
+  - **Not opened in Word** and no PDF render: no LibreOffice on this machine.
+- **Pre-edit copy:** in the vault, `vault.ps1 restore 079238e6`.
+
+### Requirements doc changes
+
+Doc: `https://claude.ai/code/artifact/94a3732b-bc7f-4f85-8734-6e5d9f16ac03`
+
+- **Section 2:** "not in the prototype" now says the board carries only the printed layout.
+- **Section 3:**
+  - Trainees row removed. New Audiences table: high school, college, JEA technicians, JEA executive
+    management (trial run and symposium practice), UU symposium.
+  - Advisor row is Dr. Schwindt only, marked `[I]` for name and spelling. Team marked `[V]`.
+- **PR-10:** rewritten to the extrusion perimeter, wood base and 3D-printed ground plan.
+- **PR-8** (the SOW's vinyl backdrop) now flags that the 3D-printed ground may replace it. `[I]` Not raised with
+  Jordan yet.
+- **A9 and A13:** reworded to match. **HR-6:** "trainees" changed to "audience".
+- **AC-8:** pass condition changed to "to be defined with JEA", pointing to the PDR questions.
+
+### Not done
+
+No code, bench, xlsx, DXF or Gantt changes. No git commit. The OneDrive docx is outside the repo.
+
+---
+
+## 2026-09-21 19:24 CDT - FastLED cannot run on the Axion. Brain/display split settled on hardware grounds. Closes open item 19
+
+### The question Jordan raised `[V]`
+
+He had assumed the REV2 sketch could be dropped more or less intact into the PLC, and hit two
+blockers at once: the sketch assumes one continuous LED strand, and the panel plan was "each
+section's positive terminal to a digital pin on the PLC." He asked whether FastLED (or any
+open-source equivalent) can be loaded into the Axion, or whether the PLC can only do discrete
+on/off.
+
+### Answer: no, on two independent grounds. Either one alone is fatal
+
+**1. No runtime to host it.** The SEL-2241 RTAC exposes only an IEC 61131-3 logic engine
+(Structured Text, Ladder Diagram, CFC) loaded through AcSELERATOR RTAC. No user C/C++ runtime,
+no loadable libraries, no directly addressable GPIO. `[V]` 2240_DS_20130827_01.pdf p.4.
+FastLED 3.10.4's `src/platforms/` targets are `avr, arm, esp, teensy, apollo3, apple, arduino,
+wasm, win, posix, stub`. No PLC / IEC 61131 target exists. `[V]` read from the local
+`FastLED-3.10.4` extract. This is not a FastLED gap; no LED library can target that runtime.
+
+**2. The output hardware is an electromechanical relay.** This is the harder wall and it holds
+even if item 1 were solved.
+
+| SEL-2244-3 spec | Value | Datasheet page |
+|---|---|---|
+| Output type | Form A / Form B control outputs (relay contacts) | p.13 |
+| Rated voltage range | 19.2 - 275 Vdc | p.32 |
+| Pickup/Dropout time | <= 8 ms typical | p.32 |
+| Cyclic capacity | 2.5 cycles/second | p.32 |
+| Mechanical durability | 10 M no-load operations | p.32 |
+| Breaking capacity @ 24 Vdc | 0.75 A, L/R = 40 ms | p.32 |
+
+All `[V]` from `07_Reference_Datasheets/2240_DS_20130827_01.pdf`.
+
+WS2812B needs 800 kHz NRZ, timing 250 / 625 / 375 ns. `[V]` FastLED
+`src/chipsets.h:473`, `fl::TIMING_WS2812_800KHZ`.
+
+Arithmetic, all `[V]` by computation from the two rows above:
+
+- 8 ms dropout caps the contact at about 62 Hz square wave. 800 kHz / 62.5 Hz = **12,800x too slow.**
+- Against the *rated* 2.5 cycles/sec it is **320,000x too slow.**
+- REV2 is 352 px x 24 bits = 8,448 bits/frame. 10 M operations / 8,448 = 1,183 frames. At the
+  sketch's 50 fps cap that is **about 24 seconds of contact life.** The module would be destroyed
+  during the first animation.
+
+**The "fast" module does not rescue it.** SEL-2244-5 Fast High-Current DO: pickup <= 12 us at
+250 Vdc / 65 us at 19.2 Vdc, but **dropout is still <= 8 ms typical**, cyclic capacity
+4 cycles/second. `[V]` p.33. It is fast at closing, not at toggling.
+
+### Two corrections to the stated panel wiring plan `[V]`
+
+1. **Three conductors, not two.** WS2812B is +5 V, GND, DIN. The 5 V rail is permanently on; DIN
+   carries the signal. Switching +5 V per section is actively wrong: WS2812B is a shift register,
+   each pixel regenerates data for the next, so cutting section 3 also kills 4 through 6. This
+   restates and confirms the warning already at PROJECT_MEMORY.md line 637.
+2. **An Axion DO is a dry contact, not a sourcing pin.** It does not output voltage; it makes or
+   breaks a loop the user supplies. Different mental model from an Arduino GPIO. At 5 V it is also
+   below the 19.2 V rated floor, where there is insufficient wetting current to break contact
+   oxide film. `[S]` for the oxide mechanism; `[V]` for the 19.2 V floor.
+
+### Architecture recommended, and why it is not a compromise
+
+**Split brain from display.** Axion reads fault buttons on DI, runs the entire FLISR sequence in
+IEC 61131, publishes state. ESP32 holds zero FLISR logic and only maps state to pixels; FastLED
+lives there. **This is requirements-doc A2 and it closes open item 19** ("where the FLISR logic
+lives"), on hardware grounds rather than preference.
+
+**Link options, ranked as given to Jordan:**
+
+1. **Modbus TCP over Ethernet (recommended).** RTAC carries Modbus preinstalled `[V]` p.6, p.11;
+   SEL-2241 has two terminal-side Ethernet ports `[V]` p.29. ESP32 runs a Modbus TCP server.
+   Whole trainer state in ~20 holding registers, one Cat5 run, zero I/O modules consumed.
+   **Open:** `[I]` the datasheet says "Modbus" without breaking out client vs server. Confirm with
+   Michael that the purchased firmware has the Modbus **client** enabled. Added to the PDR list
+   candidates.
+2. **Modbus RTU over RS-485.** Four serial ports, EIA-232/485 software selectable, 300-115200 bps
+   `[V]` p.30. MAX485 on the ESP32. Same data model, electrically more robust.
+3. **Hardwired DO into optocouplers** (the existing segment-bus concept from the 2026-09-07
+   import). Costed honestly for the first time: 6 zones x 2 bits + DER + 8 devices x 2 bits =
+   **29 bits, so two SEL-2244-3 modules** (16 DO each), real money plus two backplane slots. Its
+   one genuine advantage is visible copper from PLC to board, which reads well in a training room.
+
+**Considered and rejected on merit:** SEL-2245-3 DC Analog Output, 8 ch, +/-20.48 mA / +/-10.24 V,
+1 ms step response `[V]` p.34. Could drive dumb analog RGB strip through a MOSFET stage and give
+real color fades, but whole-section-only with no per-pixel chase, 13 W burden, costs a slot.
+Bad trade against a $10 ESP32.
+
+### Consequences for the REV2 sketch `[V]` structure read this session
+
+`FLISR_Trainer_REV2.ino`, 1,029 lines, 352 px, 31 segments, 8 devices, 7 faults, one
+`FastLED.addLeds` call on pin 10 at line 990. `renderStrip()` (around line 750) walks the segment
+table into one flat `leds[]` then calls `FastLED.show()` once.
+
+- **Moves to the Axion:** `computeModel()`, button reading, step sequencing.
+- **Stays on the ESP32:** the 31-row segment table, `colorForPixel()`, `colorForDevice()`, the
+  animations, FastLED setup.
+- **New:** a register-map decoder writing `zoneState[]` and `devState[]`.
+- **Recommended:** keep `computeModel()` behind `#define STANDALONE_MODE 1`. The Axion has a
+  November lead time and a demoable board is needed before then.
+
+**The "one continuous strand" problem is separate from the PLC question and is easy.** FastLED
+supports parallel outputs natively: one `addLeds` per panel, its own pin, its own slice of
+`leds[]`, and a single `FastLED.show()` drives all of them. Because `renderStrip()` already walks
+the table into a flat buffer, this is roughly a 40-line change, not a rewrite. `[I]` medium, not
+attempted. Do it on ESP32, not the Uno: 352 px already consumes 1,011 of the Uno's 2,048 bytes
+of SRAM.
+
+### PDR framing offered
+
+Jordan's framing was that it would be "crazy" to get animation from a $10 AliExpress part but not
+from a $6,000 professional PLC. Reframe rather than apologize: the Axion buys 30 A make trip-rated
+contacts, IEEE C37.90 surge withstand, -40 to +85 C, 1 ms time-stamped SOE, EtherCAT determinism,
+DNP3 and IEC 61850 `[V]` pp.4-6. Nothing in a substation requires bit-banging 800 kHz into a light
+strip, so no protection controller is designed to. Real utility mimic boards and video walls use
+exactly this split: RTU holds state, a dedicated display driver renders it. `[S]`
+
+### Open items touched
+
+- **Item 19 (where the FLISR logic lives): closed.** Axion decides, ESP32 renders. Forced by
+  hardware, not preference.
+- **Item 8 (LED link and segment bus): narrowed.** Recommendation is now Modbus over Ethernet or
+  RS-485 rather than a wide DO/opto bus, with the 29-bit / two-module cost of the DO route
+  quantified as the reason.
+- **Item 18 (single vs per-panel chain): unblocked.** Per-panel chains via parallel `addLeds`,
+  independent of the PLC decision.
+- **New PDR question:** does the purchased RTAC firmware have the Modbus client enabled, and which
+  transport does Michael prefer (TCP or RTU)?
+
+### Not done
+
+No code changes. No `.ino` edits. No DXF, xlsx or Gantt changes. Requirements doc not updated with
+the A2 / item 19 closure. No git commit. Gantt dates not used, per the standing rule.
+
+---
+
+## 2026-09-21 20:55 CDT - Working directory reorganized. Root cleared of loose files, FastLED vendored out of git
+
+### What moved `[V]` all verified by `ls` and `git status` after the fact
+
+The numbered folder structure from commit `8b63a71` was intact. What was loose was the material
+that accumulated at root since then. Three groups:
+
+| Was | Now | Why |
+|---|---|---|
+| `JEA FLISR Trainer.dc.html`, `support.js`, `_ds/` | `08_Presentations_Concepts/JEA_FLISR_Trainer_Overview/` | One bundle, three files. The HTML loads `./support.js` and `_ds/.../styles.css` relatively, so they only work together. |
+| `FastLED-3.10.4/FastLED-3.10.4/` | `05_Firmware/libraries/FastLED-3.10.4/` | Double-nested zip extract, flattened by one level. 93 MB. |
+| `FastLED-3.10.4.zip` | `05_Firmware/libraries/FastLED-3.10.4.zip` | 38 MB. Redundant with the extract; kept for now, candidate to archive. |
+
+`PROJECT_MEMORY.md` and `flisr-capstone-memory-export.md` deliberately stay at root. Root is now
+those two files, `.gitignore`, and the nine numbered folders.
+
+### One real break found and fixed `[V]`
+
+The overview page was written assuming it sat at repo root. Besides the two bundle-relative refs
+it also carried three project-root-relative ones:
+
+- `03_OneLine_Diagram/jea_power_delivery_oneline.svg`
+- `04_Cardboard_Layout/Cardboard Layout REV3.png`
+- `05_Firmware/FLISR_Trainer_Sim/FLISR_Trainer_REV2_Sim.html` (twice: an `<iframe src>` and an `<a href>`)
+
+Moving the file two levels deep silently broke all three. Each was prefixed with `../../` and all
+six references were then re-checked on disk. All resolve. `[V]`
+
+The second such bundle, `09_Assets/Electrical symbol SVG icon set/`, was checked and is genuinely
+self-contained: its own `support.js`, no `_ds` reference, all icon paths local. Untouched.
+
+### Git hygiene
+
+- **`.gitignore` added** (the repo had none): `05_Firmware/libraries/`, `__pycache__/`, `*.pyc`,
+  `Thumbs.db`, `desktop.ini`, `~$*`.
+- **`build_sim.cpython-314.pyc` untracked** via `git rm --cached`. It was a committed Python build
+  artifact. The file is still on disk, only the tracking is gone.
+- **FastLED is out of git by design.** 131 MB of third-party source across 4,177 files.
+  It is reference material for the ESP32 render side, not project source, and it was never tracked.
+
+### Deliberately left alone
+
+- The four `.dxf~` and one `.dwg~` AutoCAD autosaves that are tracked in git. They live in
+  `04_Cardboard_Layout/Backups/` and one in `08_Presentations_Concepts/`. Jordan works in AutoCAD
+  daily and may be keeping them on purpose. `[I]` Flagged, not touched.
+- `09_Assets/Electrical symbol SVG icon set.zip` alongside its own extracted folder. Same
+  zip-plus-extract duplication as FastLED, much smaller, and it is tracked.
+- No README index was added at root. The overview page already serves that purpose.
+
+### Path reference correction
+
+The 2026-09-21 19:24 entry cites the FastLED source as the local `FastLED-3.10.4` extract, and
+`src/chipsets.h:473` for the WS2812B timing. Those readings stand; the path is now
+`05_Firmware/libraries/FastLED-3.10.4/src/chipsets.h`. The earlier entry is not rewritten,
+per the append-only convention.
+
+### Not done
+
+No code changes. No `.ino`, DXF, xlsx or Gantt edits. No git commit; all of the above is staged or
+untracked in the working tree for Jordan to review. Gantt dates not used, per the standing rule.
+
+---

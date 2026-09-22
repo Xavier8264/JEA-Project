@@ -1,0 +1,11 @@
+# Third-party libraries vendored for reference, not project source
+05_Firmware/libraries/
+
+# Python build artifacts
+__pycache__/
+*.pyc
+
+# OS / editor cruft
+Thumbs.db
+desktop.ini
+~$*
