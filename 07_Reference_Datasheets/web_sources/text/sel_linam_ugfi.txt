@@ -1,0 +1,165 @@
+SOURCE: LINAM UGFI Underground Fault Indicator (product page)
+AUTHOR: Schweitzer Engineering Laboratories
+URL: https://selinc.com/products/LINAM-UGFI/
+RAW FILE: raw/sel_linam_ugfi.html
+RETRIEVED: 2026-09-24
+PAGES: n/a (web page)
+USED FOR: Item 65. Real precedent for LEDs on pad-mounts and junction boxes (fault indicators).
+------------------------------------------------------------------------
+
+LINAM UGFI
+Configure and order
+LINAM UGFI
+Underground Fault Indicator
+Reduce the duration of outages by streamlining underground fault locating with the LINAM UGFI.
+Industry-leading adjacent-phase immunity technology prevents false indication caused by magnetic interference from nearby cables. A self-adjusting trip algorithm and a universal clamp allow you to simplify inventory-and you can install the UGFI on medium-voltage underground cables with a single hot stick. The UGFI is rugged, submersible, and battery-free, so you can deploy it with confidence in harsh underground environments.
+Starting at
+$240
+Configure and order
+Contact us
+Adjacent-Phase Immunity
+Our proprietary adjacent-phase immunity technology prevents false indication by actively rejecting magnetic fields from nearby cables. The UGFI is immune to magnetic fields caused by fault currents up to 25 kA on adjacent phases at 10.2 cm (4 in) center-to-center spacing.
+View the full test report
+Secure Fault Detection
+The UGFI fault detection algorithm is reliable and secure. In addition to using industry-leading adjacent-phase immunity, it can respond to switch-onto-fault events, adapt to inrush conditions to prevent false indication, and avoid false resets due to backfeed conditions.
+Flexible Fault Detection Thresholds
+The self-adjusting AutoRANGER algorithm automatically selects the trip threshold based on a seven-day load current profile. This allows one device to be used across various applications, simplifying ordering, inventory, and installation. For applications requiring fixed trip thresholds, the UGFI can be ordered with a wide range of trip thresholds, from 25 A to 1600 A.
+Rugged and Submersible Design
+Install with confidence in harsh environments like underground vaults. The UGFI is waterproof at depths up to 7.6 m (25 ft), and the polycarbonate housing and stainless steel cable clamp are corrosion-resistant. It meets and exceeds IEEE 495 testing standards for faulted circuit indicators.
+Line-Powered Functionality
+The fault indicator harvests fault and load current to power all functions, including timed-reset and LED display options. This eliminates batteries entirely, reducing maintenance time and ownership costs.
+Current Reset and Timed-Reset Options
+The UGFI offers multiple reset options. Order your device with a reset based on load current (>=1 A), a fixed time duration (2, 4, 8, or 12 hours), or a combination of both for added flexibility.
+Simple SCADA Interface
+Use the auxiliary output contact to send the fault status through a remote terminal unit (RTU) to SCADA.
+Display Options
+Choose a reflective mechanical target or an LED for the built-in display. Remote display options include a reflective mechanical target display, a remote LED via fiber-optic cable, and a bolt display that is discreet, tactile, and tamperproof.
+RadioRANGER Remote Fault Indication
+Read the fault status without accessing the vault or enclosure using the RadioRANGER Underground Wireless Fault Indication System. The RadioRANGER transmitter connects to the UGFI and uses a short-range wireless signal to communicate the fault status to a handheld receiver.
+Sized for Vaults and Enclosures
+The UGFI is designed to fit easily into the available space in underground vaults and standard pad-mounted enclosures.
+Updates
+LINAM UGFI Latest Updates
+Clamping range has been increased to 66.04 mm (2.6 in).
+Related Materials
+Solutions
+Fault Indicators and Sensors
+Introducing the LINAM UGFI Underground Fault Indicator
+Product
+RadioRANGER
+Underground Wireless Fault Indication System
+View more
+
+LINAM UGFI Features
+1
+2
+3
+Submersible polycarbonate housing
+Highly visible mechanical target display (more display options available)
+Ability to easily connect a single hot stick to the hook eye for installation
+1
+2
+3
+Energy-harvesting core
+Rogowski coil
+Cable clamp
+1
+2
+3
+SEL-8300 RadioRANGER Wireless Interface (sold separately)
+SEL-8310 RadioRANGER Remote Fault Reader (sold separately)
+LINAM UGFI with built-in LED and optional RadioRANGER remote display output* that connects to the SEL-8300
+
+*The optional display output is factory-installed and cannot be removed.
+1
+2
+3
+UGFI with built-in mechanical target
+Optional output contact* cable
+*The output contact is factory-installed and cannot be removed.
+SEL-3505-3 Real-Time Automation Controller (RTAC) (sold separately)
+1
+2
+3
+LINAM UGFI with no built-in display
+Remote tamperproof bolt display*
+*The remote tamperproof bolt display is factory-installed and cannot be removed.
+HHT Silver Bolt Test Tool (sold seperately)
+
+Determine the status (tripped or untripped) of fault indicators. The red target built into the tool comes into view to indicate a tripped fault indicator.
+1
+2
+UGFI with built-in LED
+Optional remote fiber-optic extension cable display*
+*The optional cable display is field-installed by the user.
+1
+2
+UGFI with no built-in display
+Remote mechanical target display*
+*The remote display is factory-installed and cannot be removed.
+LINAM UGFI
+
+Details
+Pad-Mounted Enclosure Applications
+-Use the UGFI to identify faults in the underground cable between enclosures. Deploy it across all your pad-mounted applications, including transformers, switchgear, sectionalizing cabinets, and junction boxes.
+
+Subsurface Applications
+-Apply the UGFI to underground cables within subsurface vaults and maintenance holes to identify faulted cable sections. The UGFI is submersible and can withstand depths up to 7.6 m (25 ft). Remote display options make the fault status indication visible at a convenient location for workers. The RadioRANGER option communicates the fault indicator status to a handheld receiver, allowing personnel to read the status of a subsurface device at street level.
+High-Visibility Displays
+
+Choose a highly reflective mechanical target display or an LED with a fiber-optic port
+
+Extend the visibility of the fault indicator display with these remote display accessories:
+
+Fiber-optic cable LED extension
+Mechanical target display with a familiar fault indicator look and feel
+Tamperproof bolt display that maintains a discreet pad-mount exterior
+
+Remote display cables are available in lengths of 1.83 m (6 ft), 3.66 m (12 ft), and 6.1 m (20 ft).
+
+RadioRANGER Remote Fault Indication
+
+The UGFI can use a magnetic RadioRANGER Interface Probe to communicate fault indicator status to the RadioRANGER Underground Wireless Fault Indication System. With this system, utility personnel can quickly and safely retrieve subsurface fault indicator statuses at street level using a handheld SEL-8310 RadioRANGER Remote Fault Reader.
+
+Simple SCADA Interface
+
+Use the auxiliary output contact to send the fault status through an RTU to SCADA. Output contact cables are available in lengths of 1.83 m (6 ft), 3.66 m (12 ft), and 6.1 m (20 ft).
+
+Self-Adjusting or Fixed Trip Thresholds
+
+The self-adjusting AutoRANGER algorithm automatically selects the trip threshold based on a seven-day load current profile. The default AutoRANGER 2.0 minimum trip threshold is 25 A.
+
+The UGFI can be ordered with a single fixed trip threshold. Available options range from 25 to 1,600 A.
+
+Automatic Reset Method
+
+There are three options for automatic reset:
+
+Upon restoration of load current >=1 A
+After a fixed time interval (options range from 2 to 12 hours)
+Upon the condition met first: current restoration or a fixed time interval
+
+Nominal Distribution System Frequency
+
+The UGFI operates at 60 Hz.
+
+=== embedded page data (content the page renders with script) ===
+Immunity From Adjacent-Phase Fault
+25 kA at 10.2 cm (4 in) on center between phases
+Maximum Fault Current Withstand
+40 kA for 10 cycles
+Clamping Range
+15.24 to 66.04 mm (0.6 to 2.6 in)
+Current Reset Option
+>=1 A for as long as 10 minutes
+Timed Reset With Current
+Reset Override
+Timed-reset duration (2, 4, 8, or 12 hours) or >=1 A (whichever occurs first)
+Fault Detection Time
+As fast as 1.5 cycles; 2 cycles typical
+Approximate Weight
+453.59 g (3 lb)
+Temperature Range
+-40 deg to +85 degC (-40 deg to +185 degF)
+Product Certification
+IEEE 495-Guide for Testing Faulted Circuit Indicators

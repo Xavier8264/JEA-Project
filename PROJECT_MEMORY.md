@@ -2830,3 +2830,665 @@ No code changes. No `.ino`, DXF, xlsx or Gantt edits. No git commit; all of the 
 untracked in the working tree for Jordan to review. Gantt dates not used, per the standing rule.
 
 ---
+
+## 2026-09-23 20:26 CDT - JEA feedback on REV2: new feature asks, ESP32 board fixed, PLC-to-ESP32 link options assessed, custom PCB open task
+
+### What Jordan reported `[V]`
+
+The source meeting was not named. `[I]` Most likely the 2026-09-22 PDR.
+
+- **JEA called the REV2 animation very good.**
+- **New asks from JEA:**
+  1. Run each scenario **with and without DA** (distribution automation).
+  2. **Junction boxes at every 90 degree turn** of the lines. Physical model only; Jordan expects no code change.
+  3. **Fuses at the base of each radial branch:** two on Residential 1, one per branch.
+  4. **A recloser on Residential 2.**
+  5. **Substation faults.** Each substation is source -> high-side breaker -> step-down transformer ->
+     low-side breaker. Simulate a transformer fault (real-world cause: animal contact). Adds **two fault
+     zones**. `[I]` One transformer per substation.
+  6. **Fault buttons move to the bottom row** by the legend / RTAC, so nobody reaches across the table.
+     **Status LEDs go where the buttons are drawn now** and blink when that fault is injected.
+  7. **A toggle switch: all faults temporary or all permanent.** Permanent = 3 reclose attempts, then lockout,
+     then FLISR. The current code skips the reclose attempts and goes straight to FLISR.
+  8. **IEEE 1547 emphasized for the DER.**
+  9. **PV as a third source:** its recloser connects it to the rest of the grid and it momentarily backfeeds to
+     reduce outages. See the 1547 notes below; this conflicts with default anti-islanding.
+- **ESP32 replaces the Uno** as the display controller, for storage and clock speed. Exact board defined below.
+- **The microcontroller stays in the finished product,** because of the PLC animation constraint.
+- **Custom PCB** (ESP32, LEDs, buttons): to discuss later. Open item 50.
+- Jordan proposed two architectures and asked for feasibility, an explanation of PLC digital I/O vs hobby-board
+  pins, and a third option:
+  - **A:** two independent parallel systems driven by the same buttons, no communication after the input. V/I
+    readings would come from a hidden load PCB whose parts stand in for customer loads. Its layout need not
+    match the city, only behave like it.
+  - **B:** one system. Buttons go only to the PLC, the PLC is the sole brain, and it drives the display devices
+    and the ESP32 for the LEDs.
+
+### ESP32 definition (standing fact)
+
+**Whenever Jordan says "ESP32" on this project, it means exactly this board:** AITRIP ESP32 ESP-WROOM-32
+ESP32-DevKitC-32 development board, **30 pin, USB-C**, WiFi + Bluetooth, dual core, bought as a 3-pack. `[V]`
+Jordan's description.
+
+- Jordan typed the USB chip as "CP2012". The Silicon Labs USB-UART on these boards is the **CP2102**. `[I]`
+  high; confirm from the chip marking.
+- Facts relied on, `[S]` from Espressif's published specs, not read this session:
+  - ESP32-WROOM-32: dual-core Xtensa LX6 up to 240 MHz, 520 KB SRAM, 4 MB flash. The Uno has 2 KB SRAM.
+  - **3.3 V logic. GPIO is not 5 V tolerant.**
+  - 30-pin DevKit: GPIO 6-11 are the flash bus and are not broken out. GPIO 34-39 are input only with no
+    internal pull-ups. GPIO 0, 2, 5, 12, 15 are strapping pins; avoid them for buttons.
+  - **No Ethernet jack on this board.** The chip has an internal EMAC but needs an external PHY.
+- `[V]` Local FastLED 3.10.4 source,
+  `05_Firmware/libraries/FastLED-3.10.4/src/platforms/esp/32/drivers/rmt/rmt_4/channel_driver_rmt4.h:127-136`:
+  RMT TX channels are 8 on the classic ESP32 (IDF < 4.4 path; IDF >= 4.4 uses
+  `SOC_RMT_TX_CANDIDATES_PER_GROUP`). Enough for 4 panel chains plus a marker chain.
+- `[S]` WS2812B data high threshold is 0.7 x VDD = 3.5 V at 5 V, so a 3.3 V data line is out of spec. Plan a
+  74AHCT125-class level shifter per data line.
+- Also saved as auto-memory `jea-esp32-board.md`, so every session loads it.
+
+### What this supersedes
+
+- **Standing Facts, Hardware, "per-input selectable" (line 77).** The RTAC manual says the DI voltage level is
+  fixed per module, and since firmware R118 the AC/DC debounce mode applies to a whole module (Instruction
+  Manual pp.615-617). `[V]` No practical impact: every input here will be 24 Vdc.
+- **2026-09-10 00:20, decision 1 ("fault-injection buttons stay scattered").** Replaced by JEA's ask: buttons in
+  the bottom row, blinking status LEDs at the old button positions.
+- **2026-09-10 00:20, decision 3 (overhead deferred)** is not reversed, but item 56 reopens it.
+- **2026-09-21 00:02, "temporary-fault simulation goes to the PDR questions."** Answered: JEA wants a temporary /
+  permanent toggle. PDR Section J questions 34 and 36 are answered. Question 35 (does JEA reclose on
+  underground cable) is not.
+- **2026-09-21 19:24, link ranking.** Modbus TCP was ranked first on the assumption that the ESP32 had Ethernet.
+  This board has none. **New ranking: Modbus RTU over RS-485 first**, W5500 Ethernet module + Modbus TCP
+  second, WiFi rejected.
+- **2026-09-21 19:24, open question "does the RTAC have the Modbus client".** Software support is verified. The
+  RTAC supports Modbus RTU and Modbus/TCP, as client or server, on any serial or Ethernet port, and a client
+  polls IEDs (manual pp.429-430). `[V]` The manual's device-count table lists the SEL-2241 at 120 Modbus
+  clients/servers combined. `[V]` Residual risk that JEA's unit needs something enabled: `[I]` low.
+- **2026-09-21 19:24, "keep `computeModel()` behind `#define STANDALONE_MODE 1`".** Now a runtime fallback
+  (option C below), not a compile-time switch.
+- **REV0-REV2 headers, "Target: Arduino Uno".** The next firmware revision targets the ESP32. REV2 on the Uno is
+  untouched and stays the working demo.
+
+### Constraint re-check: animation cannot run on the Axion. Holds
+
+Re-read from `07_Reference_Datasheets/2240_DS_20130827_01.pdf` this session, not copied from the 09-21 entry:
+`[V]`
+
+- SEL-2244-3: pickup/dropout 8 ms typical, cyclic capacity 2.5 cycles/second, 10 M no-load operations (p.32).
+- SEL-2244-5: pickup 12 to 65 us, dropout still 8 ms typical (p.33).
+- WS2812B needs 800 kHz. The 09-21 arithmetic stands.
+- "RTAC runs IEC 61131-3 only" (p.4) was not re-read this session; it rests on the 09-21 reading.
+
+### Axion I/O facts read this session `[V]`
+
+| Item | Value | Source |
+|---|---|---|
+| SEL-2244-4 | 32 DI, two groups of 16 share a common return; ratings 24 Vdc, 48 Vdc, 110 or 125 Vac/Vdc | DS Table 6 p.13; manual p.615 |
+| SEL-2244-2 | 24 DI, 18 share a return plus 6 independent | manual p.615 |
+| DI thresholds, 24 V rating | ON 15-30 Vdc, OFF below 10 Vdc; burden 8 mA at 24 V | DS pp.32-33 |
+| DI voltage level | fixed per module | manual p.615 |
+| DI processing | EtherCAT updates and time-stamps every 1 ms; logic task interval user-set, 4 ms to 1 s; pickup/dropout debounce timers set in software | manual pp.616-617 |
+| DI insulation | 300 Vac rated, 5 kV impulse | DS pp.32-33 |
+| SEL-2245-4 AC metering | 4 CT + 4 PT inputs with isolated returns; 0.05-22 A, 5-400 V | manual p.646 (TOC); DS Table 12 |
+| SEL-2241 serial | 4 ports, EIA-232/EIA-485 software selectable, 300-115,200 bps, DB-9 female | DS p.30 |
+| RTAC Modbus | RTU and TCP, client or server, any serial or Ethernet port; FC 01-06, 0F, 10, 11 | manual pp.429-430 |
+
+`[I]` JEA's "32 digital inputs" is one SEL-2244-4 (the only 32-input DI module), and "32 digital outputs" is two
+SEL-2244-3 (16 each). Not confirmed against the order. Item 59.
+
+### PLC I/O vs hobby-board pins, as explained to Jordan
+
+- **ESP32 pin:** a transistor on the chip. The chip supplies 3.3 V, code sets the direction, it toggles at MHz,
+  and it has no isolation.
+- **Axion DI:** an optoisolated input. It supplies nothing. The user supplies a wetting voltage (24 Vdc here)
+  through the field contact. The 8 mA burden and the 15 V ON threshold are deliberate, for noise immunity and
+  contact wetting. `[S]` for the purpose.
+- **Axion DO:** a relay contact. It outputs no voltage; it closes a loop the user powers. It is built to energize
+  trip coils, not to signal.
+- **Rules that follow:** never wire an Axion point straight to an ESP32 pin. DO -> ESP32 goes through an
+  optocoupler on the 24 V side. ESP32 -> DI needs a transistor or opto switching 24 V, because 3.3 V never
+  reaches the 15 V ON threshold.
+
+### Architecture options assessed
+
+**A. Two parallel systems, same buttons. Electrically feasible, functionally rejected.**
+
+- Input sharing is easy. 22 mm industrial pushbuttons take stacked contact blocks, so each button gets two
+  isolated contacts: 24 V to the Axion, 3.3 V to the ESP32. `[S]` One contact wired to both would put 24 V on
+  an ESP32 pin.
+- **Fatal:** HMI fault injection is a kickoff requirement (Standing Facts, Sponsor intent). A fault started from
+  the HMI reaches only the Axion, so the board would not show it.
+- The LEDs show the ESP32's model, not the RTAC's. When JEA edits RTAC logic, the board and the HMI disagree and
+  nothing detects it.
+- Every mode switch (temp/perm, DA on/off) must be read identically by both, with no resync after a reboot or a
+  reset.
+
+**V/I data is a separate question from A vs B.** In either option, if the HMI shows amps and volts, they must
+come from somewhere.
+
+- The SEL-2245-4 is one metering point (4 CT + 4 PT), not one per zone.
+- A hidden load PCB could push real current into it, but at one location only, with real AC power and heat
+  inside a trainer that high school students use.
+- Recommended, `[I]` medium: compute V/I in RTAC logic from a table per switching state, ideally from a Milsoft
+  load flow (ties to PDR Section J). Optionally add one small real metered circuit to show real CT/PT wiring.
+
+**B. Axion is the sole brain; ESP32 renders. Feasible, verified.**
+
+- Buttons and switches -> Axion DI -> FLISR in IEC 61131. The RTAC, as Modbus client, writes about 25 holding
+  registers to the ESP32 (the Modbus server) every ~100 ms: zone states, device states, step, fault ID, mode
+  flags, heartbeat counter. `[I]` for the register count and poll rate.
+- Link: RS-485 Modbus RTU. ESP32 UART plus a 3.3 V transceiver (MAX3485 / SP3485 class), 3 GPIO, to an RTAC DB-9
+  serial port. No IP addressing, so it avoids the known RTAC subnet gotcha.
+
+**C (third suggestion, recommended). B plus a runtime standalone fallback, "one brain at a time".**
+
+- A second contact block on each button, read by the ESP32 through an I2C expander (MCP23017 class). The ESP32
+  keeps REV2's `computeModel()`.
+- RTAC heartbeat present: the ESP32 renders only the RTAC's registers. Its own model may run silently as a
+  cross-check and flag disagreement, which helps while writing the IEC 61131 logic.
+- Heartbeat missing for more than ~2 s: the ESP32 runs its own model and shows a visible STANDALONE marker.
+- Why: the board can demo before the Axion arrives (November), it still works while JEA has the Axion pulled for
+  reprogramming, and REV2's model becomes the reference to test the RTAC logic against.
+- Cost: 12-16 extra contact blocks, one expander chip, firmware.
+
+**D (mentioned, not recommended).** Buttons wired only to the ESP32; the RTAC polls them over Modbus (FC 02,
+discrete inputs). It saves the 24 V field wiring, but it loses the real DI wiring JEA technicians should see and
+makes the ESP32 a single point of failure for input.
+
+### New asks: interpretation and impact
+
+`[S]` unless marked.
+
+- **With / without DA.**
+  - DA = communications plus automated switching, here the RTAC's FLISR. Protection is local and works without
+    DA: the upstream recloser still trips, recloses and locks out.
+  - Without DA, everything past the locked-out device stays dark until a crew patrols (following faulted-circuit
+    indicators), opens the isolating device, and closes the tie by hand. `[I]` Typically an hour or more.
+  - With DA, healthy sections return within 5 minutes, which IEEE 1366 counts as a momentary interruption, not a
+    sustained one, so they drop out of SAIDI / SAIFI.
+  - Suggested: a DA ON/OFF selector plus an outage clock or customer-minutes counter.
+  - Real reasons DA is off: hot-line tags, comms loss, storms, abnormal switching configurations.
+  - DER anti-islanding does not depend on DA.
+- **Temporary / permanent toggle.**
+  - Temporary: trip, reclose, fault gone, a momentary blink, no FLISR.
+  - Permanent: trip plus 3 recloses (4 operations to lockout), then FLISR or the crew.
+  - Transformer faults ignore the toggle: differential (87T) trips go to a hand-reset lockout (86) and never
+    reclose.
+  - Reclosing on underground cable is usually disabled, so the narration must not claim that cable faults
+    self-clear. Item 56.
+- **1547 and reclosing.** The DER must cease to energize within 2 s of an unintentional island (1547-2018,
+  clause 8.1, `[S]`, standard not read). The B-side first reclose interval has to exceed that, or the recloser
+  closes onto a live, out-of-phase island. This falls straight out of adding the toggle.
+- **PV third-source backfeed.**
+  - It conflicts with 1547 default anti-islanding.
+  - The legitimate version is an intentional island (1547-2018 clause 8.2, `[S]`). It needs utility agreement, a
+    grid-forming inverter and storage; grid-following PV alone cannot hold voltage. Reconnection needs
+    synchronizing.
+  - Proposed: show both. Default: PV trips within 2 s and waits the enter-service delay (default 300 s, `[S]`)
+    after the grid returns. Intentional island: PV plus storage picks up a stranded healthy section.
+  - Interpretation to confirm with JEA. Item 54.
+- **Substation transformer faults.**
+  - Per substation: HV breaker (new device), transformer (new fault zone), LV breaker (the existing SUB_x_BKR).
+    `[I]` One feeder per substation, so the LV main and the feeder breaker collapse into one device.
+  - Fault -> 87T trips both breakers, 86 lockout -> the whole feeder goes dark -> FLISR moves the whole feeder
+    across the tie, so tie capacity becomes the lesson.
+  - Code: `ZN_BUSA` is "never dark" and must change. Physical: Sub B has no visible bus pixels (run 22 is hidden
+    into N29). Item 53.
+- **Res-1 fuses x2, Res-2 recloser.**
+  - Locations, `[I]` from the REV2 run table: N2 at the head of run 2 (Res-1 south street, Z1), N4 at the head of
+    run 5 (Res-1 north street, Z2), N6 at the head of run 10 (Res-2 lateral, Z3).
+  - They only show anything if there are faults downstream of them: +3 zones, devices and buttons if added.
+    Item 52.
+  - With the temp toggle, fuse saving vs fuse blowing becomes demonstrable.
+- **Buttons in the bottom row, blinking status LEDs at the old spots.**
+  - Recommended: WS2812 pixels on one extra hidden chain, driven by the ESP32 so the blink syncs with the fault
+    wave.
+  - Alternative: Axion DO -> 24 V pilot lights. A 1 Hz blink is within the 2.5 cycles/s rating, and the relay
+    click is audible. Item 57.
+- **Junction boxes at 90 degree turns.**
+  - No code change, agreed.
+  - Caveat: some devices sit on corners. DEV_A2 is on the N30 corner (`[V]`, `.ino` note). DEV_B1 at N26 looks
+    like a corner from the run directions (`[I]`). A box there must not cover the status pixel.
+  - The boxes also hide strip corner joints. Pull boxes at sharp turns are realistic underground because of cable
+    bend radius.
+
+### DI estimate
+
+9 fault buttons (Z1-Z6, DER, XFMR A, XFMR B) + reset + 2 selectors (temp/perm, DA on/off) = **12**. With lateral
+faults, **15**. Fits one SEL-2244-4 with 17 or more spare. `[I]` for the button set.
+
+### Verification actually performed
+
+- **Read:** `jea-project-memory-file.md`, `jea-gantt-low-weight.md`, and this file (header, Standing Facts, the
+  2026-09-10 entry, the REV2 entry, and every entry from 2026-09-20 22:48 on).
+- **Also read:** `FLISR_Trainer_REV2.ino` lines 1-520, and a keyword grep of
+  `jea_oneline_component_reference.md` (recloser, fuse, junction box).
+- **PDF text:** extracted with `pdftotext -layout` from `2240_DS_20130827_01.pdf` and `Axion Instruction
+  Manual.pdf` into the scratchpad, then read at the cited lines. Page numbers are printed page numbers.
+- **FastLED:** RMT channel count read from the local source.
+- **No code changed,** so no tests or compiles were run.
+
+### Open items
+
+50. **Custom PCB: ESP32, LED data outputs, button inputs.** To discuss later; Jordan will raise it. Likely
+    contents:
+    - ESP32 socket
+    - 74AHCT125-class level shifting per strip data line
+    - RS-485 transceiver
+    - button and switch input conditioning
+    - MCP23017 if option C
+    - 5 V strip power entry and fusing
+
+    Do not treat it as designed until Jordan starts it.
+51. **Link transport.** RS-485 Modbus RTU recommended, W5500 + TCP second. Confirm Michael's preference.
+52. **Lateral faults.** Add fault buttons behind the two Res-1 fuses and the Res-2 recloser (+3 zones, devices
+    and buttons), or keep them display only?
+53. **Substation pixels.** XFMR fault markers are needed in both substations, and Sub B needs visible bus
+    pixels. The `ZN_BUSA` "never dark" rule must change.
+54. **PV backfeed meaning.** An intentional island with storage (1547 clause 8.2), or something else? Confirm
+    with JEA.
+55. **JEA reclose settings, from Michael:** shots to lockout, intervals, fast/slow curves, fuse saving or fuse
+    blowing.
+56. **Temporary faults on an all-underground model.** Reclosing on cable is usually disabled. The narration must
+    not say cable faults self-clear. Revisit the overhead mainline deferral (2026-09-10 decision 3).
+57. **Fault location markers:** ESP32 pixels (recommended) or Axion DO pilot lights.
+58. **V/I source:** a synthetic RTAC table from Milsoft (recommended) or a load PCB into the SEL-2245-4.
+59. **Confirm the ordered I/O modules.** Inferred: one SEL-2244-4 (32 DI) and two SEL-2244-3 (16 DO each).
+60. **The requirements doc is not updated** with any of this, nor with the 09-21 A2 / item 19 closure.
+61. **Architecture choice.** Option C recommended; Jordan and the team decide.
+
+### Not done
+
+No code, `.ino`, bench, DXF, xlsx or requirements doc changes. No git commit. Gantt not used, per the standing
+rule.
+
+---
+
+## 2026-09-23 21:19 CDT - 20:26 chat reply saved as a reference file
+
+At Jordan's request, the chat reply from the 20:26 session was saved verbatim, with a short header, to
+`02_Planning/2026-09-23 JEA Feedback and PLC-ESP32 Architecture.md`. It is the plain-language version of that
+entry: I/O comparison table, options A / B / C, and the new JEA asks. The 20:26 entry stays the source of
+record for citations, confidence markers and open items 50-61. No other changes. No git commit.
+
+---
+
+## 2026-09-24 10:32 CDT - "What is the next task?" after the PDR feedback
+
+### What was asked
+
+"What is the next task in terms of this project?" Answered in chat only. No files changed other than this entry.
+
+### Sources read this session
+
+`jea-project-memory-file.md`, `jea-gantt-low-weight.md`, `jea-esp32-board.md`, this file (header, Standing
+Facts, every entry from 2026-09-20 22:48 on), the `05_Firmware` folder listing, and the task-name column of
+`02_Planning/JEA Project - Gantt Chart.xlsx` (dates ignored, per the standing rule). `[V]`
+
+### Recommendation given `[I]`, medium-high
+
+1. **Next task: freeze the REV3 scope with Cody and Gage.** Decide item 61 (architecture, C recommended), item 52
+   (lateral faults active or display only), item 53 (substation XFMR / Sub B bus pixels) and item 57 (fault
+   markers). Reason: the BOM, the REV3 ESP32 firmware and the next layout DXF revision all depend on these.
+   Option C adds contact blocks and an MCP23017 to the BOM; option B moves the FLISR model off the ESP32.
+2. **Same day: send JEA the questions only they can answer**, folded into the weekly update email: items 51
+   (link transport, Michael), 54 (PV backfeed meaning), 55 (reclose settings), 59 (ordered I/O modules), and
+   PDR question 35 (reclosing on underground cable). Longest turnaround, so send first.
+3. **Then two parallel tracks:** REV3 firmware and the BOM draft (the Gantt task list puts the BOM after the PDR;
+   used as a loose guide only).
+4. **Buildable today without any decision:** the straight REV2 -> ESP32 port. Per-panel parallel `addLeds`
+   chains (item 18) and the ESP32 render path are needed in options B and C alike. Reclose / DA logic in
+   `computeModel()` only pays off under option C, so hold it until item 61 is decided.
+
+### Supersedes
+
+The 2026-09-20 22:48 recommendation list. Its steps 1 and 2 are done (REV2 on the board, PDR held); step 3's
+requirements doc exists but is stale (item 60).
+
+### Open items
+
+No new numbers. Still open and mentioned: 26, 27, 33, 41, 50-61.
+
+### Not done
+
+No code, `.ino`, DXF, xlsx, requirements doc or Gantt changes. No git commit. `PROJECT_MEMORY.md` and
+`02_Planning/2026-09-23 JEA Feedback and PLC-ESP32 Architecture.md` were already uncommitted at session start.
+
+---
+
+## 2026-09-24 11:12 CDT - Jordan's decisions, Axion order decoded (DI module is 125 V), DER backfeed researched, PLC and V/I measurement explained
+
+### What Jordan said `[V]`
+
+- **Default to direct wired connections between components, not wireless.** Saved as auto-memory
+  `jea-wired-connections-default.md`. Applied to item 51 below.
+- **Ground the large majority of decisions in outside sources, and state every assumption.** Saved as auto-memory
+  `ground-decisions-in-sources.md`.
+- **Architecture option A (two parallel systems) is out.** Item 61 narrows to B or C.
+- **Item 54, as JEA described it:** if a fault happens near the DER, the PV momentarily backfeeds power to the grid
+  to restore power to customers who lost it. Jordan is not sure this is right and asked for research.
+- **Parts list:** read `07_Reference_Datasheets/SEL-2240 Axion Node _ Summary _ Schweitzer Engineering Laboratories.pdf`.
+- **Final version requirements:**
+  - All fault injection buttons consolidated at the bottom of the board.
+  - An LED inside each house, shining out through the windows, assuming the house model is open like that. Same
+    logic as the strip LEDs.
+  - Explore an LED on top of each pad-mount transformer and junction box.
+  - **Hard constraint: a status LED at every fault point,** so the fault location is intuitive.
+- **Faculty requirement (Jordan's professor): the PLC must read real values from actual points on the board.**
+- **HMI:** the PLC has no built-in HMI. A laptop connects over Ethernet and its screen is the HMI.
+- Jordan knows the ESP32 well and the PLC poorly. He asked how PLC inputs work, how the PLC works, and how current
+  and voltage get read.
+
+### Axion order decoded `[V]`
+
+Source: the summary PDF, a selinc.com configurator printout dated 2026-09-02. Sales item **2240#CGVJ**, list price
+**$2,965.25**. The PDF's text layer is font-garbled, so the three pages were rendered to PNG and read visually.
+
+| Slot | Module | Option chosen |
+|---|---|---|
+| Backplane | SEL-2242 | Standard overlay, 19-inch panel mount (slots A-J) |
+| A | Empty | "SEL-2241 RTAC Ordered Separately" |
+| B | SEL-2243 Power Coupler | 125/250 Vdc or 120/240 Vac supply, 10/100BASE-T |
+| C | SEL-2245-4 | 4CT/4PT AC Metering Module |
+| D | SEL-2244-4 | 32 Digital Input, **125 Vdc/Vac** |
+| E | SEL-2244-3 | 16 Digital Output, Form A |
+| F | SEL-2244-3 | 16 Digital Output, Form A |
+| G, H, I, J | None | 4 empty slots |
+
+Consequences:
+
+- **Item 59 closed.** The 2026-09-23 inference (one SEL-2244-4, two SEL-2244-3) is confirmed.
+- **The DI module is rated 125 V, not 24 V.** SEL-2244-4, 125 V rating, `[V]` DS p.33:
+  - DC signals: ON 100-135.5 Vdc, OFF below 75 Vdc.
+  - AC signals: ON 85-150 Vac, OFF below 53 Vac.
+  - Burden 2-6 mA. Max 150 Vpeak between inputs that share a common.
+  - The 125 V option can be set per module to respond to AC or DC. With AC, neutral goes to the common terminal.
+    Contact inputs must sit on the load side of an overcurrent device no larger than 8 A. Axion manual p.106.
+  - Two banks of 16 inputs share common returns, and the voltage level is fixed per module. RTAC manual p.615.
+  - Result: a button must switch 120 Vac or 125 Vdc into the DI, never 24 V. Item 62.
+- **Web HMI status of the RTAC is unknown.** The summary's "Web Human Machine Interface: No" line sits under Slot A,
+  which is empty because the RTAC was ordered separately, so it says nothing about the RTAC. `[I]` The RTAC's own
+  order summary is not in the repo. Standing Facts say Zach bought an HMI license. Item 63.
+- `07_Reference_Datasheets/135187.pdf` is the SEL-2240 Axion **Bay Controller** datasheet, the version with a 7-inch
+  touchscreen. JEA's order is an Axion node with no touchscreen. `[V]`
+
+### Item 51 closed: RS-485 Modbus RTU, point to point
+
+Applied the wired-by-default preference. The link is a cable from an SEL-2241 serial port (EIA-232/485 software
+selectable, DS p.30 per the 2026-09-23 entry) to an RS-485 transceiver on an ESP32 UART. Wired Ethernet through a
+W5500 ranks second: it is wired, but it shares a network and is not direct. WiFi and Bluetooth stay off. Michael can
+still be asked whether he prefers TCP, but RTU is now the default.
+
+### Item 54 research: DER "backfeed" to restore customers
+
+Sources read this session `[V]`:
+
+- NREL and Sandia, "A Primer on the Unintentional Islanding Protection Requirement in IEEE Std 1547-2018"
+  (Narang, Gonzalez, Ingram; OSTI 1862659; docs.nlr.gov/docs/fy22osti/77782.pdf). PDF pp.9-10, 14, 21-25.
+- NREL, "Research Roadmap on Grid-Forming Inverters" (Lin et al.; docs.nlr.gov/docs/fy21osti/73476.pdf).
+  PDF pp.13, 22.
+- NREL, "Borrego Springs Community Microgrid" (Pratt; docs.nlr.gov/docs/fy19osti/74477.pdf). Slides 6-7, 15, 18.
+- PNNL for NRECA, "IEEE 1547-2018" (Vartanian, 2018-10-31; cooperative.com). Slides 11-13, 26-27.
+- IEEE PES ISGT 2024 tutorial proposal, "Implementing FLISR on Distribution Circuits with High DER Penetration"
+  (Uluski, ESTA International; ieee-pes.org). PDF pp.1, 3.
+- IEEE 1547-2018 itself was **not** read. Clause content comes from the NREL and PNNL documents that quote it.
+
+Findings:
+
+1. **By default the PV does the opposite of backfeeding.** If an upstream device opens and leaves the DER feeding an
+   isolated section, clause 8.1.1 requires it to cease to energize and trip within 2 s. The time can be stretched to
+   2-5 s by agreement (8.1.2). It then stays off for a return-to-service delay, 5 min by default. (Primer PDF p.14.)
+2. **Why:** the island is a shock hazard for workers and the public who assume the lines are dead (primer 4.1).
+   It can also damage motors and other equipment if a recloser closes it back in out of phase (primer 4.2).
+3. **PV alone cannot hold customers up.** Typical PV inverters are grid-following. They act as current sources, need
+   a phase-locked loop, and "cannot function without an externally regulated voltage." An island of only
+   grid-following inverters "will not be capable of functioning autonomously." (Roadmap PDF pp.13, 22.)
+4. **What is real: an intentional island, i.e. a microgrid (1547-2018 clause 8.2).** It is planned, has a defined
+   boundary, and has voltage and frequency regulation controls. Transitions into it are scheduled (manual or
+   dispatch) or unscheduled (automatic on abnormal grid conditions). (Vartanian slides 12-13.) It needs a
+   grid-forming source (a battery inverter in grid-forming mode, or a generator), a boundary switch and a controller.
+5. **Real utility case: SDG&E Borrego Springs.**
+   - Solar, batteries and diesel carried 2,128 customers for about 5.5 h in a 2012 planned outage, and up to 1,056
+     customers for more than 20 h during the September 2013 storms (slides 6-7).
+   - In one island the diesel was the voltage and frequency master and the PV was not dispatched (slide 15).
+   - NREL tested microgrid control functions running on an SEL RTAC (slide 18).
+6. **FLISR with DER:** DER can free capacity for load transfers and can support islanded microgrids on isolated
+   sections with no backup source. It also causes load masking and fault-location errors from its fault current.
+   (IEEE PES tutorial pp.1, 3.)
+7. **Reclosing fixes** for out-of-phase closing onto a live island: a reclose interval longer than 2 s, hot-line
+   reclose blocking, or direct transfer trip (primer PDF p.25).
+
+Interpretation `[I]`, medium: JEA's description is partly right.
+
+- DER can restore stranded customers, but not for a moment: it carries them until the grid returns, then
+  resynchronizes.
+- It cannot be PV alone. It needs a grid-forming source such as a battery.
+- It can only happen after the fault is isolated.
+- By default the PV does the opposite and trips within 2 s.
+- `[I]` low: the "momentary" part may be a mix-up with the DER's brief fault-current contribution during the fault,
+  which is a nuisance, not a restoration.
+
+Trainer proposal `[I]`, two DER modes:
+
+- **Default (1547 anti-islanding):** fault -> DER trips within 2 s -> it waits the return-to-service delay
+  (time-compressed on the trainer) after normal voltage returns.
+- **Microgrid (only if JEA confirms):** after FLISR isolates the fault, a PV plus battery DER energizes an isolated
+  healthy section that has no tie, with its recloser as the boundary switch. When the grid returns, it runs a sync
+  check, then closes.
+
+Item 54 stays open until JEA says which one they meant. Item 66.
+
+### How current and voltage get into the PLC
+
+- **AC path, what the order supports `[V]`:**
+  - In a real substation, instrument transformers are the in-between parts. A CT steps current down to 1 A or 5 A
+    nominal, and a PT/VT steps voltage down. Their outputs wire straight into the SEL-2245-4; no transducer is needed.
+  - SEL-2245-4 ranges: 0.05-22 A (DS p.34) and 5-400 V line-to-neutral (DS p.35).
+  - Accuracy is specified above 0.6 A and above 20 V (DS pp.34-35).
+  - CT and PT ratio settings scale the readings to primary values (RTAC manual p.646).
+  - 4 CT inputs and 4 PT inputs, each with an isolated return (RTAC manual p.646).
+  - Values appear as tags such as `IA_FUND` and `VA_FUND` (RTAC manual p.865).
+- **DC or anything else:**
+  - A transducer outputs 4-20 mA or 0-10 V into an SEL-2245-2 DC analog input module: 16 inputs, +/-20 mA,
+    +/-2 mA or +/-10 V (DS p.13 Table 8, p.33). `[V]`
+  - **Not ordered.** Slots G-J are free for it.
+- **Digital meter:** a panel meter with RS-485 Modbus, polled by the RTAC. It is wired. `[S]`
+- **Proposal for the faculty requirement `[I]`, medium:**
+  - A hidden low-voltage AC mini-grid with real resistive loads per feeder.
+  - Axion DO contacts switch its branches the way the real breakers and reclosers would. SEL-2244-3 AC rating
+    (DS p.32): 240 Vac rated operational voltage, 3 A continuous at 120 Vac. No minimum AC voltage is listed; the
+    19.2 V floor is a DC rating.
+  - The SEL-2245-4 measures up to 4 points: e.g. Feeder A head, Feeder B head, DER branch, industrial customer.
+  - The kickoff's variable industrial load becomes a real current the PLC reads, and a FLISR transfer shows up as a
+    real rise in Feeder B head current.
+  - Assumptions:
+    - A1: each current channel can serve as an independent single-phase point. Per-phase tags exist; use on
+      unrelated circuits is unconfirmed.
+    - A2: 24 Vac is acceptable for a high-school audience, and the SEL-2244-3 contacts switch it reliably at
+      1-2 A resistive (no AC minimum is published, so confirm with Michael).
+    - A3: about 0.6-2 A per measured branch, so 15-50 W of heat each.
+  - Item 64.
+
+### LEDs
+
+- **House LEDs:** one WS2812-class pixel per house on a hidden ESP32 chain, mapped to the house's zone, same colors
+  as the strip.
+  - `[S]` Thin 3D-printed walls leak light, so a house needs a light-tight interior or thicker walls.
+  - `[I]` Pre-wired pixel strings suit houses spaced apart.
+- **Pad-mount transformer and junction box LEDs: there is a real device for this.** SEL's LINAM UGFI underground
+  fault indicator `[V]` (selinc.com/products/LINAM-UGFI):
+  - It is deployed on pad-mounted transformers, switchgear, sectionalizing cabinets and junction boxes.
+  - It finds faults in the cable between enclosures.
+  - It offers an LED display outside the enclosure.
+
+  So an enclosure LED that flashes when fault current passed through it is realistic. It also teaches the no-DA
+  scenario: the crew finds the fault between the last flashing indicator and the first dark one. Recommended `[I]`.
+  Item 65.
+- **Status LED at every fault point is a hard constraint.** Item 57's implementation choice (ESP32 pixel or Axion DO
+  pilot light) stays open. ESP32 pixel is still the recommendation.
+
+### PLC explained to Jordan (summary)
+
+- **Hardware:**
+  - The Axion is a backplane plus separate cards: RTAC CPU (SEL-2241: 533 MHz, 1024 MB ECC RAM, DS p.29),
+    power coupler, and I/O cards.
+  - The cards talk to the CPU over the EtherCAT backplane. All I/O updates deterministically, with 1 ms time
+    stamps (DS pp.2, 5).
+- **Program model:**
+  - Logic runs in fixed task cycles: inputs are read, all IEC 61131 logic runs, outputs are written.
+  - The cycle time is set by the user and locked to system time. Set the main cycle to at least 140% of the measured
+    task time (RTAC manual p.160).
+  - There is no `delay()`. Timers are function blocks. `[S]`
+- **I/O:** DI and DO as in the 2026-09-23 entry, with the 125 V correction above.
+- **HMI:**
+  - The RTAC serves a web HMI. Screens are built in ACSELERATOR Diagram Builder (SEL-5035), loaded into the RTAC,
+    and viewed from any browser on the Ethernet network, several people at once.
+  - It is an ordered option (RTAC manual p.566).
+  - The Live Data page can view and force tags for testing (p.566).
+
+### What this supersedes
+
+- **2026-09-23, "No practical impact: every input here will be 24 Vdc".** Wrong. The ordered DI module is 125 V.
+  Also superseded: the 24 V threshold row as the one that applies, and "24 V to the Axion" in option A's
+  stacked-contact note.
+- **2026-09-23 option A:** rejected by Jordan. It was already "functionally rejected" there.
+- **2026-09-23 item 51 ranking:** closed as RS-485 Modbus RTU.
+- **2026-09-23 item 58** (synthetic V/I table recommended): superseded by item 64. The faculty requirement asks for
+  real measured values. A synthetic table may still fill zones that have no metering point.
+- **2026-09-23 item 59:** closed.
+- **2026-09-24 10:32, the four team decisions:** item 61 is now B vs C only, and item 57 carries the hard constraint.
+
+### Verification actually performed
+
+- The summary PDF was rendered to PNG with PyMuPDF, and all 3 pages were read.
+- `pdftotext` was run on `2240_DS_20130827_01.pdf`, `Axion Instruction Manual.pdf` and `135187.pdf`. The cited
+  sections were read, and PDF page numbers were computed from form feeds.
+- The five web sources were downloaded and their text extracted, then read at the cited pages. `nrel.gov` did not
+  resolve, so the `docs.nlr.gov` copies were used.
+- No code changed, so nothing was compiled or tested.
+
+### Open items
+
+Closed: 51, 59. Superseded: 58, by 64. Narrowed: 61 is now B or C. Updated: 57 carries the hard constraint.
+
+62. **DI wetting voltage.** The ordered SEL-2244-4 is 125 V. Options:
+    - (a) ask JEA whether the DI voltage option can still change to 24 Vdc;
+    - (b) wet the inputs with fused 120 Vac, using buttons rated for 120 Vac;
+    - (c) 24 V buttons driving interposing relays near the Axion, which switch 120 Vac into the DI;
+    - (d) a 125 Vdc supply.
+
+    Ask Zach and Michael before choosing. It also sets the isolation for any ESP32 contact into a DI.
+63. **Does the SEL-2241 RTAC order include the Web HMI option?** The RTAC order summary is not in the repo.
+64. **Real V/I measurement (faculty requirement).**
+    - Evaluate the AC mini-grid plus SEL-2245-4 proposal.
+    - Confirm with Michael that the channels can be used as independent single-phase points.
+    - Choose the 4 measured points.
+    - Decide whether an SEL-2245-2 is wanted in a free slot.
+65. **House LEDs and enclosure (fault-indicator) LEDs.** Count houses, pad-mounts and junction boxes from the layout.
+    Then set the pixel budget and chain routing.
+66. **Item 54 questions for JEA:**
+    - Was the PV backfeed meant as a microgrid with storage?
+    - Does JEA run any intentional island today?
+    - Which section should the DER pick up, and should the trainer show both modes?
+
+### Not done
+
+- No code, `.ino`, DXF, xlsx or requirements doc changes.
+- No git commit.
+- The IEEE 1547-2018 text itself was not read.
+- The RTAC order summary was not found.
+
+---
+
+## 2026-09-24 11:45 CDT - Web sources saved locally as text, converter script, homework reading list
+
+### What Jordan asked `[V]`
+
+- Save the web pages used as sources locally.
+- Write a quick Python script that converts them to text files, for lower token usage.
+- Read those text files in the future for references.
+- Write a homework reading file for Jordan. It should cover both the gathered local text files and online resources
+  to deepen his understanding.
+
+### Deliverables
+
+- **`07_Reference_Datasheets/web_sources/`**
+  - `sources.json`: manifest of the 6 sources behind the 11:12 entry (item 54 research, item 65 fault indicator).
+  - `web_to_text.py`:
+    - Downloads missing sources into `raw/`.
+    - Converts PDFs with PyMuPDF (`=== page N ===` markers at page breaks) and HTML with BeautifulSoup.
+    - Normalizes typographic characters to ASCII.
+    - Writes `text/<id>.txt` with a source header, and `text/INDEX.txt`.
+    - Options: `--refresh` re-downloads, `--only <id>` limits the run.
+  - `raw/`: 5 PDFs plus 1 HTML page, 7.4 MB.
+  - `text/`: about 290 KB total. The primer went from 1254 KB to 87 KB, and the Borrego slides from 2093 KB to 9 KB.
+- **`07_Reference_Datasheets/HOMEWORK_READING.md`:** 7 parts (0-6).
+  - Part 0 is the 9/23 architecture file.
+  - Parts 1-6 cover PLC basics, V/I measurement, the RS-485 Modbus link, protection and FLISR, DER and 1547, and
+    fault indicators.
+  - Each part gives page-level pointers into local files and verified online links, plus "check yourself" questions.
+- **Auto-memory `jea-web-sources-local.md`:** read the local `.txt` before re-fetching, and add every new web source
+  to `sources.json`.
+
+### Decisions and why
+
+- **Script dependencies:** stdlib `urllib` for downloads, plus PyMuPDF 1.28.2, bs4 4.14.3 and lxml 6.0.2, all
+  already installed `[V]`. `requests` was avoided because it prints a dependency-version warning on this machine
+  `[V]`.
+- **Downloads never overwrite a saved copy with junk.** The script checks for the `%PDF` magic bytes on PDFs and for
+  bot-check markers (`_Incapsula_Resource` and others) on HTML.
+- **selinc.com:** its bot protection answered curl with 307 and a block page, but urllib's download succeeded. The
+  page's tab content, including the "junction boxes" sentence cited at 11:12, is only in a Next.js
+  `__NEXT_DATA__` JSON block. The script therefore also extracts JSON "text" fields that are missing from the visible
+  text, and appends them under an "embedded page data" marker.
+- **Script source is pure ASCII:** the character map is keyed by code point (`0x2018: "'"`). The first draft used
+  `\u` escapes, and the file tool wrote them out as literal UTF-8 characters. That was caught by a byte check and
+  rewritten, and the output was re-verified byte-identical (md5) afterwards.
+
+### Online resources on the list
+
+Each one was checked on 2026-09-24 for an HTTP 200 and matching content. For the PDFs, the first page and table of
+contents were read.
+
+- Kuphaldt, *Lessons In Industrial Instrumentation* v2.33, ibiblio PDF, CC BY 4.0. Section page numbers came from
+  the PDF's table of contents.
+- AutomationDirect: "Sinking and Sourcing Concepts" and the PLC Handbook.
+- PLC Academy Structured Text tutorial.
+- Three SEL video portal pages (RTAC programs and function blocks; Quick Configuration; RTAC HMI with Diagram
+  Builder). Confirmed through WebFetch.
+- IPS "Current Transformers: The Basics."
+- TI SLLA272 RS-485 Design Guide.
+- Modbus over Serial Line V1.02 (modbus.org).
+- emelianov/modbus-esp8266 on GitHub. Not tested on our board.
+- G&W Electric recloser blog.
+- DOE SGIG "Distribution Automation" report, 2016. Section 2.1 is PDF pp.21-30.
+- TD World reliability metrics.
+- **Left out:** control.com's HTML textbook returned 403 to automated checks, so the ibiblio PDF is used instead.
+  Eaton's recloser page timed out. NOJA returned 429.
+
+### Verification actually performed
+
+- Ran `web_to_text.py`: 6 of 6 `[OK]`, exit code 0. A rerun used the saved copies and produced identical output.
+- Failure paths tested:
+  - An unknown `--only` id exits with code 1.
+  - An HTTP 404 returns "no copy", and no file is created.
+  - HTML returned in place of a PDF is rejected, and the saved copy is left unchanged.
+  - The bot-check marker is detected.
+- Spot check: primer text page 14 contains the 2 s clearing time and the 5 minute return-to-service delay, which
+  matches the 11:12 citation. The SEL text contains the "junction boxes" sentence.
+- Non-ASCII check: the script, the manifest and `HOMEWORK_READING.md` are pure ASCII. The text files keep 7
+  accented letters in author names.
+- Every local link in `HOMEWORK_READING.md` resolves.
+
+### Open items
+
+No new numbers.
+
+### Not done
+
+- The local SEL PDFs (datasheet, instruction manual) were not converted to text. The script handles web sources
+  only. Doing this would cut the cost of re-reading the 1282-page manual; offered to Jordan.
+- `raw/` is not in `.gitignore`: 7.4 MB of re-downloadable third-party files. Not changed; flagged.
+- No git commit.
+
+---

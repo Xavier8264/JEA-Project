@@ -1,0 +1,539 @@
+SOURCE: IEEE 1547-2018 - Major Revision of Interconnection Standard (slides)
+AUTHOR: Charlie Vartanian (PNNL) for NRECA research day, 2018-10-31
+URL: https://www.cooperative.com/programs-services/bts/documents/emerging%20priorities%20for%20energy%20research%20day%20-%20oct%202018/ieee%201547-2018%20-%20vartanian%20(nreca-apa-researchday-20181031).pdf
+RAW FILE: raw/pnnl_nreca_1547_vartanian.pdf
+RETRIEVED: 2026-09-24
+PAGES: 28
+USED FOR: Item 54. 1547 clause 8.2 intentional islands: scheduled vs unscheduled, definitions.
+------------------------------------------------------------------------
+
+=== page 1 ===
+IEEE 1547 - 2018 - Major Revision of
+Interconnection Standard
+NRECA & APA's Emerging Priorities in Energy Research Day,
+Anchorage, AK
+Charlie Vartanian PE - Secretary, IEEE 1547 Working Group
+October 31, 2018
+
+=== page 2 ===
+2
+- This presentation on IEEE 1547-2018 are the author's
+views and are not the formal position, explanation or
+position of the IEEE nor PNNL
+- The author acknowledges the contribution of the IEEE
+1547-2018 Working Group, Balloters, and Officers
+Disclaimer
+
+=== page 3 ===
+3
+1) IEEE 1547 Background
+2) Featured Changes to 1547-2018, relevant to
+advanced grid technologies and practices including
+grid-interactive microgrids
+VAR and Voltage Control Capabilities
+Voltage & Frequency Ride Through
+Interoperability
+Intentional Islanding
+Presentation Outline
+
+=== page 4 ===
+4
+Interconnection system: The collection of all
+interconnection equipment and functions, taken as
+a group, used to interconnect DERs to an area
+EPS. Note: In addition to the power interface,
+DERs should have a communications interface.
+Interface: A logical interconnection from one entity
+to another that supports one or more data flows
+implemented with one or more data links.
+IEEE 1547-2018 Scope and Purpose
+Distributed
+Energy
+Resource
+(DER)
+Electric
+Power
+System
+(Area EPS)
+Communications interface
+Power interface
+Interconnection System
+Purpose: This document provides a uniform standard for
+the interconnection and interoperability of distributed energy
+resources (DER) with electric power systems (EPS). It
+provides requirements relevant to the interconnection and
+interoperability performance, operation, and testing, and,
+safety, maintenance and security considerations.
+Title: Standard for Interconnection and Interoperability of Distributed Energy Resources with Associated
+Electric Power Systems Interfaces
+Scope: This standard establishes criteria and requirements for interconnection of distributed energy
+resources (DER) with electric power systems (EPS), and associated interfaces.
+
+=== page 5 ===
+5
+-
+Shall NOT actively regulate voltage
+-
+Shall trip on abnormal voltage/frequency
+IEEE 1547 Evolution of Grid Support Functions
+IEEE 1547-2003
+IEEE 1547a-2014
+(Amendment 1)
+-
+May actively regulate voltage
+-
+May ride through abnormal voltage/frequency
+-
+May provide frequency response1 (frequency-droop)
+IEEE 1547-2018
+-
+Shall be capable of actively regulating voltage
+-
+Shall ride through abnormal voltage/frequency
+-
+Shall be capable of frequency response2
+-
+May provide inertial response3
+1 Frequency response is capability to modulate power output as a function of frequency
+2 Mandatory capability for Categories II and III under high frequency conditions, Mandatory for
+Categories II and III under low frequency conditions, optional for Category 1
+3 Inertial response is capability for DER to modulate active power in proportion to the rate of
+change of frequency
+
+=== page 6 ===
+6
+IEEE 1547-2018 Document Outline
+1.
+Normative references
+2.
+Definitions and acronyms
+3.
+General specifications and requirements
+4.
+Reactive power, voltage/power control [normal
+operation conditions]
+5.
+Response to Area EPS abnormal conditions
+6.
+Power quality
+7.
+Islanding
+8.
+Distribution secondary grid and spot networks
+9.
+Interoperability
+10. Test and verification
+11. Seven new annexes (Informative)
+
+=== page 7 ===
+7
+"The DER shall provide voltage regulation capability by changes of reactive
+power. The approval of the Area EPS Operator shall be required for the DER to
+actively participate in voltage regulation."
+Capability required for all DER - (Cat A, B)
+-Constant power factor mode
+-Constant reactive power mode ("reactive power priority")
+-Voltage-reactive power mode ("volt-var")
+"State-of the art" DER - Cat B
+-Active power-reactive power mode ("watt-var")
+-Voltage-active power mode ("volt-watt")
+The area EPS operator shall specify the required voltage regulation control modes and the
+corresponding parameter settings.
+Active Voltage Regulation Requirements -
+Normal Operation Conditions
+
+=== page 8 ===
+8
+Required
+1.
+Voltage ride-through
+2.
+Frequency ride-through
+3.
+Rate-of-change (ROCOF)
+4.
+Voltage phase angle change
+5.
+Frequency droop1,2
+Other allowed capabilities
+-Inertial response3
+Grid Support Requirements - Abnormal
+Operating Conditions
+Ride-through
+ability to withstand voltage or
+frequency disturbances
+1Frequency response is capability to modulate power output as a function of frequency
+2Mandatory capability for Categories II and III under high frequency conditions, Mandatory for Categories II and III under low
+frequency conditions, optional for Category 1
+3Inertial response is capability for DER to modulate active power in proportion to the rate of change of frequency
+
+=== page 9 ===
+9
+Mandatory communications capability
+A DER shall have provisions for a local DER interface capable of communicating...
+Information to be exchanged:
+Nameplate: as-built characteristics of the DERs (read
+Configuration: present capacity and ability of the DERs to perform functions (read/write)
+Monitoring: present operating conditions of the DERs (read)
+Management: information to update the functional and mode settings for the DERs (read/write)
+Communication performance requirements:
+Availability of communication (DER is operating in continuous or mandatory operation region)
+Information read response times (<= 30 s, maximum amount of time to respond to read requests)
+Communication protocol requirements:
+Shall support at least one of three protocols: IEEE Std 2030.5(SEP), IEEE Std 1815(DNP3.0), SunSpec-
+Modbus
+Interoperability Requirements
+The capability of two or more networks, systems, devices,
+applications, or components to externally exchange and readily
+use information securely and effectively (IEEE 2030).
+
+=== page 10 ===
+10
+Scope of IEEE 1547-2018 Interoperability Requirements
+Interoperability Scope
+Networks
+DER Managing
+Entity
+Individual DER
+Out of Scope - Communication Network Specifics
+In Scope - Local
+DER Interface
+Network Adapters
+/Modules
+Out of Scope -
+Internal DER Specifics
+DER with System/
+Plant Controller
+...
+...
+...
+IEEE 1547 interface (mandatory)
+other interfaces (optional)
+out of scope
+Source: 1547-2018 Approved Draft
+
+=== page 11 ===
+11
+Intentional Islands: what's in-scope?
+An intentional island
+that contains any part
+of the Area EPS is in-
+scope.
+Intentional island
+behavior at the PCC,
+and impacts on the
+Area EPS, are in-scope.
+What happens
+"behind the meter"
+within a microgrid
+that does not include
+any Area EPS elements
+is out-of-scope.
+
+=== page 12 ===
+12
+1547-2018 and intentional Islands (II)
+Two types of transitions into II mode (on-grid to off-grid):
+scheduled and unscheduled.
+- Scheduled: initiated by manual action or dispatch.
+- Unscheduled: automatically initiated due to abnormal Area EPS conditions.
+Power systems designated by the AHJ as Emergency, Legally
+Required, or Critical Operations are exempted.
+
+=== page 13 ===
+13
+1547's Island Terminology
+Intentional Island: one that is planned, has a defined
+boundary, and has V/F regulation controls. Types:
+- Microgrid
+- Emergency/standby power supply
+- Island power system (as in, on an actual island)
+- Remote community grid
+- Military bases
+- Remote resource extraction operations
+Unintentional island: one that isn't planned and
+doesn't have V/F regulation control. 1547 does not
+permit unintentional islands.
+13
+
+=== page 14 ===
+Thanks!
+Questions?
+Charlie Vartanian
+Charlie.vartanian@pnnl.gov
+(626) 818-5230
+
+=== page 15 ===
+BACKUP SLIDES
+
+=== page 16 ===
+16
+New Challenges
+-
+New energy technologies and services
+-
+Penetration of variable renewables in grid
+-
+New communications and controls
+(e.g., Smart Grids)
+-
+Electrification of transportation
+-
+Integration of distributed energy storage
+-
+Regulatory Advances
+Current Power System
+Future Power Systems
+Background- Evolution of the Grid
+
+=== page 17 ===
+17
+Importance of IEEE 1547
+17
+-
+-Energy Policy Act (2005)
+Energy Policy Act (2005)Cites and requires consideration of IEEE 1547 Standards and
+Cites and requires consideration of IEEE 1547 Standards and
+Best Practices for Interconnection; all states use or cite 1547.
+Best Practices for Interconnection; all states use or cite 1547.
+-
+-Energy Independence and Security Act (2007)
+Energy Independence and Security Act (2007)IEEE cited as a standards development
+IEEE cited as a standards development
+organization partner to NIST as Lead to coordinate framework and roadmap for Smart Grid
+organization partner to NIST as Lead to coordinate framework and roadmap for Smart Grid
+Interoperability standards and protocols {IEEE 1547 & 2030 series being expanded};
+Interoperability standards and protocols {IEEE 1547 & 2030 series being expanded};
+-
+-Federal ARRA (2009)
+Federal ARRA (2009)Smart Grid & High Penetration DER projects {
+Smart Grid & High Penetration DER projects {use IEEE
+use IEEE stds
+stds}.
+}.
+
+=== page 18 ===
+18
+Striking a new balance
+Distribution
+Grid Safety
+Bulk System
+Reliability
+- IEEE 1547-2018 mandates BOTH:
+-
+Tripping requirements, and
+-
+Ride-through requirements
+- Ride-through is not a "setting", it is a minimum
+capability of the DER
+-
+"shall ride through for at least ... seconds"
+-
+I.e., it is the minimum required DER robustness to withstand
+voltage and frequency disturbances
+-
+May or may not be fully utilized, or it may be exceeded
+- Trip thresholds and clearing times are maximum
+operational settings
+-
+"shall trip at latest by ... seconds"
+-
+May differ from default settings and are adjustable over a
+'range of allowable settings'
+-
+Specified ranges do not allow DER tripping to seriously
+compromise bulk power system reliability
+-
+Tripping points specified by the distribution utility may account
+for utility-specific practices but may also be constrained by the
+regional reliability coordinator
+18
+
+=== page 19 ===
+19
+Voltage Ride-Through
+(All Categories)
+based on IEEE 1547-2018
+
+=== page 20 ===
+20
+Frequency Ride-Through
+(Default Values for All Categories)
+Based on IEEE -2018
+
+=== page 21 ===
+21
+Driver for new ride-through requirements - Potential for
+widespread DER tripping (Cont)
+Voltage profile for
+345 kV fault in East
+Mass., all BPS power
+plants online
+- System frequency is defined by balance
+between load and generation
+- Frequency is the same across entire
+interconnection; all DER may trip
+simultaneously during disturbance
+- Impact the same whether or not DER is on
+a high-penetration feeder
+Source: ISO-New England
+Slide courtesy Dr. Jens Boemer, EPRI
+IEEE 1547-2018 mandates BOTH:
+-
+Tripping requirements, and
+-
+Ride-through requirements
+Ride-through is not a "setting", it is a
+capability of the DER
+-
+i.e., it is the DER's robustness
+Tripping points are adjustable over an
+allowable range
+-
+Range does not allow DER tripping to
+seriously compromise BPS security
+-
+Tripping points specified by the Area EPS
+Operator (utility) within constraints of
+the regional reliability coordinator
+
+=== page 22 ===
+22
+-Trip - cessation of output without immediate return to service; not necessarily
+disconnection
+-Cease to energize - no active power delivery, limitations to reactive power exchange;
+Does not necessarily mean physical disconnection. Can be either a momentary
+cessation or a trip
+-Permissive operation - DER may either continue operation or may cease to energize, at
+its discretion
+-Mandatory operation - required active and reactive current exchange
+-Momentary cessation - cessation of energization for the duration of a disturbance with
+rapid recovery when voltage or frequency return to defined range
+-Return to service - re-entry of DER to service following a trip
+-Restore output - DER recovery to normal output following a disturbance that does not
+cause a trip.
+Specific Performance Terminology
+
+=== page 23 ===
+23
+Assignment of new IEEE 1547 Performance
+Categories
+Normal and abnormal operating performance
+categories
+Category
+A
+Category
+I
+Category
+II
+Category
+B
+Category
+III
+Ride-
+Through
+Voltage
+Regulation
+Authorities
+Governing
+Interconnection
+Requirements
+(AGIRs)1
+DER
+Vendors
+Market Analysis
+- Costs
+- Market segment
+- Etc.
+Control / trip settings
+- Ranges of allowable settings
+- Default parameters
+Stakeholder Engagement
+- Distribution utilities.
+- Bulk system operators
+& planners.
+- DER developers.
+- Others.
+Courtesy of Dr. J. Boemer/EPRI
+1
+Regulatory agencies, public utility commissions,
+municipalities, cooperative governing boards, etc.
+Impact Assessment
+- Technical conditions: type & capacity & future penetration
+of DER, type of grid configuration, etc.
+- Non-technical issues: DER use case, impacts on
+environment, emissions, and sustainability, etc.
+
+=== page 24 ===
+24
+-In 2014, Hawaii was headed for a repeat of Germany's "50.2 Hz problem"
+o Inverters could trip en masse due to frequency excursion, worsening
+excursion and potentially blacking out grid
+-In February 2015, Enphase remotely reprogrammed 800,000 inverters (154
+MW) in Hawaii to enable frequency ride-through
+-Required close coordination between utility and inverter manufacturer
+Importance Of Interoperability Functions
+- Hawaii Case Study
+Figure credit:
+https://www.gr
+eentechmedia.
+com/articles/re
+ad/enphase-to-
+help-hawaii-
+ride-its-solar-
+energy-
+wave#gs.4gZ7w
+1Q
+Enphase inverter locations
+Oahu feeder PV penetration
+Slide used with courtesy of Dr. Andy Hoke, NREL
+
+=== page 25 ===
+25
+What is an island?
+An electric power island is a section of a power
+system with its own sources and loads, so that it
+can self-power or "self-excite".
+25
+Possible island
+
+=== page 26 ===
+26
+When can an II leave the grid?
+When conditions are met that are mutually agreed-
+to by the Area EPS and DER operators;
+If any of the abnormal voltage or frequency trip
+conditions is met; or
+If an unintentional island is detected.
+26
+For these latter two cases, one may substitute entry
+into intentional island mode for tripping.
+
+=== page 27 ===
+27
+Limits on Area EPS impact when
+leaving the Area EPS
+If an II disconnects from the Area EPS for any of the
+reasons listed on the previous slide, it shall do so
+without causing a voltage fluctuation greater than
++/-5% of the nominal voltage at any PCC between the
+Area EPS and the intentional island.
+There are two exceptions to this requirement:
+- If the II "takes its load with it"-i.e., when the II leaves
+the grid, it causes an amount of load equal to 90% to
+110% of its rating to leave the grid also;
+- The II is an emergency or standby generator that is on-
+grid for testing purposes only.
+27
+
+=== page 28 ===
+28
+Limits on an II coming back onto the Area
+EPS
+An II can reconnect when the "return-to-service" requirements of
+Clause 4.10 are met (basically, the voltage and frequency are
+within defined limits).
+When the II reconnects, the requirements of Clause 4.10.4
+("synchronization", which defines how well synched to the grid
+the II must be in both voltage and frequency).
+28

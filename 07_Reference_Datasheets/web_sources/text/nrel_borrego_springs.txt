@@ -1,0 +1,417 @@
+SOURCE: Borrego Springs Community Microgrid (slides)
+AUTHOR: Annabelle Pratt (NREL), 2019
+URL: https://docs.nlr.gov/docs/fy19osti/74477.pdf
+RAW FILE: raw/nrel_borrego_springs.pdf
+RETRIEVED: 2026-09-24
+PAGES: 26
+USED FOR: Item 54. Real utility microgrid restoring customers; SEL RTAC used as a microgrid controller in testing.
+------------------------------------------------------------------------
+
+=== page 1 ===
+Borrego Springs Community
+Microgrid
+Annabelle Pratt, Principal Researcher, NREL
+Tom Bialek, San Diego Gas & Electric Company
+International Microgrids Symposium
+August 9-12, 2019
+Fort Collins, Colorado
+
+=== page 2 ===
+NREL | 2
+Goal: Demonstrate the viability of a microgrid to manage high amounts
+(up to 100%) of renewable, intermittent energy resources to meet
+community load that can be replicated by others while leveraging (post-
+project) off-the-shelf software
+Impact: Successful implementation of the largest microgrid in North
+America will prove that a community-scale, highly renewable
+microgrid can be implemented with economic benefits.
+Funded by:
+California Energy Commission
+Led by:
+SDG&E
+Partners:
+NREL, Spirae, UCSD, OSIsoft,
+SMA, NRG
+High-Penetration Microgrid: SDG&E Borrego Springs
+
+=== page 3 ===
+NREL | 3
+-
+Progressive-minded
+community
+-
+High concentration of
+customer-owned solar
+generation
+-
+Potential for reliability
+enhancements
+-
+Opportunity to balance
+supply and demand to
+be more self-sufficient
+-
+Extendable to service
+territory
+Brief Visual Tour of Borrego Springs
+
+=== page 4 ===
+NREL | 4
+Borrego Springs Microgrid
+
+=== page 5 ===
+5
+Diesel
+generators
+Control room
+500-kW, 1500-kWh battery
+1000-kW, 3000-kWh battery
+250-kW, 15-min ultracapacitor
+
+=== page 6 ===
+NREL | 6
+-
+6/23/12 planned outage
+- Microgrid provided power to 2,128 customers for ~ 5.5 hours
+-
+Q1 2013 conducted seven planned islanding events over 3 days
+-
+4/8/13 windstorm
+- Microgrid provided power to 1,225 customers for ~ 6 hours
+-
+8/25/13 flash flood
+- CES units islanded six customers for ~ 5.5 hours
+-
+9/6/13 intense thunderstorms
+- Microgrid provided power for up to 1,056 customers for
+> 20 hours
+Real-World Experience (Island 1)
+
+=== page 7 ===
+NREL | 7
+-
+At 14:20, a single transmission line to Borrego tripped out.
+-
+Nine transmission and 11 distribution poles were reported down.
+-
+A total of 1,056 customers had power restored during the outage.
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+13:15
+14:10
+15:05
+16:00
+16:55
+17:50
+18:45
+19:40
+20:35
+21:30
+22:25
+23:20
+0:15
+1:10
+2:05
+3:00
+3:55
+4:50
+5:45
+6:40
+7:35
+8:30
+9:25
+10:20
+11:15
+12:10
+13:05
+14:00
+14:55
+15:50
+16:45
+Load (kW)
+Borrego
+Microgrid
+Borrego Outage September 6-7
+
+=== page 8 ===
+NREL | 8
+May 21, 2015, islanding event
+Real-World Experience (Island 3)
+
+=== page 9 ===
+NREL | 9
+Hz
+Amps
+Volts
+May 21, 2015, islanding event
+Real-World Experience (Island 3)
+
+=== page 10 ===
+NREL | 10
+-
+Evaluation of an advanced microgrid controller
+-
+Spirae Wave microgrid controller
+-
+Similar to that deployed at Borrego Springs
+-
+Functional requirements (based on FOA 997):
+-
+Dispatch
+-
+Disconnection and reconnection
+-
+Steady-state frequency and voltage in islanded mode
+-
+Protection
+-
+Evaluation of research-and-development (R&D) microgrid control
+functions
+-
+Advanced Control Technology (ACT)
+-
+Implemented by University of California San Diego (UCSD) and
+OSIsoft
+-
+Functions evaluated
+-
+Set point tracking and disturbance rejection
+HIL Evaluation of Advanced Microgrid Controls
+
+=== page 11 ===
+NREL | 11
+A) Pure simulation
+Abstract or real-time
+Need to integrate microgrid
+controller
+B) Controller hardware-in-the-
+loop (CHIL)
+Interface real controller
+Need to add communications
+interface
+C) Controller and power HIL (PHIL)
+Interface real controller and power
+assets, including internal
+proprietary controls
+Power interface, more complex
+D) Hardware only
+Real controller and assets
+Does not include power system
+model
+Microgrid Controller Evaluation Options
+
+=== page 12 ===
+NREL | 12
+PHIL:
+-
+Energy storage system inverter
+(representative
+Schneider 540 kW)
+-
+Photovoltaic (PV)
+inverter (actual
+SMA 500 kW)
+CHIL:
+-
+Spirae Wave microgrid controller
+-
+EasyGen diesel generator controllers
+CHIL/PHIL Test Bed
+
+=== page 13 ===
+NREL | 13
+CHIL/PHIL Test Bed
+
+=== page 14 ===
+NREL | 14
+-
+Heavy-load day in summer
+-
+Active and reactive power set points for point of common
+coupling (PCC) set to zero
+-
+Microgrid (MGC) can track set points when enough PV
+generation is available
+-
+Diesel generators dispatched at about 60% during the day
+o
+To support transition to islanded mode
+-
+NRG PV follows remaining load
+Dispatch-Grid-Connected
+
+=== page 15 ===
+NREL | 15
+-
+Light load day in winter
+o
+Reduced by a factor of 1.7 to allow islanded operation
+-
+Battery initial charge 70%
+-
+Distributed generation operates in V/F master mode
+-
+Distributed generation supports load
+-
+PV is not dispatched: below minimum requirement for
+PV inverters
+-
+Battery is dispatched to compensate for low power
+factor for the distributed generation
+-
+Voltage and frequency
+meet steady-state
+requirements
+Real-World Experience (Island 3)
+
+=== page 16 ===
+NREL | 16
+-
+Heavy-load condition
+-
+MGC regulates power flow across PCC to
+near zero
+-
+Smooth transition when microgrid
+switch is opened
+-
+Voltage and frequency meet steady-
+state requirements
+Planned Disconnection
+
+=== page 17 ===
+NREL | 17
+-
+Simulated (CHIL only) over- and undervoltage and frequency conditions and faults
+-
+MGC does not respond but relies on protection equipment
+-
+MGC redispatches after disconnection if microgrid survives or manages black starts
+Unplanned Disconnection
+
+=== page 18 ===
+NREL | 18
+CHIL:
+-
+UCSD Advanced Control
+Technology (ACT)
+implemented on SEL RTAC
+Remote HIL (RHIL):
+-
+RSCAD network simulation
+at NREL connected to
+controller hardware at UCSD
+Advanced R&D Control Function Evaluation
+
+=== page 19 ===
+NREL | 19
+Reference Tracking
+
+=== page 20 ===
+NREL | 20
+Disturbance Mitigation
+Load
+Load
+
+=== page 21 ===
+NREL | 21
+- NREL participated in working group for IEEE Std. 2030.8
+- Standard for testing of microgrid controllers
+- Approved as a new standard by the IEEE Standards
+Association Standards Board in June 2018
+IEEE 2030.8
+
+=== page 22 ===
+NREL | 22
+- Created CHIL/PHIL platform for microgrid controller derisking
+- Developed compensation for stable and accurate simulation
+- Developed remote HIL (RHIL) platform
+- Evaluated Spirae's Wave microgrid controller
+- Evaluated UCSD's advanced R&D control functions
+- Developed test procedures
+Summary
+
+=== page 23 ===
+NREL | 23
+Further Reading
+-
+Ainsworth, Nathan, Ali Hariri, Prabakar Kumaraguru, Annabelle Pratt, and Murali Baggu.
+2016. "Modeling and Compensation Design for a Power Hardware-in-the-Loop Simulation of
+an AC Distribution System." Paper presented at the North American Power Symposium
+(NAPS), Denver, Colorado, September 18-20, 2016.
+-
+Maitra, Arindam, Annabelle Pratt, Tanguy Hubert, Dean Weng, Kumaraguru Prabakar, Rachna
+Handa, Murali Baggu, and Mark McGranaghan. 2017. "Microgrid Controllers: Expanding Their
+Role and Evaluating Their Performance." IEEE Power and Energy Magazine 15, no. 4 (July-
+August): 41-49.
+-
+Wang, Jing, John Fossum, Kumaraguru Prabakar, Annabelle Pratt, and Murali Baggu. 2018.
+"Development of Application Function Blocks for Power-Hardware-in-the-Loop Testing of
+Grid-Connected Inverters." Paper presented at the 2018 IEEE 9th International Symposium on
+Power Electronics for Distributed Generation Systems (PEDG), June 25-28, Charlotte, North
+Carolina.
+
+=== page 24 ===
+www.nrel.gov
+Thank You
+annabelle.pratt@nrel.gov
+NREL/PR-5D00-74477
+This work was authored in part by the National Renewable Energy Laboratory, operated by Alliance for Sustainable
+Energy, LLC, for the U.S. Department of Energy (DOE) under Contract No. DE-AC36-08GO28308. Funding provided
+by California Energy Commission. The views expressed in the article do not necessarily represent the views of the
+DOE or the U.S. Government. The U.S. Government retains and the publisher, by accepting the article for
+publication, acknowledges that the U.S. Government retains a nonexclusive, paid-up, irrevocable, worldwide license
+to publish or reproduce the published form of this work, or allow others to do so, for U.S. Government purposes.
+
+=== page 25 ===
+NREL | 25
+CHIL/PHIL/RHIL Test Bed
+Remote HIL (RHIL):
+-
+RSCAD network
+simulation at
+SDG&E's ITF
+connected to
+hardware at
+NREL's ESIF
+
+=== page 26 ===
+NREL | 26
+Functional Testing Plan Overview
+-
+Four use cases (A-D)
+- Each validates certain functional requirements (C1-C6)
+- Each consists of a set of test cases with specified initial
+conditions and test scenarios
+C1
+Disconnect
+C2
+Reconnect
+C3
+Steady-state
+C4
+Protection
+C5
+Dispatch
+C6
+Resilience
+Use Case A: Grid-connected
+X
+Use Case B: Disconnect
+X
+X
+Use Case C: Islanded
+X
+X
+X
+X
+Use Case D: Reconnect
+X

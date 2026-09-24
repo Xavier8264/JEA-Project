@@ -1,0 +1,192 @@
+SOURCE: Implementing FLISR on Distribution Circuits with High DER Penetration (tutorial proposal)
+AUTHOR: Robert Uluski (ESTA International), IEEE PES ISGT NA 2024
+URL: https://ieee-pes.org/wp-content/uploads/2024/01/ISGTNA-Feb192024-Tutorial3_DER_enabled_FLISR.pdf
+RAW FILE: raw/ieee_pes_der_flisr_tutorial.pdf
+RETRIEVED: 2026-09-24
+PAGES: 4
+USED FOR: Item 54. DER effects on FLISR: load masking, fault current, islanded microgrids on sections with no backup.
+------------------------------------------------------------------------
+
+=== page 1 ===
+Title of Tutorial*
+Implementing Fault Location Isolation and Service Restoration (FLISR) on Distribution Circuits
+with High DER Penetration - Strategies for Success
+Length of Tutorial*
+Four (4) hours
+Abstract*
+For several decades, electric distribution utilities have been able to achieve significant reliability
+improvements by quickly isolating faulted feeder sections and restoring power to healthy sections using
+FLISR on their distribution feeders. The growing penetration of DERs presents new challenges, such as
+load masking and incorrect fault location due to DER fault current contributions, that may impact the
+performance of these legacy systems. DER presence also provides opportunities for improved FLISR
+performance such as freeing capacity to permit load transfers on heavily loaded feeders and supporting
+islanded microgrids on isolated feeders that lack backup sources. The proposed tutorial will provide
+basic information on how FLISR works, equipment requirements, reliability improvement benefits
+obtained, and strategies for addressing the new challenges posed by DER presences and opportunities
+to leverage DERs for optimal performance.
+
+Target Audience*
+The proposed tutorial targets distribution control center operators and field operation staff who are
+responsible for managing the electric distribution system, engineers who are responsible for distribution
+circuit design and DER connections, distribution automation and communication specialists, and other
+stakeholders that are focused on achieving high service reliability for the benefit of the utility's
+customers.
+
+Prerequisites
+
+Attendees should have basic understanding of electric distribution system design and operating
+practices, protection systems for the distribution system (protective relays, reclosers, etc.), and
+distributed energy resources (generation, storage, and controllable loads) that may be connected to the
+distribution system. Some knowledge about distribution SCADA systems and advanced distribution
+management systems (ADMS) is also beneficial.
+
+Learning Objectives*
+
+At the conclusion of this tutorial students will be familiar with:
+
+=== page 2 ===
+-
+FLISR operation and benefits
+-
+Equipment requirements, including medium voltage switches, communication network
+requirements, and computer hardware and software needed to implement FLISR
+-
+FLISR design characteristics such as the types of switches to use and optimal quantity of
+switches to install
+-
+FLISR switch placement for optimal performance
+-
+Potential adverse impacts of DERs, and opportunities to leverage DERs to optimize FLISR
+performance
+-
+Business case for FLISR deployment.
+
+Course Outline*
+
+Historical Perspective (30 minutes)
+-
+Auto-restoration over the years (historical perspective)
+-
+Completely manual approach
+-
+Use of automatic reclosers
+-
+Auto throwover (ATO) schemes
+-
+Non-communicating automatic sectionalizing
+-
+Rules-based SCADA solution
+-
+Decentralized FLISR (S&C Intelliteam)Advanced model-driven FLISR with DER Awareness (next
+generation).
+How FLISR works (60 minutes)
+-
+Key terms and definition
+-
+Step through FLISR operating sequence for typical fault,
+-
+Triggering events and events that should not trigger FLISR (load shedding, manual operation)
+-
+FLISR Operating Modes (manual, advisory mode, fully-automatic mode)
+-
+Features of ADMS Model-Driven FLISR, generation of switching plans for additional benefits,
+plus return to normal strategy)
+-
+FLISR return to normal configuration (including cold load pickup considerations)
+-
+Special operating conditions (FLISR operation during live line work and during widespread
+outages (storm emergencies))
+Equipment requirements (60 minutes)
+-
+Choosing the right type of switch (line reclosers, automatic sectionalizers, remote-controlled
+load break switches, manual gang-operated switches with add-on motor operator, pad mount
+versus overhead switches, use of ring main units (RMU), single pole switching versus gang
+operated devices)
+-
+Required sensors (load measuring devices, line post sensors, faulted circuit interrupters (FCIs),
+bi-directional fault detectors, detectors embedded in switchgear, protective relays)
+
+=== page 3 ===
+-
+Communication facilities (available options such as cellular, licensed/unlicensed wireless, fiber
+optic, power line carrier; communication protocols, security concerns (Physical and cyber)).
+-
+Power supply characteristics (choice of power sources, use of batteries/chargers)
+-
+Enclosures (ingress protection (IP) ratings, use of enclosure heaters or cooling)
+-
+including coordination difficulties for series reclosers, required sensors (bidirectional FCIs,
+measurement devices), required communication facilities)
+Potential Opportunities and Adverse impacts of DERs (40 minutes)
+-
+Adverse impacts
+o Masked load
+o DER fault current contributions
+o Problems with transferring DERs to backup feeder (reverse power flow issues, high
+voltage)
+-
+Opportunities
+o Leveraging DER capabilities to release capacity on heavily loaded circuits
+o Establish islanded microgrids for isolated feeder sections with no backup
+
+Quantities of FLISR Switches and Switch placement strategy (30 minutes)
+-
+Optimal quantities of FLISR switches (diminishing returns, coordination issues)
+-
+Potential impact of small change in switch locations
+-
+Approach to determine optimal switch placement
+o Strategy for optimal switch placement to achieve maximum reliability improvement
+o Demonstrate switch placement analysis using IEEE standard models.
+
+Calculating the benefits of FLISR (20 minutes)
+-
+Predicted SAIDI/SAIFI changes
+-
+Predicted MAIFI (momentary) changes, momentary versus permanent outage tradeoff
+-
+Converting reliability improvement benefits to monetary and strategic (soft) benefits
+
+Primary Contact Name*
+Robert Uluski
+Primary Contact Email Address*
+Robert.uluski@estainternational.com
+Affiliation of Primary Contact*
+ESTA International (www.estainternational.com)
+
+=== page 4 ===
+
+Number of Presenters*
+Two (2)
+
+Instructor(s) Name, Affiliation, Email address*
+Robert Uluski
+ESTA International
+Robert.uluski@estainternational.com
+
+Dr. Stuart Borlase
+ESTA International
+Stuart.Borlase@estainternational.com
+
+Instructor Bio(s)
+Robert Uluski has over 40 years of experience in electric utility Transmission and Distribution (T&D)
+automation systems. His experience includes planning and implementing energy storage, microgrid control
+systems, advanced distribution management systems (DMS), feeder automation systems, substation
+automation, protective relay systems, and distributed resource energy management systems (DERMS).
+Bob has helped numerous North American and International electric utilities to plan, design, and implement
+computer and communication systems for automating distribution feeders and T&D substations, along with
+DMS and enterprise level systems that make optimal use of these automation facilities. Bob is also a
+recognized expert in developing the business case for implementing these systems. Bob has considerable
+experience in conducting tutorials on Distribution Automation technologies and advanced applications for
+DMS, having presented many training courses on the subject at DistribuTECH, NRECA TechAdvantage,
+IEEE, EUCI, and others. Bob has also presented a course on DA fundamentals and Conservation Voltage
+Reduction (CVR) principles for the Ohio Public Utility Commission members. In 2010, the IEEE Power and
+Energy Society awarded Bob the Douglas M. Staszesky Distribution Automation award in recognition of
+significant contribution to the deployment of Distribution Automation in the electric utility industry. Bob is a
+Registered professional engineer in states of Massachusetts and Pennsylvania.
+
+Dr. Stuart Borlase has over 25 years of experience in the modernization and business transformation of
+utility, energy and industrial markets. His experience includes smart grid, grid real-time monitoring and
+control, substation automation, distribution automation, protective relaying systems, digital substations,
+IT/OT integration, and asset management. His roles have included progressively more influential positions
+with Schneider Electric, Siemens, Wipro Technologies, and General Electric.

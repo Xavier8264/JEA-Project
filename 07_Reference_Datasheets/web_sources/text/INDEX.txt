@@ -1,0 +1,7 @@
+# id | pages | text KB | title | url
+nrel_islanding_primer | 42 | 87 | A Primer on the Unintentional Islanding Protection Requirement in IEEE Std 1547-2018 | https://docs.nlr.gov/docs/fy22osti/77782.pdf
+nrel_gfm_roadmap | 60 | 160 | Research Roadmap on Grid-Forming Inverters | https://docs.nlr.gov/docs/fy21osti/73476.pdf
+nrel_borrego_springs | 26 | 9 | Borrego Springs Community Microgrid (slides) | https://docs.nlr.gov/docs/fy19osti/74477.pdf
+pnnl_nreca_1547_vartanian | 28 | 16 | IEEE 1547-2018 - Major Revision of Interconnection Standard (slides) | https://www.cooperative.com/programs-services/bts/documents/emerging%20priorities%20for%20energy%20research%20day%20-%20oct%202018/ieee%201547-2018%20-%20vartanian%20(nreca-apa-researchday-20181031).pdf
+ieee_pes_der_flisr_tutorial | 4 | 9 | Implementing FLISR on Distribution Circuits with High DER Penetration (tutorial proposal) | https://ieee-pes.org/wp-content/uploads/2024/01/ISGTNA-Feb192024-Tutorial3_DER_enabled_FLISR.pdf
+sel_linam_ugfi | n/a (web page) | 8 | LINAM UGFI Underground Fault Indicator (product page) | https://selinc.com/products/LINAM-UGFI/

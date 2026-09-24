@@ -1,0 +1,1269 @@
+SOURCE: A Primer on the Unintentional Islanding Protection Requirement in IEEE Std 1547-2018
+AUTHOR: Narang, Gonzalez, Ingram (NREL and Sandia), 2022, NREL/TP-5D00-77782
+URL: https://docs.nlr.gov/docs/fy22osti/77782.pdf
+RAW FILE: raw/nrel_islanding_primer.pdf
+RETRIEVED: 2026-09-24
+PAGES: 42
+USED FOR: Item 54. 1547 clause 8.1: 2 s trip, 5 min return-to-service, safety and out-of-phase reclosing.
+------------------------------------------------------------------------
+
+=== page 1 ===
+NREL is a national laboratory of the U.S. Department of Energy
+Office of Energy Efficiency & Renewable Energy
+Operated by the Alliance for Sustainable Energy, LLC
+This report is available at no cost from the National Renewable Energy
+Laboratory (NREL) at www.nrel.gov/publications.
+
+Contract No. DE-AC36-08GO28308
+
+Technical Report
+NREL/TP-5D00-77782
+April 2022
+A Primer on the Unintentional Islanding
+Protection Requirement in
+IEEE Std 1547-2018
+David Narang,1 Sigifredo Gonzalez,2 and Michael Ingram1
+1 National Renewable Energy Laboratory
+2 Sandia National Laboratories
+
+=== page 2 ===
+NREL is a national laboratory of the U.S. Department of Energy
+Office of Energy Efficiency & Renewable Energy
+Operated by the Alliance for Sustainable Energy, LLC
+This report is available at no cost from the National Renewable Energy
+Laboratory (NREL) at www.nrel.gov/publications.
+
+Contract No. DE-AC36-08GO28308
+National Renewable Energy Laboratory
+15013 Denver West Parkway
+Golden, CO 80401
+303-275-3000 - www.nrel.gov
+Technical Report
+NREL/TP-5D00-77782
+April 2022
+A Primer on the Unintentional Islanding
+Protection Requirement in
+IEEE Std 1547-2018
+David Narang,1 Sigifredo Gonzalez,2 and Michael Ingram1
+1 National Renewable Energy Laboratory
+2 Sandia National Laboratories
+Suggested Citation
+Narang, David, Sigifredo Gonzalez, and Michael Ingram. 2022. A Primer on the
+Unintentional Islanding Protection Requirement in IEEE Std 1547-2018. Golden, CO:
+National Renewable Energy Laboratory. NREL/TP-5D00-77782.
+https://www.nrel.gov/docs/fy22osti/77782.pdf.
+
+=== page 3 ===
+
+NOTICE
+This work was authored in part by the National Renewable Energy Laboratory, operated by Alliance for Sustainable
+Energy, LLC, for the U.S. Department of Energy (DOE) under Contract No. DE-AC36-08GO28308. Funding
+provided by U.S. Department of Energy Office of Energy Efficiency and Renewable Energy Solar Energy
+Technologies Office Award Number 34808. The views expressed herein do not necessarily represent the views of
+the DOE or the U.S. Government.
+This report is available at no cost from the National Renewable
+Energy Laboratory (NREL) at www.nrel.gov/publications.
+U.S. Department of Energy (DOE) reports produced after 1991
+and a growing number of pre-1991 documents are available
+free via www.OSTI.gov.
+Cover Photos by Dennis Schroeder: (clockwise, left to right) NREL 51934, NREL 45897, NREL 42160, NREL 45891, NREL 48097,
+NREL 46526.
+NREL prints on paper that contains recycled content.
+
+=== page 4 ===
+iii
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Preface
+The revised Institute of Electrical and Electronics Engineers 1547-2018 Standard for
+Interconnection and Interoperability of Distributed Energy Resources with Associated Electric
+Power Systems Interfaces (IEEE Std 1547-2018) was published in April 2018. This standard is
+one of the foundational documents in the United States needed for integrating distributed energy
+resources (DERs), including solar energy systems, and energy storage systems with the electric
+distribution grid.
+The revised standard contains 11 chapters (clauses) and 8 annexes that comprise 136 pages. The
+revision is significantly different from the 2003 version, and it contains new concepts and new
+technical requirements. Each clause specifies information or requirements that apply to certain
+aspects that are important to the interconnection of DERs to the electric power system.
+Implementing the requirements necessitates a careful study of the underlying technical concepts
+and requires appropriate information to calculate relevant settings and configurations.
+Various stakeholders have different roles in implementing the standard, and portions of the
+standard are directed toward a specific audience who must possess specialized information and
+technical training to use and apply the requirements.
+This document provides informative material on the requirements related to unintentional
+islanding in IEEE Std 1547-2018, with the intent to equip the reader with basic knowledge and
+background information to improve understanding and use of the requirements specified.
+Note that this document reflects the authors' interpretations, which in some instances might
+differ from one person to another; therefore, this work is intended to supplement the existing and
+growing body of knowledge1 across the U.S. electric sector on the use and application of this
+important standard.
+
+1 Additional educational material can be found at https://www.nrel.gov/grid/ieee-standard-1547/.
+
+=== page 5 ===
+iv
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Acknowledgments
+This material is based upon work supported by the U.S. Department of Energy Office of Energy
+Efficiency and Renewable Energy under the Solar Energy Technologies Office Award Number
+34808.
+The authors thank Andy Hoke, Jason Allnutt, Robert Harris, Brian Lydic, John Shenot, and
+Kiera Zitelman for their review and valuable comments.
+The authors are also grateful to the U.S. Department of Energy Office of Energy Efficiency and
+Renewable Energy Solar Energy Technologies Office Strategic Analysis and Institutional
+Support Program Manager Michele Boyd; technical monitors Jeremiah Miller and Robert Reedy;
+and Systems Integration Program Manager Guohui Yuan for their guidance and support.
+
+=== page 6 ===
+v
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+List of Acronyms
+AGIR
+Authority Governing Interconnection Requirements
+DER
+distributed energy resource
+DTT
+direct transfer trip
+EPS
+electric power system
+IEEE
+Institute of Electrical and Electronics Engineers
+PG&E
+Pacific Gas & Electric Company
+PV
+photovoltaic
+VAR
+volt-ampere reactive
+
+=== page 7 ===
+vi
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Table of Contents
+Introduction ................................................................................................................................................. 1
+How Can Unintentional Islands Form? .................................................................................................. 2
+Summary of Inverter-Based Anti-Islanding Protection Methods .................................................. 4
+1
+Functional Requirements in IEEE Std 1547-2018 .............................................................................. 6
+2
+Factory Testing and Certification ....................................................................................................... 7
+2.1
+Balanced Generation-to-Load Test ............................................................................................... 9
+2.2
+Power Line-Conducted Permissive Signal Test .......................................................................... 10
+2.3
+Permissive Hardware-Input Test ................................................................................................. 11
+2.4
+Reverse or Minimum Import Active Power Flow Test ............................................................... 11
+3
+Field Evaluations and Verifications .................................................................................................. 12
+4
+Common Concerns ............................................................................................................................ 13
+4.1
+Personnel Safety .......................................................................................................................... 13
+4.2
+Equipment Protection .................................................................................................................. 15
+4.3
+Maintaining Power Quality ......................................................................................................... 17
+4.4
+Impact of Grid Support and Ride-Through Functions ................................................................ 17
+4.5
+Multiple-Inverter and Mixed Distributed Energy Resource Scenarios ....................................... 19
+4.6
+Locales with High Shares of Distributed Energy Resources ....................................................... 20
+5
+Guidelines to Determine the Risk of Unintentional Islanding ........................................................ 22
+6
+Conclusion .......................................................................................................................................... 25
+References ................................................................................................................................................. 26
+Bibliography .............................................................................................................................................. 29
+Appendix: Summary of Supplementary Anti-Islanding Protection Methods ...................................... 30
+
+=== page 8 ===
+vii
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+List of Figures
+Figure 1. Block diagram of DER interconnection illustrating unintentional islanding concepts .................. 3
+Figure 2. Implementation of IEEE Std 1547-2018 and related standards in the United States .................... 8
+Figure 3. Single-line drawing of the setup for a balanced generation-to-load test ..................................... 10
+Figure 4. Varieties of testing and verification for DER interconnection .................................................... 12
+Figure 5. PV Islanding risk analysis fault tree ............................................................................................ 14
+Figure 6. Simplified illustration of circuit elements related to reclosing .................................................... 16
+Figure 7. Run-on time test results for 3 inverters with grid support functions enabled .............................. 18
+Figure 8. Example test results for a scenario with multiple inverters with grid support functions enabled 20
+Figure 9. Procedure for assessing risk of unintentional islanding .............................................................. 24
+Figure A-1. Relay functions ........................................................................................................................ 32
+Figure A-2. One-line diagram of the impedance insertion method using a capacitor bank ........................ 33
+Figure A-3. One-line diagram of power line carrier communications method ........................................... 33
+
+=== page 9 ===
+1
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Introduction
+In the revised Institute of Electrical and Electronics Engineers 1547-2018 Standard for
+Interconnection and Interoperability of Distributed Energy Resources with Associated Electric
+Power Systems Interfaces (IEEE Std 1547-2018), Clause 8.1 contains requirements for
+distributed energy resource (DER) responses to unintentional islanding conditions. This is also
+referred to as anti-islanding protection.
+An island is a condition in which a DER continues to energize a portion of the power system
+when it is electrically isolated from the utility source. If unplanned, this unintentional islanding
+condition could become harmful to connected equipment because the DER might not be
+designed to maintain frequency and voltage without a utility source. In addition, the
+unintentional island could present a hazard to utility workers or other people in the area who are
+unaware of the electrically energized island (Seguin et al. 2016).
+IEEE Std 1547-2018 Clause 8.1 is only half a page; however, the topic of unintentional islanding
+has historically been and continues to be of high concern and debate in the industry. The issues
+around this phenomena were eloquently stated by Bas Verhoeven in a 2002 study under the
+International Energy Agency:
+Many international forum discussions have been dealing with 'Islanding'. ...
+A general conclusion of these discussions was that views on the subject are very
+polarised. On the one hand, the islanding phenomenon is considered such a rare or
+improbable event that it does not merit special consideration. On the other hand,
+the mere theoretical possibility of unintentional islanding, confirmed in laboratory
+experiments, is sufficient for individuals to have great concerns over the
+possibility of islanding. The reality probability lies somewhere between the two
+extremes. An important issue here is the lack of any real data on how often and
+for how long islanding can occur in practice and the associated risk of occurrence.
+An important observation in the discussion about islanding is that the discussion
+is based on "personal feelings" and/or "intuition", which make the discussions
+even more difficult.
+This document is intended to provide an overview of the subject to aid the reader in discussions
+and understanding. The intended audience includes electric utilities-area electric power system
+(EPS) operators; testing agencies2; solar and other DER developers, integrators, and installers3;
+and Authorities Governing Interconnection Requirements.4 We hope that other stakeholders will
+also find it valuable.
+
+2 The term testing agency includes entities such as nationally recognized testing laboratories.
+3 Solar and other DER device manufacturers are inherently interested in the performance requirements in IEEE Std
+1547-2018; however, this document focuses on the application of the standard rather than the manufacturing
+processes of DER devices.
+4 The term Authority Governing Interconnection Requirements (AGIR) is defined in IEEE Std 1547-2018 as a
+"cognizant and responsible entity that defines, codifies, communicates, administers, and enforces the policies and
+procedures for allowing electrical interconnection of DER to the Area EPS. This may be a regulatory agency, public
+
+=== page 10 ===
+2
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+This document is intended as a supplement to material already published or in development,5 and
+it is not intended as an exhaustive resource on technical implementation; rather, topics are
+presented at a level that is appropriate to serve individuals who require an introduction or
+technical refresher to the material.
+IEEE Std 1547-2018 assumes that the reader possesses the appropriate training and experience
+necessary to understand and apply the stated requirements. This could include foundational
+electrical engineering knowledge; knowledge of area EPS device settings, parameters, and
+operational practices; and knowledge of general and specific DER capabilities relevant to the
+subject.
+Anti-islanding protection is required for all DERs that comply with IEEE Std 1547-2018 and UL
+1741, Standard for Safety for Inverters, Converters, Controllers, and Interconnection System
+Equipment for Use with Distributed Energy Resources. Specifically, according to IEEE Std
+1547-2018, if an unintentional island is formed by the DER, the DER must detect the island and
+go offline6 within 2 seconds of the formation of the island.
+The most common DERs are photovoltaic (PV) or battery energy storage systems, and these
+DERs are inverter based; therefore, numerous studies have focused specifically on these types of
+DERs. This document uses the term DER to apply to all types of DERs, and the more specific
+terms PV or inverter refer to inverter-based DERs.
+How Can Unintentional Islands Form?
+Several conditions could potentially cause unintentional islanding. Examples given by Bower
+and Ropp (2002) include:
+- A fault on the area EPS that results in opening a disconnecting device, but the fault is not
+detected by the PV inverter or by local DER protection devices
+- Equipment failure that causes an accidental opening of a disconnecting device
+- Utility switching of distribution line and loads; intentional disconnection of the
+distribution line for utility service or repair
+- Human error
+- Bad actor with malicious intent
+
+utility commission, municipality, cooperative board of directors, etc. The degree of AGIR involvement will vary in
+scope of application and level of enforcement across jurisdictional boundaries. This authority may be delegated by
+the cognizant and responsible entity to the Area EPS operator or bulk power system operator. NOTE-Decisions
+made by an authority governing interconnection requirements should consider various stakeholder interests,
+including but not limited to Load Customers, Area EPS operators, DER operators, and bulk power system operator"
+(IEEE 2018).
+5 For example, the upcoming revision to IEEE Std 1547.2 - IEEE Application Guide for IEEE Std 1547, IEEE
+Standard for Interconnecting Distributed Resources with Electric Power Systems (expected in 2022).
+6 The wording in IEEE Std 1547-2018 is very specialized and includes other defined terms, such as cease to
+energize and trip.
+
+=== page 11 ===
+3
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+- An act of nature.
+Consider Figure 1. In a typical local EPS supplied by a DER such as a PV system, the inverter
+controls its electrical current output magnitude and phase with respect to the voltage it sees at its
+output terminals, called the "point of DER connection" in IEEE Std 1547-2018. This current is
+supplied to the local DER load. Note that a local EPS could be configured in a variety of ways.
+For example, it could contain only load, only a single DER (DER unit), multiple DERs, DERs
+with or without supplemental DER devices, and so forth. See IEEE Std 1547-2018 Figure 2 for a
+full explanation.
+
+Source: Adapted from Kroposki 2016; Ropp and Ellis 2013; and IEEE 2018
+Figure 1. Block diagram of DER interconnection illustrating unintentional islanding concepts
+The circuit breaker in the diagram (CB1) could be any type of circuit isolation device, and it
+represents any point on the distribution line between the substation and the DER installation
+along which normal power flow could be interrupted. If this device is opened, the DER is
+isolated from the grid. The circuit isolation device is often associated with fault protection and is
+the most common type of isolation device. The condition that invokes a response from the
+protection device is a fault that is significant and immediate enough to cause the protection
+device to trip, open, and isolate the source and loads. This creates a dynamic condition on the
+circuit, with the voltage and frequency fluctuating considerably, thus making it less probable to
+match power and meet the reactive power resonance requirements to sustain an islanding event.
+When the isolation device is operated for a maintenance event, the dynamic variability is mostly
+removed, and there could be a condition where the current flowing through the isolating device is
+low enough to maintain sufficient active and reactive power matches; and while the matches are
+still needed, the variability aspect is removed. For fault conditions that cause the isolation
+devices to trip, the DERs are designed to turn off to prevent an islanded condition; however,
+there are some conditions under which an island could form and persist. These conditions must
+occur at the exact moment the device opens, and they include the following:
+
+=== page 12 ===
+4
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+- The grid current must be nearly zero-that is, the PV system must be producing nearly
+the same amount of power that is required for the load to operate.
+- The power from the DERs must have the correct amount of active and reactive power
+required by the load.
+- The reactive current must have capacitive and inductive components that resonate near 60
+Hz.
+DERs use various anti-islanding methods to detect and quickly disconnect in case a potentially
+stable island is formed. IEEE Std 1547-2018 and related standards IEEE Std 1547.1-2020 and
+UL 1741 require all DERs to meet robust anti-islanding functional requirements and testing
+before they can be deployed in the field.
+Summary of Inverter-Based Anti-Islanding Protection Methods
+Inverter-based DERs, such as PV and storage systems, feature built-in protection mechanisms
+that detect when they have become islanded from the distribution grid. Inverters have
+traditionally used a number of anti-islanding protection methods that have been classified as
+either passive or active. Modern inverters do not rely solely on passive methods.
+Passive methods for islanding detection resident in the inverter are designed to monitor the
+electrical parameters at the point of DER connection. Upon detecting an abnormal condition, the
+inverter ceases power conversion. As noted by Bower and Ropp (2002), typical monitored
+conditions are:
+- Over-/undervoltage and over-/underfrequency detection7
+- Voltage phase jump detection
+- Voltage harmonics detection
+- Current harmonics detection.
+Active methods of islanding detection in inverters are based on the logic that the inverter should
+not be able to affect certain electrical parameters as much as the larger area EPS-unless the
+inverter is operating in an island. These methods are designed to deliberately create small
+changes or disturbances at the point of DER connection. The response is analyzed to determine
+whether the inverter has been able to affect specific parameters-and if so, it is assumed that an
+island has occurred, and the inverter ceases power conversion. Common methods of active anti-
+islanding detection noted in literature include8:
+- Impedance measurement
+- Impedance detection at a specific frequency
+- Slip-mode frequency shift
+
+7 Note that the informative footnote 111 in IEEE Std 1547-2018 states: "Reliance solely on under/over voltage and
+frequency trip is not considered sufficient to detect and cease to energize and trip" (IEEE 2018).
+8 DER inverter manufacturers might also employ proprietary methods that use other techniques or combinations of
+the techniques mentioned here.
+
+=== page 13 ===
+5
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+- Frequency bias/Sandia frequency shift
+- Sandia voltage shift
+- Frequency jump
+- Mains monitoring units with allocated all-pole switching devices connected in series9
+
+9 Sometimes referred to as MSD, "main monitoring device" or ENS, the German abbreviation for mains monitoring
+units with allocated switching devices.
+
+=== page 14 ===
+6
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+1 Functional Requirements in IEEE Std 1547-2018
+IEEE Std 1547-2018 Clause 8.1 is directed primarily to area EPS operators, DER manufacturers,
+testing agencies, commissioning agencies,10 and DER operators. A DER connected to the area
+EPS must meet the unintentional islanding requirements of Clause 8.1 which contains three
+subclauses.
+1. Clause 8.1.1 describes the islanding condition and the requirement for DER response:
+Upon formation of an island (the moment the DER is separated from the area EPS), the
+islanding DER must respond by ceasing to energize and tripping11 within 2 seconds after
+the formation of an island. The 2-second response time is called the clearing time. By
+default, the clearing time is set to be 2 seconds. Not only must the DER detect the island
+within 2 seconds, but it must also trip. Upon trip, the DER will intentionally stay
+disconnected for a specified time. This intentional delay, called the return-to-service
+delay12 is by default set to 5 minutes under IEEE Std 1547-2018. The delay can be
+adjusted by mutual agreement between the area EPS operator and the DER operator.
+2. Clause 8.1.2 states the clearing time can be adjusted to be between 2 and 5 seconds by
+mutual agreement between the area EPS operator and the DER operator.
+3. Clause 8.1.3 directs the reader to Clause 6.3, which requires the implementation of
+"appropriate means" to prevent damage or unacceptable disturbances to the area EPS if it
+automatically recloses on an islanded circuit. Damage or unacceptable disturbances could
+result if there are differences in instantaneous voltage, phase angle, or frequency between
+the islanded system and the area EPS at the instant a recloser operates (IEEE 2018).
+Clause 8.1.1, Clause 8.1.2, and Clause 8.1.3 comprise the unintentional islanding
+requirements in IEEE Std 1547-2018. Because of the safety nature of these requirements,
+however, extensive effort is made to verify this functionality, and in some jurisdictions,
+additional safeguards are put into place to supplement these unintentional islanding
+prevention requirements.
+
+10 A commissioning agency could include the DER vendor, the system integrator, the local utility, or other qualified
+and authorized entity.
+11 Cease to energize is a specialized term that applies at the point of DER connection, defined as a "cessation of
+active power delivery under steady-state and transient conditions and limitation of reactive power exchange." This
+function can be caused to operate for a variety of reasons. In the case of unintentional islanding, it is followed by a
+trip, another specialized term, which is defined as an "inhibition of immediate return to service, which may involve
+disconnection" (IEEE 2018).
+12 The return-to-service delay is typically changed to much shorter times when type testing a DER to expedite the
+unintentional islanding testing procedure.
+
+=== page 15 ===
+7
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+2 Factory Testing and Certification
+IEEE Std 1547-2018 requires DERs to detect and cease to energize the area EPS and trip within
+2 seconds of the formation of an island. For most types of residential and commercial DERs, this
+requirement is built into the DERs by manufacturers, and this capability is thoroughly tested
+prior to field deployment.13
+In the United States, this "type testing" typically occurs by an approved testing agency14 at the
+DER manufacturer's factory or at a special testing laboratory, and it is carried out on a single
+piece of equipment (DER unit) that represents the specific model of the manufactured DER. The
+testing is valid for other DERs in the product family of the same design.
+In the United States, type testing is typically done in conjunction with equipment certification.
+Type tests are completed according to the procedures specified in IEEE Std 1547.1-2020, and the
+testing agency records the applicable test criteria and results. For DER interconnections, the
+primary means of equipment certification is via UL 1741, Standard for Safety for Inverters,
+Converters, Controllers, and Interconnection System Equipment for Use With Distributed
+Energy Resources.
+Certified equipment is installed following the requirements of the National Fire Protection
+Association 70 (National Electric Code) to ensure that sound equipment installation practices
+contribute to the safe operation of the equipment. Additional jurisdiction-specific requirements
+might also be applied via local interconnection rules. This implementation is illustrated in Figure
+2.
+Under UL 1741, anti-islanding protection testing is conducted after all grid support functions15
+are tested. This ensures that the equipment being tested can perform all the grid support functions
+as designed and that it can pass the unintentional islanding tests with grid support functions, such
+as voltage and frequency support functions along with the mandatory voltage and frequency ride-
+throughs. The IEEE Std 1547.1-2020 test matrix is an exhaustive test procedure and combines
+various grid support functionalities and power levels to ensure that the DER can detect the loss
+of the utility under unique balanced conditions. For these tests, the method of isolation is the
+opening of an isolation device, such as conditions occurring under a routine maintenance
+isolation condition, i.e., a fault is not introduced to cause a protection device to trip/actuate.
+
+13 Certain types of DERs that contain supplemental DER devices might need to be field-certified.
+14 A nationally recognized testing laboratory, certified by the Occupational Safety and Health Administration, is an
+example of a testing agency.
+15 Examples of grid support functions include active and reactive power control voltage ride-through and frequency
+ride-through.
+
+=== page 16 ===
+8
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Figure 2. Implementation of IEEE Std 1547-2018 and related standards in the United States
+IEEE Std 1547.1-2020, which was approved in March 2020, specifies the conformance testing
+and evaluation procedures that are exercised to establish and verify compliance with the
+technical functional requirements of IEEE Std 1547-2018.
+UL 1741 was updated to reflect the revised performance and testing requirements in IEEE Std
+1547.1-2020. The revision was published on August 3, 2020. The revised testing requirements
+are included in Supplement B, UL 1741-SB.16
+As summarized in IEEE Std 1547.1-2020, one or more samples of the DER must pass the
+applicable type tests. Performance requirements not verifiable through type tests must be verified
+by other means, such as DER evaluation and commissioning tests. Each DER unit or
+supplemental DER device must pass all required production tests. The design evaluation phase of
+the interconnection process will determine whether any additional testing or evaluation must be
+made either during the design evaluation, through installation evaluations, and/or through
+commissioning tests. Additionally, any required periodic tests and verifications are to be
+performed in the field (IEEE 2020).
+Most type testing of DER unintentional islanding functionality is performed under worst-case
+conditions to fully challenge both the capability of the DER to detect when an unintentional
+islanding event has occurred and to challenge the DER's ability to take the required actions.
+
+16 Please see https://sagroups.ieee.org/scc21/standards/1547rev/ for a timeline for the rollout of DERs that comply
+with IEEE Std 1547-2018.
+
+=== page 17 ===
+9
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Unintentional islanding testing is conducted with grid support functions enabled and with the
+DER operating in different modes, i.e., unity power factor, non-unity power factor, and constant
+reactive power operation. These operating modes coupled with voltage regulating functions and
+frequency regulating functions can challenge some of the unintentional islanding methods;
+therefore, voltage and frequency ride-through and voltage and frequency regulating functions
+must be determined prior to conducting unintentional islanding assessments. If unintentional
+islanding evaluations result in nonconformance, an investigation must be performed to identity
+the function that creates the nonconformance.
+DER manufacturers can use a variety of methods17 to detect an islanding condition. IEEE Std
+1547.1-2020 Clause 5.10 specifies the required type tests to verify the unintentional islanding
+functionality.
+The DER and any supplemental equipment being tested, referred to as "equipment under test" by
+IEEE Std 1547.1-2020, may use multiple methods of unintentional islanding detection.
+Commonly implemented methods18 use some form of voltage and frequency threshold to detect
+when an islanding condition exists. Various tests have been designed to evaluate how well these
+methods perform as part of the type testing regimen.
+2.1 Balanced Generation-to-Load Test
+The balanced generation-to-load test, described in Clause 5.10.2, can be used for any type of
+equipment. Passing this test achieves full compliance with the unintentional islanding
+requirements. This test is conducted to verify that when an unintentional islanding condition
+occurs, the DER responds correctly-namely, by ceasing to energize the area EPS-and trips.
+Tests are conducted on a single DER under various power levels.
+A simplified drawing of the test configuration is illustrated in Figure 3. The test can be
+conducted using a power-hardware-in-the-loop approach that allows the testing agency to use
+software and hardware to simulate some of the devices that are external to the DER.
+
+17 Passive and active methods are not limited to the methods mentioned here; however, some common passive
+methods include over-/undervoltage and over-/underfrequency, voltage phase jump, voltage/frequency harmonic
+distortion, rate of change of frequency, and rate of change of active power. Some common active methods include
+impedance detection, positive-feedback Sandia frequency shift, and impedance detection plus positive feedback.
+18 IEEE Std 1547-2018 notes that additional methods may be used to provide unintentional islanding protection,
+such as direct transfer trip or radio or cellular communications channels; however, type testing those methods was
+considered out of scope of the standard.
+
+=== page 18 ===
+10
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Source: Based on IEEE Std 1547.1-2020 (Figure 7)
+Figure 3. Single-line drawing of the setup for a balanced generation-to-load test
+This test relies on the principle that for an island to persist, the DER must be generating at or
+very near19 the same active and reactive power that the load requires in the islanded portion of
+the system, and some mechanism must exist to maintain the islanded frequency at or very near
+60 Hz. For testing conditions, therefore, a worst-case condition is a generation-to-load balance
+that contains both active and reactive power generation with load components that are tuned to
+match the DER generation power levels and resonate at or near 60 Hz to provide the system
+frequency.
+2.2 Power Line-Conducted Permissive Signal Test
+This method of anti-islanding protection relies on a signal conducted on the distribution primary
+line. As long as the signal is present, the DER has permission to operate. If the signal is
+discontinued, the DER must cease to energize the area EPS and trip within the required time.
+The power line-conducted permissive signal test-applicable to DERs that use this method-is
+described in IEEE Std 1547.1-2020 Clause 5.10.3. For DERs that use this method, additional
+evaluation is required because this method uses equipment beyond what is tested in the type test;
+therefore, passing this test achieves only partial compliance with the unintentional islanding
+requirements. The additional evaluation needed to obtain full compliance is specified in IEEE
+Std 1547.1-2020 Clause 8.1.2.
+During type testing, the testing agency simulates a permissive signal and its interruption. If the
+DER responds appropriately within the designated time, it passes the type test. As noted,
+however, because this test requires the permissive signal to be effective, the type test alone does
+not verify full compliance with the unintentional islanding requirements. Additional verification
+is required during the DER evaluation phase, at which time additional required equipment or
+methods are applied, such as a permissive signal provided by the area EPS operator.
+
+19 Voltage and frequency operating ranges allow for a slight mismatch, and the output power of the DER is never
+exactly constant because of maximum power point tracking and variations of the grid voltage and frequency.
+
+=== page 19 ===
+11
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+2.3 Permissive Hardware-Input Test
+The permissive hardware-input test-applicable to DERs that use this method-is described in
+IEEE Std 1547.1-2020 Clause 5.10.4. For DERs that use this method, additional evaluation is
+required because this method uses equipment beyond what is tested in the type test; therefore,
+passing this test achieves only partial compliance with the unintentional islanding requirements.
+The additional evaluation is specified in Clause 8.1.2.
+DERs that use this method of unintentional islanding detection have a dedicated hardware
+control input that is used to provide permission to operate. (Note that the hardware control signal
+itself is generated by external means, and it is not tested in this procedure.20)
+Similar to the power line-conducted permissive signal test, this test requires external input to be
+effective-in this case, the hardware control input; therefore, the type test alone does not verify
+full compliance with the unintentional islanding requirements. Additional verification is required
+during the DER evaluation phase, at which time additional required equipment or methods are
+applied, such as a direct transfer trip (DTT) input provided by the area EPS operator.
+2.4 Reverse or Minimum Import Active Power Flow Test
+The reverse or minimum import active power flow test (including tests for magnitude and time),
+applicable to the DERs that use this method, is described in IEEE Std 1547.1-2020 clause 5.10.5.
+Passing this test achieves full compliance with the unintentional islanding requirements.
+DERs that use this method have a function that senses the power flow between the point of
+connection and the point of common coupling. Using this function, the DER is permitted to
+operate only if power is flowing from the area EPS to the DER installation or if the power is
+flowing at a predetermined minimum level. If the power flow reverses or falls below the
+minimum level, the DER is disconnected from the area EPS. Type testing includes verification of
+the accuracy of the minimum power setting and the speed of the DER response.
+
+20 Examples of a DTT and a conducted power line signal are given in IEEE Std 1547-2018.
+
+=== page 20 ===
+12
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+3 Field Evaluations and Verifications
+In addition to type testing, verification of performance might be required during the DER's
+interconnection life cycle. A high-level view of the varieties of testing and verification is
+illustrated in Figure 4, with type testing shown at the bottom of the figure as the first level of
+evaluation. Unintentional islanding protection must be verified for all DERs during the design
+evaluation phase and/or during commissioning tests.
+A design evaluation is a desk study typically conducted by electric utility engineers as part of an
+interconnection review process. The main purpose of the design evaluation is to verify that the
+overall DER system meets the requirements specified in IEEE Std 1547-2018 and any other
+interconnection requirements specified by the utility. Evaluations could be as simple as an
+engineering review of the DER system's design, components, and certification, or it could
+involve a more detailed study, such as modeling and simulation of the DER system. There could
+be multiple evaluations if the design of the DER changes any time during the interconnection
+process.
+
+Figure 4. Varieties of testing and verification for DER interconnection
+
+=== page 21 ===
+13
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+4 Common Concerns
+Concerns related to unplanned islands have been noted in several publications, including Bower
+and Ropp (2002), IEEE (2008), Walling and Miller (2002), Barker and De Mello (2000), and
+Stevens et al. (2000). The top utility concerns from unintentional islanding are maintaining
+personnel safety and avoiding harm to customer and utility equipment. Additional concerns are
+also being debated, especially in locales with high shares of DERs.
+4.1 Personnel Safety
+The main concern for personnel safety is that if the DER's onboard unintentional islanding
+detection should fail and an unintentional island occurs and becomes sustained, the connected
+and energized electrical lines pose a risk of exposure to electricity hazards for utility workers and
+the public if the lines are contacted and presumed to be de-energized.
+An exhaustive study of personnel risk from all types of DERs has not been identified as of this
+writing; however, several studies have been done for PV systems. One study conducted in 2002
+under the International Energy Agency concluded that the risk of electric shock from an islanded
+PV system under worst-case PV penetration scenarios is less than the "benchmark" risk that
+already exists for utility personnel and customers.21 The study concluded, "the additional risk
+presented by islanding does not materially increase the risk that already exists as long as the risk
+is managed properly" (Cullen, Thornycroft, and Collinson 2002).
+This same study noted that prudent good practice measures could be taken to properly manage
+the risk, including proper signage; information and education of utility personnel and customers
+about the risks; and appropriate utility personnel work practices and procedures, such as testing
+circuits prior to work (Cullen, Thornycroft, and Collinson 2002). Further, the authors
+recommended that "[s]ince LOM [loss of mains] functionality is included in many PV inverters
+already, it is appropriate to maintain this requirement, but emphasis should be put on simple,
+robust, verifiable and cost-effective solutions (e.g., software-based)" (Cullen, Thornycroft, and
+Collinson 2002).
+Note that the measures listed are predominantly for utility personnel. These measures may not
+adequately address other types of risk to the general public that are prevalent from electrical
+equipment from downed conductors, such as electrocution and wildfire. These types of risk have
+existed and will likely continue to exist regardless of the presence of DERs on the circuit.
+The authors developed an evaluation and quantification of the risk based on a PV risk analysis
+"fault tree," shown in Figure 5. As illustrated, risk from an islanded system depends on several
+factors that must exist simultaneously.
+
+21 The risk of shock from islanded PV systems was found to be near 10-9 per year for an individual person compared
+to the benchmark risk of near 10-6 per year.
+
+=== page 22 ===
+14
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Source: Based on Cullen, Thornycroft, and Collinson 2002
+Figure 5. PV Islanding risk analysis fault tree
+The subject of unintentional islanding is under constant debate, according to Woyte et al. (2003):
+For low-density of PV generation, islanding is virtually impossible since load and
+generation never match.
+For networks with a high density of PV generation, the probability of
+encountering a power island is small, but for the power margins originating from
+standard protection relay settings it may not be regarded as negligible. In order to
+keep the risk from islanding to maintenance operators and customers satisfactorily
+low, additional islanding prevention methods are necessary to detect a loss of
+mains in any case that is practically feasible.
+Another study concluded (Verhoeven 2002):
+Balanced conditions occur very rarely for low, medium and high penetration levels of
+PV-systems. The probability that balanced conditions are present in the power network
+and that the power network is disconnected at that exact time is virtually zero. Islanding
+is therefore not a technical barrier for the large-scale deployment of PV system in
+residential areas.
+
+=== page 23 ===
+15
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+As noted, some of the measures listed are predominantly for utility personnel. The measures
+listed may not adequately address other types of risk to the general public or to emergency
+response personnel, such as firefighters. The types of risk prevalent from electrical equipment
+due to downed conductors have existed and will likely continue to exist regardless of the
+presence of DERs on the circuit. Adequate consideration should be given to the types and
+sources of risk and to the existing strategies in place to mitigate those risks to determine if any
+additional mitigation is indicated or necessary. Note that the studies described are two decades
+old. More current treatment of this subject in a formal study has not been identified by the
+authors.
+4.2 Equipment Protection
+With regard to the specific phenomena of unintentional islanding, reclosing out of synchronism
+(also referred to as reclosing out of phase) is typically a major concern associated with DER
+deployment.22, 23
+Many utilities use a protective device called a recloser that contains a relay-controlled switch or
+breaker that initially opens when a predetermined amount of current flows through the device. A
+simplified diagram of the circuit elements related to reclosing is shown in Figure 6. After a short
+preprogrammed time interval chosen to allow the fault or overload to clear, the recloser closes
+the breaker, thus reenergizing the downstream line segments.
+
+22 Note that with higher shares of DERs, there are potentially additional impacts that must be considered, such as
+overload-related impacts, voltage-related impacts, reverse power flow impacts, and other system protection impacts.
+For a summary discussion of these topics, see High-Penetration PV Integration Handbook for Distribution
+Engineers, https://www.osti.gov/biblio/1235905.
+23 Fault conditions that could cause islanding concerns for DERs are sometimes associated with concerns for the
+potential of transient or temporary overvoltage from DERs, such as load rejection overvoltage and ground fault
+overvoltage. Several studies on these topics have been published, including Inverter Load Rejection Over-Voltage
+Testing, https://www.nrel.gov/docs/fy15osti/63510.pdf, and Inverter Ground Fault Overvoltage Testing,
+https://www.nrel.gov/docs/fy15osti/64173.pdf. For a discussion on neutral grounding, the reader should also consult
+IEEE Std C62.92.4 - IEEE Guide for the Application of Neutral Grounding in Electrical Utility Systems-Part IV:
+Distribution.
+
+=== page 24 ===
+16
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Figure 6. Simplified illustration of circuit elements related to reclosing
+If the fault or overload persists longer than the time interval, the recloser again opens the switch
+to isolate the fault. The recloser might open and reclose several times, and if the fault is still
+uncleared, the recloser locks itself open for utility personnel to address the issue (Pansini 2005).
+If a DER becomes islanded, the operation of utility reclosers reclosing onto an energized line
+could result in retripping the line or damaging connected equipment (i.e., an out-of-phase
+reclosure). As noted by Ingram et al. (2017):
+If an unintentional island persists after a recloser has opened, it is possible that the phase
+relationship of the islanded grid could deviate from that of the bulk system. The reclosing
+action could forcibly resynchronize the grids. The risk of this forced synchronization is
+potentially significant because customer equipment-motor loads, in particular-could
+be damaged by the possible sudden change in frequency and voltage phase [resulting in
+large transient torques on mechanical systems (e.g., shafts, blowers, and pumps)].
+Effectively, the phase voltages experienced by the loads could jump instantaneously,
+stressing any machine that has a speed/position relationship to the grid frequency.
+Generally, the greater the phase difference between the islanded grid and the bulk system,
+the greater the risk of damage to these types of equipment.
+The default response time for all types of DERs using all methods of unintentional islanding is 2
+seconds. The response time can be extended to 5 seconds and must be agreed upon by the area
+EPS operator and the DER operator. Even with the shorter response duration of 2 seconds, a
+common concern is the coordination of fast auto-reclosures with unintentional islanding response
+time. Because the unintentional islanding methods are not designed to detect fault conditions, the
+response time is not bound by the necessary fast fault response times that fault equipment must
+meet.
+Reclosers are a type of protective device often used by utilities to mitigate faults on the
+distribution system. To decrease the duration of interruptions, reclosers are often deployed with a
+"fast reclosing" function that reenergizes a circuit within 1 second or less after a fault condition
+has been detected. When a fast reclosure initially opens, motors in the system will start slowing
+down and can regenerate voltage on the bus. If the voltage is restored before the motors are
+significantly slowed down, a large torque pulse can occur on motor shaft; therefore, a concern of
+fast reclosures and motor reenergization exists even without the DERs in the circuit unless
+corrective methods are implemented. For area EPS locales that use fast reclosing, there is
+concern about out-of-phase reclosing, and further study might be required.
+
+=== page 25 ===
+17
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+For feeders or sections of the distribution circuit where a recloser is used, a generation-to-load
+study might be desired to see if an island can be sustained (Ropp and Ellis 2013).
+To address the concerns of out-of-phase reclosing, three solutions are typically considered:
+lengthening the reclosing time to more than 2 seconds, blocking the hot-line recloser, blocking
+the out-of-phase recloser, removing the recloser functionality, and DTT, as described in the
+appendix.
+For circuits with enough DERs to sustain an island, hot-line recloser blocking is a functionality
+added to existing reclosers that delays the fast reclosing until the circuit being reclosed is
+measured to be de-energized. Another option is to simply disable the reclosing functionality of
+the protection equipment from a circuit. Reliability impacts from any of these methods should be
+considered when choosing a solution.
+4.3 Maintaining Power Quality
+Utilities are responsible for supplying power to customers and for keeping the voltage and
+frequency within acceptable ranges. In an islanding condition, however, a utility cannot control
+the voltage and frequency within the island. These parameters could drift the longer an island is
+sustained. DERs have trip settings for voltage and frequency. If the voltage or frequency reach
+the trip settings, the DERs will stop exporting power, and the island will collapse.
+4.4 Impact of Grid Support and Ride-Through Functions
+IEEE Std 1547-2018 requires DERs to maintain anti-islanding functionality with and without
+grid support functions enabled. Conversely, anti-islanding functionality may not interfere with
+grid support functions and the new voltage and frequency ride-through requirements for all
+DERs. To help enable these capabilities at the same time, DER functions and requirements are
+prioritized relative to each other as follows24:
+1. Response to disabling permit service setting
+2. DER tripping requirements
+3. Ride-through requirements (per IEEE Std 1547-2018 Clause 4.7, "Ride-through may be
+terminated by the detection of an unintentional island.")
+4. Voltage-active power mode requirements
+5. Response to active power limit
+6. Voltage regulation functions.
+Several laboratory tests and some field demonstrations have been conducted to determine the
+functionality of grid support functions such as voltage regulation and ride-through. Some studies
+have also investigated the impact of grid support functions on anti-islanding performance.
+
+24 Some caveats exist. The reader should read IEEE Std 1547-2018 carefully to understand the prioritization of DER
+responses.
+
+=== page 26 ===
+18
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+One team conducted a set of power-hardware-in-the-loop experiments to determine the impacts
+on the effectiveness of anti-islanding functions resident in PV inverters under multi-inverter
+deployment scenarios with grid support functions enabled. PV inverters were tested with four
+grid support functions enabled: voltage ride-through, frequency ride-through, volt-volt ampere
+reactive (VAR) control, and frequency-watt control.25 Results were published in a report titled
+Experimental Evaluation of PV Inverter Anti-Islanding with Grid Support Functions in Multi-
+Inverter Island Scenarios (Hoke et al. 2016).
+The team observed that for the single-inverter test case with grid support functions enabled, the
+maximum run-on time (duration of the island) increased slightly with voltage and frequency
+ride-through; however, for the 50 tests conducted on each inverter (150 total), the maximum run-
+on time was 711 milliseconds, significantly less than the 2-second limit currently imposed by
+IEEE Std 1547-2018. The test was run with the inverter regulating voltage with a steep volt-
+VAR curve with voltage and frequency ride-through enabled (frequency-watt was disabled).
+Figure 7 shows results for run-on times for three separate inverters tested under various
+conditions.
+
+Source: Hoke et al. 2016
+Figure 7. Run-on time test results for 3 inverters with grid support functions enabled
+The team found no evidence that volt-VAR control or frequency-watt control increased
+maximum run-on time, confirming expectations.
+
+25 Note that ride-through is an inherent capability of DERs that cannot be turned off, according to IEEE Std 1547-
+2018.
+
+=== page 27 ===
+19
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+The team also investigated the possibility of load rejection overvoltage during islanding events.
+Under the balanced islanding conditions used for the anti-islanding tests, the team observed no
+overvoltages exceeding 110% of nominal voltage, as expected.26
+In another study, a project team from Sandia National Laboratories and Northern Plains Power
+Technologies conducted laboratory simulations and experiments to determine the impact of PV
+inverter grid support functions on various anti-islanding detection methods. Results were
+published in January 2019 in a report titled Evaluation of Multi-Inverter Anti-Islanding with Grid
+Support and Ride-Through and Investigation of Island Detection Alternatives (Ropp et al. 2019).
+This study concluded that enabling voltage regulating functions was not observed to have an
+adverse effect on anti-islanding performance, and in certain cases, it resulted in reduced run-on
+time. The team noted that the ride-through of voltage and frequency was observed to have an
+adverse impact on islanding detection; however, in all cases tested, run-on times remained within
+the 2-second requirement in IEEE Std 1547-2018. The team introduced a technique called
+"collaborative controls," which was shown to mitigate the negative impacts of ride-through
+(Ropp et al. 2019).
+4.5 Multiple-Inverter and Mixed Distributed Energy Resource
+Scenarios
+DER systems, especially inverter-based DERs, are highly configurable to fit many deployment
+needs at many scales-from single-inverter residential deployments to utility-scale systems with
+dozens of inverters. The sheer number of potential system designs, equipment, and
+configurations make it impossible to test every scenario; however, many teams have published
+results from laboratory studies.
+Hoke et al. (2016) investigated the anti-islanding functionality impacts from multiple inverters
+with grid support functions enabled. Under the multi-inverter test case, three common,
+commercially available, single-phase PV inverters from three different manufacturers were
+simultaneously deployed at nearby points on the same simulated distribution feeder and
+subjected to a variety of representative island configurations. For the 244 multi-inverter tests
+conducted, the maximum run-on time observed was 632 milliseconds, again well within the 2-
+second requirement. Example test results are shown in Figure 8.
+
+26 More comprehensive testing of load rejection overvoltage can be found in a related report on Inverter Load
+Rejection Over-Voltage Testing, https://www.nrel.gov/docs/fy15osti/63510.pdf.
+
+=== page 28 ===
+20
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Source: Hoke at al. 2016
+Figure 8. Example test results for a scenario with multiple inverters with grid support functions
+enabled
+In another study, a team from Sandia National Laboratories and Northern Plains Power
+Technologies conducted a set of computer simulations to determine the performance of inverter-
+based anti-islanding under scenarios with combinations of different inverters using different
+types of islanding detection methods and combinations of inverters and synchronous generators.
+The simulations were conducted with and without voltage and frequency ride-through enabled,
+and the island run-on times of various anti-islanding methods were analyzed. Results were
+published in July 2018 in a report titled Unintentional Islanding Detection Performance with
+Mixed DER Types (Ropp et al. 2018).
+The team noted-as expected per results from other studies-that simulation results showed that
+the addition of ride-through degrades the performance of anti-islanding detection methods.
+Under the mixed-inverter test conditions, some combinations of methods resulted in larger non-
+detection zones and longer island run-on times (some exceeding 2 seconds), whereas other
+combinations remained highly effective over a wide range of conditions.
+For the methods studied, the team observed that islanding detection methods vary greatly in their
+effectiveness depending on the types of DERs in the island. The team noted that, in general,
+mixed-type DER scenarios (inverter and synchronous generators) increased run-on times and had
+larger non-detection zones; however, in some cases, anti-islanding performance improved.
+4.6 Locales with High Shares of Distributed Energy Resources
+A handful of locations already experience high shares of DERs; however, in most locales, this is
+currently not an issue. High shares of DERs create concerns for the area EPS operator because of
+the large number of devices on the feeder and the different types of unintentional islanding
+
+=== page 29 ===
+21
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+methods employed. Public utility commissions in several states have started research projects
+and study groups27 to discuss these topics.
+One report, completed in 2016 for the California Public Utilities Commission, noted that to
+adequately assess the risk from unintentional islanding, consideration must be given to not only
+the DER but also the load composition28 in the potential island (Bebic, Sun, and Marin 2016).
+Under the project, islanding tests were performed on groups of physical inverters. The inverters
+were set to unity power factor with no advanced functions enabled. Under the test conditions, the
+team noted that the pre-islanding power factor of the circuit had a strong impact on the duration
+of the islanding. The team also noted that increased motor loads also had an impact on islanding
+duration.
+
+27 For example, the California Public Utilities Commission Interconnection Rulemaking Working Groups convened
+under the R.17-07-007 docket. Working Group Four investigated anti-islanding conditions and made
+recommendations in a final report published in August 2020. Proceedings under Working Group Four are available
+at https://gridworks.org/initiatives/rule-21-working-group-4/. The final report is available at
+https://gridworks.org/wp-content/uploads/2020/08/R21-WG4-Final-Report.pdf.
+28 The report follows the Western Electricity Coordinating Council recommendations to represent utility loads based
+on equipment varieties that include motor loads, power electronic loads, resistive loads, and constant current loads
+(Bebic, Sun, and Marin 2016).
+
+=== page 30 ===
+22
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+5 Guidelines to Determine the Risk of Unintentional
+Islanding
+DER deployments include scenarios that could present challenges for onboard anti-islanding
+techniques. There are no formal standards for assessing the risk of unintentional islanding;
+however, Ropp and Ellis, in a report published by Sandia National laboratories in 2012 and
+revised in 2013, provided recommendations. To date, these guidelines have been widely used in
+interconnection studies to evaluate the risks of unintentional islanding for specific installations
+and to help determine the appropriate mitigation for those risks. The content focuses on PV
+systems, but it could be applied to any DER.
+The guidelines note a set of scenarios in which unintentional islanding is considered impossible.
+These include the following (Ropp and Ellis 2013):
+- Load exceeds DER capacity. A sustained island is impossible if the aggregated nameplate
+AC rating of all DERs within the potential island is less than the minimum real power
+load within the island. Because the load exceeds what the DER can support by itself, the
+load will quickly reduce the voltage to less than the programmed low-voltage threshold in
+the DERs if an island forms.
+- Reactive power supply and demand cannot be maintained. This relies on the principle
+that for an island to be sustained, both the active and reactive demand within the island
+must be supplied by the DERs. All loads with motors require reactive power. In scenarios
+where the inverter is operating at unity power factor, with negligible reactive power
+contribution, reactive power is supplied by the source at the substation or capacitor banks
+along the distribution line. Situations when the inverter is regulating its VAR supply,
+however, might require further study. Note that in an inverter-based island, volt-VAR
+control ceases to stabilize voltage, so it does not increase the islanding risk.
+- External supplemental mechanisms are used. Examples of external supplemental
+mechanisms for anti-islanding protection include communications-based methods, such
+as DTT, power line carrier permissive signal, and supervisory control and data
+acquisition systems.
+Ropp and Ellis (2013) also noted that several scenarios could present challenges to current built-
+in anti-islanding methods. These include the following:
+- The potential island contains large capacitors and is operating near unity power factor
+(within 1%). Note, however, that this relies on knowledge of what method of anti-
+islanding detection the PV inverters are using. The study is relevant only if all inverters
+are using positive feedback on frequency.
+- High-penetration scenarios. Studies have shown that the speed of anti-islanding detection
+could decrease as the number of inverters in the island increases; however, there are
+variations in effectiveness-for example, anti-islanding detection speed could be
+maintained if all the inverters use positive feedback and the interconnecting impedances
+between inverters is low. An example of this type of deployment is given as a
+commercial installation on a common distribution transformer.
+
+=== page 31 ===
+23
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+- Deployments with different types of PV inverters. Studies have shown that deployments
+with PV inverters with different manufacturers degrade anti-islanding detection
+performance. (Note that these guidelines were written in 2012 and updated in 2013.
+Additional studies have been done since then to further investigate this. See Section 4.5
+of this document for the related discussion under multiple-inverter scenarios.)
+- Deployments with both PV inverters and rotating generators. The anti-islanding
+mechanisms in these could interfere with each other enough to degrade the performance
+of the anti-islanding detection in both types of generators.
+Considering these elements, Ropp and Ellis (2013) suggested a four-step process for assessing
+unintentional islanding risk. This process is summarized in the flowchart in Figure 9.
+If the screening shows there could be a risk of unintentional islanding, additional study should be
+performed. Additional study could involve more detailed modeling of the distribution circuit
+equipment, DER, loads, and area EPS protection schemes.29
+Depending on the results of the detailed study,30 mitigation by supplemental means of anti-
+islanding protection may be needed.
+Given the new requirements specified in IEEE Std 1547-2018, there is renewed discussion on
+whether and how these guidelines should be updated or whether new tools may be necessary to
+effectively screen for risk of islanding.
+
+29 For a detailed discussion of the topic, see IEEE Std 1547.7 Guide for Conducting Distribution Impact Studies for
+Distributed Resource Interconnection.
+30 See the National Rural Electric Cooperative Association's PV System Impact Guide for examples of PV
+interconnection impact studies, including risk of islanding screening, https://www.cooperative.com/programs-
+services/bts/Documents/SUNDA/NRECA%20-%20SUNDA%20Impact%20Guide-v3%20final.pdf.
+
+=== page 32 ===
+24
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Source: Based on procedure described in Ropp and Ellis 2013
+Figure 9. Procedure for assessing risk of unintentional islanding
+
+=== page 33 ===
+25
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+6 Conclusion
+As noted, topics related to unintentional islanding risk and prevention have been and continue to
+be of concern and thus the topic of continued research and discussion. Recent activities under the
+California Public Utilities Commission Interconnection Rulemaking (R.17-07-007, "Rule 21")
+are an example. Under these activities, California utilities, developers, the utility commission,
+and other stakeholders have determined that a formal working group is needed to discuss the
+topic in more detail.31
+Discussions in other jurisdictions related to unintentional islanding will likely happen as updates
+are made to interconnection requirements to reflect the latest revision of IEEE Std 1547-2018.
+
+31 See the California Public Utilities Commission Rulemaking 17-07-007: Decision Addressing Remaining Phase I
+Issues (page 90) for more discussion:
+https://docs.cpuc.ca.gov/PublishedDocs/Published/G000/M387/K064/387064665.PDF.
+
+=== page 34 ===
+26
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+References
+Barker, Philip P., and Robert W. De Mello. 2000. "Determining the Impact of Distributed
+Generation on Power Systems. I. Radial Distribution Systems." 2000 Power Engineering Society
+Summer Meeting (Cat. No.00CH37134) 3 (3): 1645-56.
+https://doi.org/10.1109/PESS.2000.868775.
+Bebic, Jovan, Chase Sun, and William Marin. 2016. Quantification of Risk of Unintended
+Islanding and Re-Assessment of Interconnection Requirements in High Penetration of Customer
+Sited PV Generation. Schenectady, NY: GE Consulting.
+https://www.calsolarresearch.ca.gov/images/stories/documents/Sol3_funded_proj_docs/GE/3_C
+SI-RDD_Sol3_GE_Risk-of-Unintended-Islanding_FinalRpt_2016-08.pdf.
+Bower, Ward I., and Michael Ropp. 2002. Evaluation of Islanding Detection Methods for Utility-
+Interactive Inverters in Photovoltaic Systems. Albuquerque, New Mexico: Sandia National
+Laboratories. SAND2002-3591. https://doi.org/10.2172/806700.
+California Public Utilities Commission. 2020. Working Group Four Final Report. San Francisco,
+CA. https://gridworks.org/initiatives/rule-21-working-group-4/.
+Cullen, Neil, Jim Thornycroft, and Alan Collinson. 2002. Risk Analysis of Islanding of
+Photovoltaic Power Systems within Low Voltage Distribution Networks. Paris, France:
+International Energy Agency. IEA-PVPS T5-08. https://iea-pvps.org/wp-
+content/uploads/2020/01/rep5_08.pdf.
+Etxegarai, A., P. Eguía, and I. Zamora. 2011. "Analysis of Remote Islanding Detection Methods
+for Distributed Resources." In 2011 International Conference on Renewable Energies and Power
+Quality.
+Hoke, Anderson, Austin Nelson, Brian Miller, Sudipta Chakraborty, Frances Bell, and Michael
+McCarty. 2016. Experimental Evaluation of PV Inverter Anti-Islanding with Grid Support
+Functions in Multi-Inverter Island Scenarios. Golden, CO: National Renewable Energy
+Laboratory. NREL/TP-5D00-66732. https://www.nrel.gov/docs/fy16osti/66732.pdf.
+Ingram, Michael, David J. Narang, Barry A. Mather, and Benjamin D. Kroposki. 2017.
+Supplemental Information for New York State Standardized Interconnection Requirements.
+Golden, CO: National Renewable Energy Laboratory. NREL/TP-5D00-70183.
+https://doi.org/10.2172/1405920.
+Institute of Electrical and Electronics Engineers (IEEE). 2008. IEEE Std C37.2-2008 - IEEE
+Standard Electrical Power System Device Function Numbers, Acronyms, and Contact
+Designations. Piscataway, NY.
+---. 2018. IEEE Std 1547-2018 - IEEE Standard for Interconnection and Interoperability of
+Distributed Energy Resources with Associated Electric Power Systems Interfaces. Piscataway,
+NY: 2018. https://standards.ieee.org/standard/1547-2018.html.
+
+=== page 35 ===
+27
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+---. 2020. IEEE 1547.1-2020 - IEEE Standard Conformance Test Procedures for Equipment
+Interconnecting Distributed Energy Resources with Electric Power Systems and Associated
+Interfaces. https://standards.ieee.org/standard/1547_1-2020.html.
+Kroposki, Ben. 2016. "Prevention of Unintentional Islands in Power Systems with Distributed
+Resources." Presented on August 24, 2016. https://www.nrel.gov/docs/fy16osti/67185.pdf.
+Pansini, Anthony J. 2005. Guide to Electrical Power Distribution Systems. Sixth Edition.
+Lilburn, GA: The Fairmont Press, Inc.
+Pacific Gas and Electric Company (PG&E). 2018. "Appendix F: Telemetering and Transfer Trip
+for Transmission Generation Entities." In PG&E Transmission Interconnection Handbook. San
+Francisco, CA: November 18, 2018. Accessed December 29, 2021.
+https://www.pge.com/web/includes/docs/pdfs/shared/rates/tariffbook/ferc/tih/app_f.pdf.
+
+Ropp, Michael, and Abraham Ellis. 2013. Suggested Guidelines for Assessment of DG
+Unintentional Islanding Risk. Albuquerque, NM: Sandia National Laboratories.
+https://energy.sandia.gov/wp-content/gallery/uploads/SAND2012-1365-v2.pdf.
+Ropp, Michael, Chris Mouw, Dustin Schutz, Scott Perlenfein, Sigifredo Gonzalez, and Abraham
+Ellis. 2018. Unintentional Islanding Detection Performance with Mixed DER Types.
+Albuquerque, NM: Sandia National Laboratories. SAND2018-8431.
+https://www.osti.gov/servlets/purl/1463446.
+Ropp, Michael, Scott Perlenfein, Dustin Schutz, Chris Mouw, Jason Neely, Sigifredo Gonzalez,
+and Lee Rashkin. 2019. Evaluation of Multi-Inverter Anti-Islanding with Grid Support and Ride-
+Through and Investigation of Island Detection Alternatives. Albuquerque, NM: Sandia National
+Laboratories. SAND2019-0499. https://doi.org/10.2172/1491604.
+Seguin, Rich, Jeremy Woyak, David Costyk, Josh Hambrick, and Barry Mather. 2016. High-
+Penetration PV Integration Handbook for Distribution Engineers. Golden, CO: National
+Renewable Energy Laboratory. NREL/TP-5D00-63114. https://doi.org/10.2172/1235905.
+Stevens, Iii, Russell H. Bonn, Jerry W. Ginn, Sigifredo Gonzalez, and Greg Kern. 2000.
+"Development and Testing of an Approach to Anti-Islanding in Utility-Interconnected
+Photovoltaic Systems." Albuquerque, NM, and Livermore, CA: Sandia National Laboratories.
+SAND2000-1939. https://doi.org/10.2172/759506.
+Verhoeven, Bas. 2002. Probability of Islanding in Utility Networks Due to Grid-Connected
+Photovoltaic Power Systems. Paris, France: International Energy Agency. https://iea-
+pvps.org/key-topics/probability-of-islanding-in-utility-networks-due-to-grid-connected-
+photovoltaic-power-systems-2002/.
+Walling, R. A., and N. W. Miller. 2002. "Distributed Generation Islanding-Implications on
+Power System Dynamic Performance." IEEE Power Engineering Society Summer Meeting 1 (1):
+92-96. https://doi.org/10.1109/PESS.2002.1043183.
+
+=== page 36 ===
+28
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Woyte, Achim, Karel De Brabandere, Daniel Van Dommelen, Ronnie Belmans, and Johan Nijs.
+2003. "International Harmonization of Grid Connection Guidelines: Adequate Requirements for
+the Prevention of Unintentional Islanding." Progress in Photovoltaics: Research and
+Applications 11 (6): 407-24. https://doi.org/10.1002/pip.503.
+
+=== page 37 ===
+29
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Bibliography
+Gridworks. 2021. "Rule 21: Working Group 4." https://gridworks.org/wp-
+content/uploads/2020/08/R21-WG4-Final-Report.pdf.
+Hoke, A., A. Nelson, S. Chakraborty, J. Chebahtah, T. Wang, and M. McCarty. 2015. Inverter
+Ground Fault Overvoltage Testing. Golden, CO: National Renewable Energy Laboratory.
+NREL/TP-5D00-64173.https://www.nrel.gov/docs/fy15osti/64173.pdf.
+Institute of Electrical and Electronics Engineers (IEEE). 2011. IEEE Std 147.4-2011 - IEEE
+Guide for Design, Operation, and Integration of Distributed Resource Island Systems with
+Electric Power Systems. Piscataway, NY.
+---. 2013. IEEE Std 1547.7.2013 - IEEE Guide for Conducting Distribution Impact Studies
+for Distributed Resource Interconnection. Piscataway, NY.
+---. 2015. IEEE Std C62.92.4 - IEEE Guide for the Application of Neutral Grounding in
+Electrical Utility Systems-Part IV: Distribution. Piscataway, NY.
+---. 2021. IEEE Std 1547-2018 (Revision of IEEE Std 1547-2003)." IEEE Standards
+Coordinating Committee 21 (SCC21). https://sagroups.ieee.org/scc21/standards/1547rev/.
+National Renewable Energy Laboratory. 2021. "IEEE 1547-2018 Resources."
+https://www.nrel.gov/grid/ieee-standard-1547/.
+National Rural Electric Cooperative Association. 2018. PV System Impact Guide.
+https://www.cooperative.com/programs-services/bts/Documents/SUNDA/NRECA%20-
+%20SUNDA%20Impact%20Guide-v3%20final.pdf. Arlington, VA.
+Nelson, A., A. Hoke, S. Chakraborty, J. Chebahtah, T. Wang, and B. Zimmerly. 2015. Inverter
+Load Rejection Over-Voltage Testing. Golden, CO: National Renewable Energy Laboratory.
+NREL/TP-5D00-63510. https://www.nrel.gov/docs/fy15osti/63510.pdf.
+Seguin, R., J. Woyak, D. Costyk, J. Hambrick, and B. Mather. 2016. High-Penetration PV
+Integration Handbook for Distribution Engineers. Golden, CO: National Renewable Energy
+Laboratory. NREL/TP-5D00-63114. https://www.osti.gov/biblio/1235905.
+UL. 2021. UL 1741 - Standard for Safety for Inverters, Converters, Controllers, and
+Interconnection System Equipment for Use with Distributed Energy Resources. Northbrook, IL.
+
+=== page 38 ===
+30
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Appendix: Summary of Supplementary Anti-Islanding
+Protection Methods32
+Due to equipment and personnel safety dimensions, some jurisdictions apply additional methods
+to ensure that distributed energy resources (DERs) do not island. This appendix summarizes
+these concerns and supplementary anti-islanding protection strategies.
+Many methods can be used to protect against unintentional islands. Some commonly used
+methods include protective relays for the detection of over-/underfrequency or over-
+/undervoltage, reverse power detection, or minimum import/export relays, impedance insertion,
+power line carrier communications, and direct transfer trip (DTT) (Kroposki 2016; Bower and
+Ropp 2002).
+Direct Transfer Trip
+DTT is one of several schemes used to avoid sustained unintentional islanding. DTT uses a
+communications signal from an area electric power system (EPS) component, such as a feeder
+breaker or an automatic line-sectionalizing device, to command the DER to disconnect from the
+circuit. DTT could also be implemented with the addition of sync-check relaying or
+undervoltage-permissive relaying at the feeder breaker or automatic line-sectionalizing devices
+to maintain coordination with protection schemes. DTT might require communications from not
+only the substation breaker but also any automatic line-sectionalizing devices upstream from the
+DERs.
+Several options for DTT communications are available. Utilities will typically specify their
+preferred method,33 which could include:
+- Direct fiber to substation with proper interface provisioning
+- Licensed microwave with proper interface provisioning
+- Class A DS0, 4-wire, leased line provisions by local exchange carrier
+- Telecommunications options via Class B, T1 lease options.
+DTT can also eliminate out-of-phase reclosing concerns because the recloser action can be
+coordinated with tripping schemes to ensure that no unintentional islands are formed.
+Even with DTT, depending on the latency of the trip signal, fast reclosing schemes might need to
+be reviewed and either slowed down to guarantee that the DER stops generating prior to the first
+reclosing action or otherwise modified to maintain protective coordination.
+DTT is generally considered only for large DER installations because of its high cost to
+implement. Costs vary among locations. One report done by the California Rule 21 Working
+Group Four for the California market notes (California Public Utilities Commission 2020):
+
+32 Note that some of these methods will achieve only partial compliance with the IEEE Std 1547-2018 requirements.
+33 For an example, see the Pacific Gas and Electric Company's (PG&E's) Transmission Interconnection Handbook,
+noted in this document's references.
+
+=== page 39 ===
+31
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+The cost of installing DTT is significant and, in some cases, the single largest cost
+of new machine generation projects. PG&E's Unit Cost Guide states that the base
+cost of a single DTT scheme, including paired transmitter and receiver, is
+$600,000, and the base cost of a recloser is $80,000. 12 Multiple DTT units can
+be required, increasing the base cost accordingly. If related costs, such as Cost of
+Ownership (COO) and Income Tax Component of Contribution (ITCC) are
+included, the all-inclusive cost to the developer for DTT and reclosers is roughly
+double the base cost. The costs of DTT can exceed the cost of the generator itself,
+in all cases becoming a substantial part of overall costs, and can affect project
+viability. Other related costs such as leased line communications infrastructure
+can be particularly expensive in less-urban areas. The costs of DTT are
+particularly relevant in more rural areas of the state where the grid is radial and
+DTT is applied to numerous substations.
+These upgrades frequently force renewable DER projects to withdraw
+interconnection applications due to their high interconnection costs and/or long
+implementation timelines. Installation of DTT can take up to 18-24 months to
+complete. Installation of a recloser can take up to 6-12 months to complete.
+Supplemental Over-/Underfrequency or Over-/Undervoltage Protective
+Relays
+Supplemental protective relays are typically installed by electric utilities on larger DER systems,
+regardless of similar relaying and protection functions residing withing the DER system. Over-
+/undervoltage and frequency trip settings are programmed into the relays. If the relay detects
+these parameters outside the acceptable window, the relay trips and causes the DER to shut
+down.
+Reverse Power or Minimum Import/Export Relays
+Reverse power or minimum import/export relays are passive anti-islanding techniques. These
+methods add overvoltage/undervoltage and over-/underfrequency trip settings implemented
+through relay functions (57/27, 81/8134). These settings define an acceptable range of voltage
+and frequency limits. If the measured conditions are outside of this range, the DERs trip offline.
+If supplemental anti-islanding protection is required, this approach is often used when DERs are
+not expected to export power to the grid (e.g., when local loads are larger than the DERs, and all
+generated power is consumed on-site). In these cases, an additional protective relay function
+(Function 32: reverse power) is added to the site relay scheme to disconnect the DERs if the
+relay senses that they are exporting power, as shown in Figure A-1 (Kroposki 2016).
+
+34 IEEE Std C37.2 defines relay device functions as follows: Device number 59 is for overvoltage relay, device
+number 27 is for undervoltage; and device numbers 81 and 81 are for overfrequency and underfrequency,
+respectively (IEEE 2008).
+
+=== page 40 ===
+32
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Source: Kroposki 2016
+Figure A-1. Relay functions
+Reverse or minimum import active power unintentional islanding protection provides full
+conformance if all tests are satisfactorily met. Note: The reverse or minimum import active
+power flow protection device is sensed between the point of DER connection or the point of
+common coupling and will disconnect or isolate the DERs if the power flow falls to less than a
+set threshold or reverses. For multiphase devices, tests are conducted on each phase and all
+phases simultaneously. For DERs having a range of adjustable minimum import active power
+settings, the tests are to be repeated for the minimum and maximum import active power
+settings.
+IEEE Std 1547.1-2020 Clause 5.10.5 provides information on testing reverse or minimum import
+active power flow functionality.
+Permissive Hardware Input
+This method uses DERs fitted with hardware that responds to an unintentional islanding
+condition by ceasing to energize within the required response time of 2 seconds or other
+mutually agreed-upon response time. Examples of the types of hardware that can be used are
+contact closure, a transistor-transistor logic signal, or other hardware means. An example of the
+signal could be DTT.
+Note that this is separate from the permit service function.
+The hardware input test, described in IEEE Std 1547.1-2020 Clause 5.10.4, does not require
+balanced resistive-inductive-capacitive loads or a contactor to remove the utility and island the
+DER. It does require the monitoring of the permissive and nonpermissive state and a method to
+trigger data capture to determine the response times.
+Impedance Insertion
+This method requires the installation of a low-value-impedance device on the utility side of a
+distribution transformer. Figure A-2 shows the addition of a capacitor bank (connected at point
+b). Under this method, if the circuit on the left side of the switch at point b were to become
+
+=== page 41 ===
+33
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+islanded, the capacitor bank is commanded to close after a short delay. The addition of the
+capacitor bank functions to disrupt the balance of generation to load in the island (Bower and
+Ropp 2002).
+
+Source: Bower and Ropp 2002
+Figure A-2. One-line diagram of the impedance insertion method using a capacitor bank
+Power Line-Conducted Permissive Signal Testing
+This method of anti-islanding protection relies on a signal conducted on the distribution primary
+line. DERs designed for this type of unintentional islanding method will have a receiver that
+monitors the presence of the permissive signal, and upon the loss of signal, the DER must cease
+to energize and trip within 2 seconds.
+A one-line diagram of the concept is presented in Figure A-3. In the figure, the box labeled "T"
+transmits a signal to the receiver, marked "R." As long as the signal is present, the DER has
+permission to operate. If the signal is discontinued, the circuit-interrupting device disconnects the
+DER within the required time.
+
+Source: Bower and Ropp 2002
+Figure A-3. One-line diagram of power line carrier communications method
+Because the power line-conducted permissive signal unintentional islanding method requires the
+transmission of the permissive signal, only partial compliance is granted when successfully
+detecting the absence of the permissive signal and ceasing to energize within the required
+
+=== page 42 ===
+34
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+response time. The absence of a permissive signal on all phases of a DER is indicative of the loss
+of continuity of the power line and represents an islanded situation, so upon loss of the
+permissive signal, the DER must cease to energize and trip.
+The laboratory test procedure in IEEE Std 1547.1-2020 Clause 5.10.3 requires an attenuation of
+the signal to evaluate the signal strength requirements. Note that the power connection is never
+interrupted-only the permissive signal path is interrupted or attenuated; therefore, there is no
+need for load banks, a test matrix, or a need to isolate generation with load.
+Note that in this method, if there is a loss of the permissive signal for any reason, there is no
+provision to allow the DER to reenergize the area EPS after it has tripped. This contrasts with
+onboard methods that reenergize after the required time delay after a trip has lapsed and the
+voltage and frequency at the point of DER connection is within operating ranges. The DER can
+reenergize the area EPS only if the permissive signal is present.
+Ongoing Research on Additional Methods of Islanding Detection
+Efforts have been ongoing to develop new methods of unintentional islanding detection and
+mitigation that adequately address future concerns. These methods include islanding detection
+based on synchrophasors and centralized islanding detection (inter-tripping schemes) (Etxegarai,
+Eguía, and Zamora 2011).
+Phasor Measurement Unit-Based Islanding Detection
+This method uses two phasor measurement units: one located at the grid side and one at the
+DER. If the signals from the two units are not comparable within certain parameters, a circuit
+breaker is tripped to turn off the DER (Etxegarai, Eguía, and Zamora 2011).
+Centralized Detection of Unintentional Islanding
+Centralized detection of unintentional islanding is based on the use of a central controller
+connected to all the circuit breakers and all the individual DERs in the circuit via an Ethernet
+link. The central controller hosts an islanding detection algorithm that monitors the circuit. If an
+island is detected, the central controller sends tripping commands to the DERs.

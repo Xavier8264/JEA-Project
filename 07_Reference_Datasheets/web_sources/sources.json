@@ -1,0 +1,57 @@
+[
+  {
+    "id": "nrel_islanding_primer",
+    "title": "A Primer on the Unintentional Islanding Protection Requirement in IEEE Std 1547-2018",
+    "author": "Narang, Gonzalez, Ingram (NREL and Sandia), 2022, NREL/TP-5D00-77782",
+    "url": "https://docs.nlr.gov/docs/fy22osti/77782.pdf",
+    "kind": "pdf",
+    "raw": "nrel_islanding_primer.pdf",
+    "used_for": "Item 54. 1547 clause 8.1: 2 s trip, 5 min return-to-service, safety and out-of-phase reclosing."
+  },
+  {
+    "id": "nrel_gfm_roadmap",
+    "title": "Research Roadmap on Grid-Forming Inverters",
+    "author": "Lin, Eto, Johnson et al. (NREL, LBNL), 2020, NREL/TP-5D00-73476",
+    "url": "https://docs.nlr.gov/docs/fy21osti/73476.pdf",
+    "kind": "pdf",
+    "raw": "nrel_gfm_roadmap.pdf",
+    "used_for": "Item 54. Grid-following PV cannot hold an island; grid-forming sources can."
+  },
+  {
+    "id": "nrel_borrego_springs",
+    "title": "Borrego Springs Community Microgrid (slides)",
+    "author": "Annabelle Pratt (NREL), 2019",
+    "url": "https://docs.nlr.gov/docs/fy19osti/74477.pdf",
+    "kind": "pdf",
+    "raw": "nrel_borrego_springs.pdf",
+    "used_for": "Item 54. Real utility microgrid restoring customers; SEL RTAC used as a microgrid controller in testing."
+  },
+  {
+    "id": "pnnl_nreca_1547_vartanian",
+    "title": "IEEE 1547-2018 - Major Revision of Interconnection Standard (slides)",
+    "author": "Charlie Vartanian (PNNL) for NRECA research day, 2018-10-31",
+    "url": "https://www.cooperative.com/programs-services/bts/documents/emerging%20priorities%20for%20energy%20research%20day%20-%20oct%202018/ieee%201547-2018%20-%20vartanian%20(nreca-apa-researchday-20181031).pdf",
+    "kind": "pdf",
+    "raw": "pnnl_nreca_1547_vartanian.pdf",
+    "used_for": "Item 54. 1547 clause 8.2 intentional islands: scheduled vs unscheduled, definitions."
+  },
+  {
+    "id": "ieee_pes_der_flisr_tutorial",
+    "title": "Implementing FLISR on Distribution Circuits with High DER Penetration (tutorial proposal)",
+    "author": "Robert Uluski (ESTA International), IEEE PES ISGT NA 2024",
+    "url": "https://ieee-pes.org/wp-content/uploads/2024/01/ISGTNA-Feb192024-Tutorial3_DER_enabled_FLISR.pdf",
+    "kind": "pdf",
+    "raw": "ieee_pes_der_flisr_tutorial.pdf",
+    "used_for": "Item 54. DER effects on FLISR: load masking, fault current, islanded microgrids on sections with no backup."
+  },
+  {
+    "id": "sel_linam_ugfi",
+    "title": "LINAM UGFI Underground Fault Indicator (product page)",
+    "author": "Schweitzer Engineering Laboratories",
+    "url": "https://selinc.com/products/LINAM-UGFI/",
+    "kind": "html",
+    "raw": "sel_linam_ugfi.html",
+    "used_for": "Item 65. Real precedent for LEDs on pad-mounts and junction boxes (fault indicators).",
+    "notes": "selinc.com blocks scripted downloads. Save the page from a browser as raw/sel_linam_ugfi.html."
+  }
+]

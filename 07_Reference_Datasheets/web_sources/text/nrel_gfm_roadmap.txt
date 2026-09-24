@@ -1,0 +1,2272 @@
+SOURCE: Research Roadmap on Grid-Forming Inverters
+AUTHOR: Lin, Eto, Johnson et al. (NREL, LBNL), 2020, NREL/TP-5D00-73476
+URL: https://docs.nlr.gov/docs/fy21osti/73476.pdf
+RAW FILE: raw/nrel_gfm_roadmap.pdf
+RETRIEVED: 2026-09-24
+PAGES: 60
+USED FOR: Item 54. Grid-following PV cannot hold an island; grid-forming sources can.
+------------------------------------------------------------------------
+
+=== page 1 ===
+Research Roadmap on
+Grid-Forming Inverters
+Yashen Lin,1 Joseph H. Eto,2 Brian B. Johnson,3
+Jack D. Flicker,4 Robert H. Lasseter,5 Hugo N. Villegas Pico,1
+Gab-Su Seo,1 Brian J. Pierre,4 and Abraham Ellis4
+With editing and support from Hariharan Krishnaswami6,
+Jeremiah Miller6, and Guohui Yuan6
+1National Renewable Energy Laboratory
+2Lawrence Berkeley National Laboratory
+3University of Washington
+4Sandia National Laboratories
+5University of Wisconsin
+6U.S. Department of Energy Solar Energy Technologies Office
+
+=== page 2 ===
+NREL is a national laboratory of the U.S. Department of Energy
+Office of Energy Efficiency & Renewable Energy
+Operated by the Alliance for Sustainable Energy, LLC
+This report is available at no cost from the National Renewable Energy
+Laboratory (NREL) at www.nrel.gov/publications.
+
+Contract No. DE-AC36-08GO28308
+National Renewable Energy Laboratory
+15013 Denver West Parkway
+Golden, CO 80401
+303-275-3000 - www.nrel.gov
+Technical Report
+NREL/TP-5D00-73476
+November 2020
+Research Roadmap on Grid-Forming
+Inverters
+Yashen Lin,1 Joseph H. Eto,2 Brian B. Johnson,3
+Jack D. Flicker,4 Robert H. Lasseter,5 Hugo N. Villegas
+Pico,1 Gab-Su Seo,1 Brian J. Pierre,4 and Abraham Ellis4
+1 National Renewable Energy Laboratory
+2 Lawrence Berkeley National Laboratory
+3 University of Washington
+4 Sandia National Laboratories
+5 University of Wisconsin
+6 U.S. Department of Energy Solar Energy Technologies Office
+Suggested Citation
+Lin, Yashen, Joseph H. Eto, Brian B. Johnson, Jack D. Flicker, Robert H. Lasseter, Hugo
+N. Villegas Pico, Gab-Su Seo, Brian J. Pierre, and Abraham Ellis. 2020. Research
+Roadmap on Grid-Forming Inverters. Golden, CO: National Renewable Energy
+Laboratory. NREL/TP-5D00-73476. https://www.nrel.gov/docs/fy21osti/73476.pdf.
+
+=== page 3 ===
+
+NOTICE
+This work was authored in part by the National Renewable Energy Laboratory, operated by Alliance for Sustainable
+Energy, LLC, for the U.S. Department of Energy (DOE) under Contract No. DE-AC36-08GO28308. Funding
+provided by the U.S. Department of Energy Office of Energy Efficiency and Renewable Energy Solar Energy
+Technologies Office. The views expressed herein do not necessarily represent the views of the DOE or the U.S.
+Government.
+This report is available at no cost from the National Renewable
+Energy Laboratory (NREL) at www.nrel.gov/publications.
+U.S. Department of Energy (DOE) reports produced after 1991
+and a growing number of pre-1991 documents are available
+free via www.OSTI.gov.
+Cover Photos by Dennis Schroeder: (clockwise, left to right) NREL 51934, NREL 45897, NREL 42160, NREL 45891, NREL 48097,
+NREL 46526.
+NREL prints on paper that contains recycled content.
+
+=== page 4 ===
+ii
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+List of Acronyms
+AGC
+automatic generation control
+dq
+direct quadrature
+FERC
+Federal Energy Regulatory Commission
+FRT
+fault ride-through
+IEEE
+Institute of Electrical and Electronics Engineers
+IRPTF
+Inverter-Based Resource Performance Task Force
+MIGRATE
+Massive InteGRATion of power Electronic devices
+NERC
+North American Electric Reliability Corporation
+Omega
+frequency
+
+P
+real power
+PLL
+phase-locked loop
+PV
+photovoltaic
+Q
+reactive power
+V
+voltage
+VAR
+volt ampere reactive
+
+=== page 5 ===
+iii
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Acknowledgments
+We thank Scott Manson, David Porter, Thibault Prevost, Mariko Shirazi, Vijay Vittal, Dennis
+Woodford, and Donny Zimmanck for reviewing an earlier draft of this roadmap. We also thank
+Dan Ton, Kerry Cheung, Pengwei Du, and Julia Matevosjana for their insightful feedback.
+
+=== page 6 ===
+iv
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Executive Summary
+Managing the stability of today's electric power systems is based on decades of experience with
+the physical properties and control responses of large synchronous generators, usually with the
+size of hundreds to even thousands of megawatts. Today's electric power systems are rapidly
+transitioning toward having an increasing proportion of generation from nontraditional sources,
+such as wind and solar (among others), as well as energy storage devices, such as batteries. In
+addition to the variable nature of many renewable generation sources (because of the weather-
+driven nature of their fuel supplies), these newer sources vary in size-from residential-scale
+rooftop systems (a few kilowatts) to utility-scale power plants (hundreds to even thousands of
+megawatts)-and they are interconnected throughout the electric grid both from within the
+distribution system and directly to the high-voltage transmission system. Most important for our
+purposes, many of these new resources are connected to the power system through power
+electronic inverters rather than spinning electromechanical machines. Collectively, we refer to
+these generation technologies as inverter-based resources.1
+This report is intended to provide a comprehensive analysis of the challenges in integrating
+inverter-based resources and offer recommendations on potential technology pathways to inform
+the academic community, industry, and government research organizations. Although the focus
+of this roadmap is on grid-forming inverter controls, their impact on grid stability, and evaluating
+crucial system interactions (e.g., protection), we recognize that the large interconnections in
+North America will comprise both electromechanical and inverter-based resources (in this
+roadmap, sometimes called a hybrid power system). More importantly, we further recognize that
+inverter-based resources will comprise both grid-forming resources and other forms of control,
+such as grid-following resources. Transitioning to a grid with more inverter-based resources
+poses major challenges because the operation of future power systems must be based on a
+combination of the physical properties and control responses of traditional, large synchronous
+generators as well as those of numerous and diverse inverter-based resources (see Figure ES-1).
+These challenges stem from the recognition that there is no established body of experience for
+operating hybrid power systems with significant amounts of inverter-based resources at the scale
+of today's North American interconnections.
+
+1 Although the focus of this roadmap is on inverter-based generation, it is also applicable to inverter-based energy
+storage. The details of grid-forming storage applications-such as during charging, discharging, or state of charge-
+are beyond the scope of this roadmap.
+
+=== page 7 ===
+v
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Figure ES-1. The present power system (a) has historically been dominated by synchronous
+generators having large rotational inertia. Future systems (b) will have a significant fraction of
+inverter-based generation resources. This implies a need for next-generation grid-forming
+controllers that ensure grid stability at any level of penetration with inverter-based resources.
+This research roadmap is intended to fill the knowledge gap by providing a system view of grid-
+forming inverter-based resource controls and their impact on grid stability, which we believe is
+central to meeting some of the challenges to operating the future North American electric power
+system. This includes the roles and requirements of grid-forming inverter-based resources-
+including solar photovoltaics, wind generators, and energy storage. For this roadmap, we focus
+on a specific family of grid-forming inverter control approaches that do not rely on an external
+voltage source (i.e., no phase-locked loop) and that can share load without explicit
+communications. Although the roadmap is focused narrowly on system challenges for grid-
+forming controls and power system stability, including interactions with protection, we hope it
+serves as a foundational element for future system-of-systems roadmapping needed in a broader
+grid modernization effort with increasing deployments of inverter-based resources.
+The roadmap first introduces formal definitions for the grid stability topics and then describes the
+differences between grid-forming and traditional grid-following control approaches for inverter-
+based resources. The core of the roadmap consists of a review of current research and an outline
+of research needs related to five grid-forming inverter topics:
+- Frequency control
+- Voltage control
+- System protection
+- Fault ride-through and voltage recovery
+- Modeling and simulation.
+The review both delineates contemporary advances and highlights open research questions that
+must be addressed to enable the widespread adoption of inverter-based resources across the grid.
+Feedback from industry on these research questions is incorporated, including discussions during
+the Workshop on Grid-forming Inverters for Low-inertia Power Systems.2 The workshop
+
+2 The Workshop on Grid-forming Inverters for Low-Inertia Power Systems was held at the University of
+Washington in Seattle on April 29-30 2019. Presentations and video are available at
+https://lowinertiagrids.ece.uw.edu/.
+
+=== page 8 ===
+vi
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+included industry presentations and discussion of ongoing research, technology gaps, and
+piloting needs.
+This roadmap concludes by offering a multiyear perspective on the gradual field validation of
+grid-forming inverters (see Figure ES-2). This perspective recognizes that the scale and scope of
+the types of power systems that inverters will be called on to provide grid-forming services will
+and should begin modestly. Specifically, this roadmap recognizes that inverter controls today are
+predominantly grid-following and that future power systems will involve a mix of inverter-based
+resources with both grid-following and grid-forming control capabilities. Growth over time will
+depend on how well grid-forming inverters perform and what advantages they bring as
+penetration levels (instantaneous and average) of inverter-based resources increases. This
+recognition, in turn, establishes a natural sequence of priorities for the research questions that
+must be addressed.
+
+Figure ES-2. (a) Total annual and instantaneous inverter-based wind and solar generation based
+on power system size
+
+=== page 9 ===
+vii
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Figure ES-2. (b) Incorporating grid-forming controls into the electric grid will take place gradually
+after key functionalities have been demonstrated and confidence has been gained by operating
+them in smaller microgrids and island power systems.
+Following this multiyear perspective, the roadmap offers short descriptions of two specific near-
+term research priorities: the review of regulatory and technical standards and the development of
+advanced modeling techniques. These priorities are foundational. We recommend immediate
+pursuit of them in parallel with and in direct support of the research outlined by our multiyear
+perspective.
+
+=== page 10 ===
+viii
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Table of Contents
+Introduction ................................................................................................................................................. 1
+1
+Power System Stability Concepts....................................................................................................... 5
+2
+Overview of Grid-Following and Grid-Forming Controllers for Inverter-Based Generation ........ 8
+2.1
+Grid-Following Controllers ......................................................................................................... 10
+2.2
+Grid-Forming Controllers ........................................................................................................... 11
+3
+Inverter Control State-of-the-Art and Open Research Questions ................................................. 13
+3.1
+Frequency Control ....................................................................................................................... 13
+3.1.1
+Classic Frequency Control ............................................................................................. 13
+3.1.2
+Frequency Dynamics of Low-Inertia Systems ............................................................... 14
+3.1.3
+Inverter-Based Resources for Frequency Control .......................................................... 15
+3.1.4
+Research Questions ........................................................................................................ 17
+3.2
+Voltage Control ........................................................................................................................... 18
+3.2.1
+Research Questions ........................................................................................................ 20
+3.3
+System Protection ........................................................................................................................ 20
+3.3.1
+Transition to Distribution Bidirectional Power Flow ..................................................... 22
+3.3.2
+Negative-Sequence Fault Current .................................................................................. 23
+3.3.3
+Out-of-Step and Power Swing Blocking Protection ....................................................... 23
+3.4
+Fault Ride-Through Capability and Power System Voltage Recovery ....................................... 25
+3.5
+Modeling and Simulation Approaches ........................................................................................ 28
+4
+Roadmap for the Development and Deployment of Grid-Forming Inverters ............................... 31
+4.1
+From Microgrids to Isolated Power Systems to Continental-Scale Power Systems ................... 33
+4.2
+The Need to Establish a Technical Standards Environment for Grid-Forming Inverters ........... 36
+4.3
+The Need to Begin Developing Appropriate Models for Existing Simulation Tools as Well as
+Enhanced Modeling and Simulation Tools ................................................................................. 38
+5
+Conclusions ........................................................................................................................................ 39
+References ................................................................................................................................................. 41
+
+=== page 11 ===
+ix
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+List of Figures
+Figure ES-1. The present power system (a) has historically been dominated by synchronous generators
+having large rotational inertia. Future systems (b) will have a significant fraction of inverter-
+based generation resources. This implies a need for next-generation grid-forming controllers
+that ensure grid stability at any level of penetration with inverter-based resources. ............... v
+Figure ES-2. (a) Total annual and instantaneous inverter-based wind and solar generation based on power
+system size .............................................................................................................................. vi
+Figure ES-2. (b) Incorporating grid-forming controls into the electric grid will take place gradually after
+key functionalities have been demonstrated and confidence has been gained by operating
+them in smaller microgrids and island power systems. .......................................................... vii
+Figure 1. The power system (a) has historically been dominated by synchronous generators having large
+rotational inertia with a relatively modest amount of inverter-based resources, such as PV,
+wind, and batteries. Future systems (b) will have a significant fraction of generation
+interfaced with power electronics and might be dominated by inverters. This implies a need
+for next-generation grid-forming controllers that ensure grid stability at any level of
+penetration with inverter-based resources. ............................................................................... 1
+Figure 2. The various timescales and control functions that comprise power system stability. Classic
+notions for conventional systems are shown on the bottom. We highlight the various
+phenomena that must be considered as systems transition to inverter-based generation. This
+document is restricted in scope to the fast-timescale issues enclosed in green. (AGC refers to
+"automatic generation control.") .............................................................................................. 5
+Figure 3. General structure of an inverter system with closed-loop control ................................................. 9
+Figure 4. Functional diagrams of grid-following and grid-forming inverters. Grid-following inverters
+mimic current sources at their output terminals, whereas grid-forming inverters act like
+voltage sources whose output abides by droop laws. ............................................................... 9
+Figure 5. Decreasing total system inertia for the Eastern Interconnection ................................................. 14
+Figure 6. FRT envelopes (NERC 2016) ...................................................................................................... 26
+Figure 7. Off-nominal frequency capability envelope (NERC 2016) ......................................................... 27
+Figure 8. Key steps for maturing grid-forming inverter technologies ........................................................ 31
+Figure 9. Total annual and instantaneous inverter-based wind and solar generation based on power system
+size ......................................................................................................................................... 32
+Figure 10. Multiyear systems integration activities for grid-forming inverter-based resources ................. 33
+Figure 11. Incorporating grid-forming (GFM) controls into the bulk electric grid will take place gradually
+after key functionalities have been demonstrated and confidence has been gained by
+operating them in smaller microgrids and island power systems. .......................................... 35
+
+List of Tables
+Table 1. Comparison of Grid-Following and Grid-Forming Controls ........................................................ 10
+
+=== page 12 ===
+1
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Introduction
+Managing the stability of today's electric power systems is based on decades of experience with
+the physical properties and control responses of large synchronous generators.3 Today's electric
+power systems are rapidly transitioning toward having an increasing proportion of generation
+from nontraditional sources, such as wind and solar (among others), as well as energy storage
+devices, such as batteries. In addition to the variable nature of many renewable generation
+sources (because of the weather-driven nature of their fuel supply), these newer sources vary in
+size-from residential-scale rooftop systems to utility-scale power plants-and they are
+interconnected throughout the electric grid, both from within the distribution system and directly
+to the high-voltage transmission system. Most important for our purposes, many of these new
+resources are connected to the power system through power electronic inverters.4 Collectively,
+we refer to these sources as inverter-based resources.
+This report is intended to provide a comprehensive analysis of the challenges in integrating
+inverter-based resources and offer recommendations on potential technology pathways to inform
+the academic community, industry, and government research organizations. The operation of
+future power systems must be based on a combination of the physical properties and control
+responses of traditional, large synchronous turbine generators as well as those of numerous and
+diverse inverter-based resources (see Figure 1). The major challenges stem from the recognition
+that there is no established body of experience for operating hybrid power systems with
+significant amounts of inverter-based resources at the scale of today's North American
+interconnections.
+
+Figure 1. The power system (a) has historically been dominated by synchronous generators
+having large rotational inertia with a relatively modest amount of inverter-based resources, such
+as PV, wind, and batteries. Future systems (b) will have a significant fraction of generation
+interfaced with power electronics and might be dominated by inverters. This implies a need for
+next-generation grid-forming controllers that ensure grid stability at any level of penetration with
+inverter-based resources.
+
+3 In an AC electric power system, synchronization is the process of matching the speed and frequency of a generator
+or other generation sources to an operating grid.
+4 Power electronics are solid-state electronics for the control and conversion of electric power. Power electronics
+conversion can be classified according to the type of the input and output power: AC to DC (rectifier), DC to AC
+(inverter), DC to DC (converter), AC to AC (cycloconverter).
+
+=== page 13 ===
+2
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+To operate such large hybrid power systems, the assumptions that underlie current generation
+design and control approaches must be reexamined and, where appropriate, modified or even
+redefined to take explicit account of the new challenges and opportunities presented by these
+inverter-based forms of generation. We should expect that new control approaches, operational
+procedures, protection, and planning tools and processes will be required.
+Synchronous generators regulate their terminal voltages and respond to a change in grid
+frequency through a change in its power output; these are traditionally referred to as generator-
+excitation and turbine-governor controls, respectively. These types of primary, secondary, and
+tertiary controls and voltage control are well-known. We refer to these generation sources as
+grid-forming. Today's inverter-based generation sources generally use phase-locked loops
+(PLLs), which rely on externally generated voltages by synchronous machines to operate
+(Yazdani and Iravani 2010; Golestan et al. 2017). We refer to these types of inverter-based
+generation as grid-following inverters. In case of unintended separation of the power system,
+islanded systems comprising only these types of inverters will not be capable of functioning
+autonomously. Similarly, after a blackout, grid-following inverters cannot support the restoration
+process of the bulk power system unless conventional generators with black-start capability5 are
+present. Also, although this issue is currently being addressed by industry, some of today's
+inverters might disconnect and/or cease operation as a result of transmission faults, and this
+behavior is contrary to the desired behavior of resources connected to the bulk power system
+during a severe event (North American Electric Reliability Corporation [NERC] 2017b).6 The
+performance of PLL-based inverters on the distribution system has also been a major topic of
+discussion and has resulted in updated equipment standards that are being deployed-for
+example, the Institute of Electrical and Electronics Engineers (IEEE) updated Standard 1547
+(IEEE1547-2018).
+These activities have inspired an investigation into other available control methods for power
+electronic inverters for the seamless integration of renewable energy and battery energy storage
+into electric grids. These alternative methods are referred to generically as grid-forming controls
+because the goal is to provide functionalities that are traditionally provided by synchronous
+machinery. Stated differently, the objective is to engineer plug-and-play (Sadamoto et al. 2019)
+grid-forming controls that can function in both high-inertia grids as well as future low-inertia
+grids where inverters might dominate. Inverters must function in a system that might evolve over
+time. For this roadmap, we focus on a specific family of inverter control approaches that does not
+rely on an external voltage source (no PLL) and that can share load without explicit
+communications.7 Early work on this topic started in the 1990s (Chandorkar, Divan, and Adapa
+1993; Lasseter 1998; Katiraei, Iravani, and Lehn 2005); however, these controls were originally
+designed to be deployed in power systems with small footprints (e.g., microgrids) and on small
+
+5 Black-start generators are the key grid-forming generators when restoring the system from a blackout. As the
+black-start is successful, other generators then synchronize to the grid before injecting current. Grid-forming,
+inverter-based resources will need to have similar capabilities during normal and abnormal operations as well as
+black starts.
+6 Efforts are currently underway to require improved ride-through capability by inverter-based generation (and
+storage).
+7 We recognize that there are other means of implementing grid-forming control functions (including continued
+reliance on PLLs), but these are not the focus of this roadmap.
+
+=== page 14 ===
+3
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+islands (such as Kauai, Hawaii). Today, grid-forming controls are being considered for
+deployment in bulk power systems because of their ability to enhance the stability of these grids
+in regions or during times when loads are largely being served by inverter-based resources.
+To this end, this research roadmap focuses on this emerging topic, which we believe is central to
+meeting some of the challenges to operating the future North American electric power system.
+This includes the role of and requirements for grid-forming inverter-based resources, including
+solar photovoltaics (PV), wind generators, and energy storage. This roadmap leverages insight
+gained from the project team's past research and research funded by the U.S. Department of
+Energy Solar Energy Technologies Office on virtual oscillator grid-forming controls and
+assessing grid-instability points for hybrid systems (grid-following, grid-forming, and traditional
+synchronous generation). This roadmap also builds on related international efforts, such as the
+European Union's programs on the Massive InteGRATion of power Electronic devices
+(MIGRATE)8 and the RE-SERVE9 project, Australia's Commonwealth Scientific and Industrial
+Research Organisation effort, as well as the National Grid UK effort. The purpose of this
+research roadmap is to outline specific research directions appropriate for inclusion in an
+eventual U.S. national research-and-development program on grid-forming inverter-based forms
+of generation and storage that can enhance the stability of future electric power systems.
+Although the focus of this roadmap is on grid-forming controls and some system interactions
+(e.g., protection), we recognize that the large interconnections in North America will comprise
+both electromechanical and inverter-based resources (sometimes called a hybrid power system in
+this roadmap). More importantly, we further recognize that inverter-based resources will
+comprise both grid-forming resources and other forms of control, such as grid-following
+resources.
+This roadmap is organized as follows. In Section 1, we introduce formal definitions for the grid-
+stability topics addressed by this roadmap and clarify the related topics that are outside the scope
+of this roadmap. In Section 2, we discuss the differences between grid-forming and grid-
+following control approaches for inverter-based resources and the importance of focusing on
+grid-forming approaches. In Section 3, we review relevant research and outline research needs
+related to five grid-forming inverter topics:
+- Frequency control
+- Voltage control
+- System protection
+- Fault ride-through (FRT) and voltage recovery
+- Modeling and simulation.
+Power system stability, protection, ride-through, and the ability to model and simulate these
+complex systems are foundational technical issues, and these characteristics are central to our
+discussion of grid-forming inverters.
+
+8 See https://www.h2020-migrate.eu/.
+9 See http://www.re-serve.eu/.
+
+=== page 15 ===
+4
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+In Section 4, we introduce a roadmap that provides an outline of an evolutionary vision of grid-
+forming inverters playing an increasingly greater role within power systems and the consequent
+nearest term priorities for research to ease these transitions.
+This roadmap focuses on these outlined technical research topics to ensure future electric power
+system stability. Feedback from industry for these research questions included their discussion as
+part of a Workshop on Grid-forming Inverters for Low-Inertia Power Systems held at the
+University of Washington.10 The workshop included industry presentations and discussion of
+ongoing research, technology gaps, and piloting needs. Note that many related technical areas are
+outside the scope of this roadmap but would need evaluation in future roadmapping efforts. This
+includes power electronics device or component design, distribution system engineering and
+operations for grid-forming inverter controls, sensing and communications systems, load control,
+high-voltage DC, system costs analysis, economic dispatch, system adequacy and reserves
+calculations, traditional security evaluation (i.e., contingency analysis, including black-start and
+in-rush currents for energizing transformers and electric machines), market design, economic
+regulation, and cybersecurity. It is our hope that this roadmap becomes a cornerstone for
+roadmapping work on future power systems with higher levels of inverter-based resources.
+
+10 The Workshop on Grid-forming Inverters for Low-Inertia Power Systems was held at the University of
+Washington in Seattle on April 29-30 2019. Presentations and video are available at
+https://lowinertiagrids.ece.uw.edu/.
+
+=== page 16 ===
+5
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+1 Power System Stability Concepts
+As described in Kundur et al. (2004), classic power system stability criteria include categories
+for rotor angle, frequency, and voltage stability, and each category encompasses both short and
+long timescales. This framework was created throughout many decades and encompasses
+behavior across generation-level and network interactions as well as the impact of loads. As
+illustrated on the bottom of Figure 2, this framework for categorizing stability criteria is often
+considered in terms of timescales and historically focused on how stability was provided by large
+electromechanical generators.
+This roadmap focuses on controls and protection of hybrid systems comprising traditional
+electromechanical generation and inverter-based generation. We start by focusing on the
+differences between electromechanical and inverter-based interfaces at the individual generator
+level and attempt to extrapolate these differences to impacts on system-level stability. Because
+inverters and machines are primarily distinguished by their response at shorter timescales, we
+restrict our scope to the short-term stability of frequency dynamics and voltage (see the top of
+Figure 2).
+
+Figure 2. The various timescales and control functions that comprise power system stability.
+Classic notions for conventional systems are shown on the bottom. We highlight the various
+phenomena that must be considered as systems transition to inverter-based generation. This
+document is restricted in scope to the fast-timescale issues enclosed in green. (AGC refers to
+"automatic generation control.")
+To highlight shortcomings of classic stability criteria for mixed machine-inverter systems, we
+note that conventional metrics are largely defined in terms of machine dynamics and their system
+
+=== page 17 ===
+6
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+impacts. Both rotor angle and frequency stability are strongly tied to the dynamics of rotating
+mechanical components in traditional generators. Given that power electronics have no
+mechanical components, it is clear that an expanded set of stability definitions is needed to
+describe the role of inverters in future systems.
+As a potential approach to overcome these shortcomings, we can link variables within inverter
+controllers that have behavior analogous to machine rotor angles. Using such a framework, it
+might be feasible to obtain a unified set of angle and frequency stability criteria where angular
+dynamics encompass both mechanical rotors as well as inverter angles that reside within their
+digital controls. This extension is illustrated in Figure 2, which consider both mechanical and
+inverter behavior.
+On the other hand, voltage stability is strongly tied to reactive power generation and the
+dynamics of voltage regulation control loops. Focusing first on reactive power, the question is
+not whether the generation is electromechanically based or power electronics-based; both forms
+of generation have well-understood capabilities for producing reactive power, and reactive power
+is needed for certain loads and other system components. Instead, the key issue is the
+geographic/topologic locations of reactive power generation in a conventional power system
+versus a future hybrid power system and thus the coordinated control of these hybrid, dispersed
+resources and the differing line impedances at the transmission and distribution levels.
+Specifically, traditional generation is generally interconnected at the high-voltage transmission
+system, whereas inverter-based generation might be interconnected to the transmission system as
+well as dispersed across and interconnected within medium- and lower voltage distribution
+systems. Voltage regulation from these dispersed, distribution-connected generation expands
+stability analysis and control requirements.
+Finally, we must also recognize that the character of the initiating, potentially destabilizing
+events to which a power system must react and respond will also change because of the
+characteristics and properties of inverter-based resources. One key area of research involves
+rethinking the logic of and mechanisms relied on for triggering system protection. To a large
+extent, traditional forms of system protection rely on the high fault currents that are produced by
+traditional generation sources. Today's inverter-based sources, by design, provide lower-
+sometimes much lower-fault currents. Inverter-based resources, moreover, do not provide the
+same fault current phasors as traditional machine generators. System protection methods for
+hybrid power systems, therefore, will need to be reengineered, accounting for these differing
+fault currents and conditions.
+To further illustrate power system fault response issues, the analysis of several events involving
+the cessation of inverter-based generation shows that stable operation support is needed during
+those fault events (NERC 2018a; NERC 2018b; NERC 2017b). The ability of inverter-based
+generation sources to ride-through faults encompasses several related research topics. First, as
+noted in the previous paragraph, the ability to sense faults and distinguish them reliably from
+other voltage fluctuations is more difficult because of the low short-circuit currents available
+
+=== page 18 ===
+7
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+from today's inverter-based sources. Second, the appropriate criteria for ride-through must be
+articulated.11 Third, once the fault has been ridden through, recovery must proceed.
+Although modern grid-following inverters will contribute to recovery following a fault,12 black-
+start following a power system outage could present a challenge for situations in which inverter-
+based generation sources have replaced most of the synchronous resources (including those with
+black-start capability). Grid-following inverters might have limited restoration-support
+capabilities because they depend on external sources that regulate system frequency and
+voltages. Inverter-based grid-forming sources, in contrast, would be designed to establish
+frequency and control voltage autonomously, and therefore they might be designed to both
+provide black-start capability and facilitate system restoration following a blackout.
+
+11 The topic of appropriate ride-through criteria is currently an active area of discussion in the industry led by the
+North American Electric Reliability Corporation (NERC) Inverter-Based Resource Performance Task Force
+(IRPTF) and, more recently, the IEEE P2800 industry standard team.
+12 Recent Federal Energy Regulatory Commission (FERC) and NERC activity at the bulk power system level-and
+IEEE 1547 as updated in 2018 at the distribution level-are now in place to ensure that future nonsynchronous
+resources support voltage, frequency, and ride-through. Although these rules do not apply to legacy inverters, NERC
+and the industry are actively working to improve the performance of legacy inverters when this is possible and
+practical. See, for example, FERC orders 842 and 827, NERC PRC-024, and the work of the NERC IRPTF.
+
+=== page 19 ===
+8
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+2 Overview of Grid-Following and Grid-Forming
+Controllers for Inverter-Based Generation
+A power electronic inverter converts DC power from an energy resource-such as wind, PV, or
+batteries-to AC power for use in an AC power system.13 As shown in Figure 3, a typical power
+electronic inverter consists of a DC side, which contains a DC link; a set of switching
+semiconductor devices; and a grid-side passive filter that prevents switching harmonics from
+propagating into the grid. The input side of the DC-link interfaces either directly with an energy
+source or might be connected to additional power electronics-like DC-to-DC converter(s).
+Because an inverter power stage is built solely with switching devices and passive filters, closed-
+loop control is required for any kind of meaningful operation. In modern converters, a significant
+fraction of closed-loop controllers takes the form of a digital controller. Digital controllers are
+fully programmable, so they exhibit a high degree of algorithmic flexibility and enable the
+synthesis of new controllers with relative ease. An overview of inverter controllers is provided in
+Figure 4.
+
+13 Inverters can also be designed for bidirectional operation; however, the details of this are beyond the scope of this
+report.
+
+=== page 20 ===
+9
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Figure 3. General structure of an inverter system with closed-loop control
+
+Figure 4. Functional diagrams of grid-following and grid-forming inverters. Grid-following
+inverters mimic current sources at their output terminals, whereas grid-forming inverters act like
+voltage sources whose output abides by droop laws.
+Figure 4 highlights the functional control diagrams for grid-following and grid-forming inverters.
+These are further described in the following section. At a high level, grid-following and grid-
+forming control can be differentiated, as shown in Table 1.14
+
+14 Adapted from MIGRATE: https://www.h2020-migrate.eu/.
+
+=== page 21 ===
+10
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Table 1. Comparison of Grid-Following and Grid-Forming Controls
+Grid-Following Control
+Grid-Forming Control
+Assumes grid already formed under normal
+operations
+Assumes it has responsibility to form and maintain
+healthy grid
+Direct-quadrature (dq)15 vector control of current
+injected into the grid
+Control of voltage magnitude and frequency/phase
+Decoupled control of P and Q
+Slight coupling between P and Q
+Needs PLL
+It may use PLL control to switch between modes
+Needs voltage at the point of common coupling
+to deliver P and Q
+Can black-start a power system
+Cannot operate at 100% power electronics
+penetration; instability thresholds (tipping points)
+exist
+Can theoretically operate at 100% power
+electronics penetration; can coexist with grid-
+following
+
+Not standardized, inadequate operational
+experience at a systems perspective
+Further, note that grid-following and grid-forming control definitions for bulk power system
+versus distribution connected resources is likely to be different. This is because emerging
+microgrid functionality (the ability to operate in islanded mode-planned or unplanned) typically
+is applied to distribution resources, whereas for the bulk power system, generally separation or
+islanding is avoided. Distribution-focused grid-forming resource stakeholders are therefore likely
+to assume islanding capability when developing and integrating grid-forming generation and
+storage.
+2.1 Grid-Following Controllers
+As illustrated in Figure 4, the grid-following controller contains two main subsystems: a PLL
+that estimates the instantaneous angle of the measured converter terminal voltage and a current-
+control loop that regulates the AC current injected into the grid.16 This is often referred to as
+current control because the current is the physical quantity that is regulated. In this setting, the
+PLL provides the angular reference of the current commands and carries out the "following"
+behavior. As shown in Figure 4, the grid-following AC terminals mimic a current source whose
+real and reactive output tracks the references. For fixed power commands, an inverter acts like a
+constant real-reactive power (PQ) source.17
+This control strategy is called grid-following because its functionality depends on each inverter
+having a well-defined terminal voltage that its PLL can latch onto and follow. In this setting, the
+system voltage and frequency are regulated by resources external to each grid-following inverter.
+
+15 dq control refers to control with respect to a three-phase synchronous reference frame.
+16 Although the electromechanics and controls are different, a traditional generator has similar requirements. It also
+needs to establish equal line voltage, frequency, phase sequence, phase angle, and waveform to that of the system to
+which it is being synchronized and connected.
+17 PQ control seeks steady-state active and reactive power output according to a reference-for instance, within a
+certain range of frequency and voltage of the interconnection AC bus, the inverter regulates active and reactive
+power to reference values.
+
+=== page 22 ===
+11
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+As the proportion of the grid-following inverters on a grid increases, it might be necessary to
+embed additional functions that prevent excessive voltage and frequency deviations. These are
+called grid-support functions, and they are described in Section 4.
+Today, nearly all grid-connected inverters are controlled with a grid-following controller such as
+this. Additional functionalities are typically layered on top of this baseline controller and vary
+between single-phase and three-phase implementations. Regardless, the grid-following control
+structure shown in Figure 4 generally holds. Because grid-following methods are currently the
+default inverter controller and will be into the near future, these properties are key to
+understanding grid stability operations for many years.
+2.2 Grid-Forming Controllers
+During the past two decades, a variety of grid-forming strategies have been developed. Here, we
+use the term grid-forming as an umbrella for any inverter controller that regulates instantaneous
+terminal voltages and can coexist with other grid-following and grid-forming inverters and
+synchronous generation on the same system. We further restrict our definition to inverter
+controls that do not require a PLL.18 This contrasts with grid-following units that act as current
+sources, require a PLL, and cannot function without an externally regulated voltage. Our use of
+the term grid-forming also excludes single-inverter stand-alone systems or multi-inverter systems
+that require communications to operate. In principle, grid-forming inverters should allow for the
+realization of scalable and decentralized AC power systems where system voltages and
+frequency are regulated by the collective interactions of the grid-forming units themselves. In
+this sense, the synchronous machine represents the well-understood grid-forming interface.
+Looking toward the future, we seek grid-forming inverter controllers that yield benefits similar to
+those of machines while respecting the unique properties of power electronics.
+As shown in Figure 4, existing grid-forming controllers can be broadly categorized as droop
+controllers, virtual synchronous machines (often called synchronverters), and virtual oscillator
+controllers, to name a few. We consider each method as follows:
+- Droop control: The most well-established grid-forming method is droop control, which was
+first proposed in the early 1990s (Chandorkar, Divan, and Adapa 1993). Its key feature is that
+it exhibits a linear trade-off between frequency and voltage versus real and reactive power,
+much like a typical synchronous machine does in steady state. These so-called "droop laws"
+are referred to as the P-omega (real power-frequency) and Q-V (reactive power-voltage)
+relationships, and they give rise to the following properties regardless of whether they are
+machines or inverters:
+o System-wide synchronization: All units reach the same frequency.
+o Power sharing: Each unit provides power in proportion to its capacity (or its
+programmable droop slope).
+These properties arise as a result of the networked interactions from the grid and locally
+programmed droop laws.
+
+18 We recognize that there are other means of implementing grid-forming control functions (including continued
+reliance on PLLs), but these are not the focus of this roadmap.
+
+=== page 23 ===
+12
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+- Virtual synchronous machines: This approach is based on the emulation of a synchronous
+machine within the controls of an inverter (Beck and Hesse 2007; Alatrash 2012; Zhong
+2016). Specifically, inverter terminal measurements are fed as inputs into a digital
+synchronous machine model whose emulated dynamics are mapped to the inverter output in
+real time. The complexity of the virtual machine can vary greatly, from detailed
+electromechanical models to simplified swing dynamics. Implementations that closely match
+machine characteristics, possibly even with virtual flux dynamics, have both Q-V and P-
+omega characteristics and are often called "synchronverters." On the other end of the
+spectrum, virtual inertia methods are simpler and capture only the dynamics of an emulated
+rotor and its steady-state P-omega droop.
+- Virtual oscillator controllers: In recent years, another inverter control method based on the
+emulation of nonlinear oscillators has emerged (Johnson et al. 2016a). Much like a virtual
+synchronous machine, real-time measurements are processed by the digitally implemented
+model whose output variables modulate the inverter power stage. As illustrated in Figure 4,
+the key difference is that the model takes the form of an oscillator circuit with a natural
+frequency that coincides with the nominal AC grid frequency, and its remaining parameters
+are tuned to adjust the nominal voltage and control bandwidth. Although the virtual oscillator
+might appear radically different, it has been shown to exhibit the Q-V and P-omega droop
+laws in steady state.
+- Unified properties of grid-forming controllers: Despite the differences between droop
+controllers, virtual synchronous machines, and virtual oscillators, all three methods have
+similar properties that allow us to consider them. In particular, the output terminal behavior
+of an inverter with any of these grid-forming controllers resembles a voltage source with an
+amplitude and frequency that varies with reactive power generation and the system load,
+respectively. This property allows grid-forming inverters to adjust output power nearly
+instantaneously to balance loads, regulate local voltage, and contribute to frequency
+control.19 Although grid-following inverters can be programmed to emulate the
+aforementioned grid-following properties, they nonetheless require a well-defined terminal
+voltage as a reference. Presently, grid-forming inverters are typically seen in microgrids and
+in off-grid installations that require high reliability.
+
+19 Although it is sometimes natural to equate grid-forming and grid-following with voltage- and current-control
+modes for inverters, respectively, there are technical subtleties associated with each form of control that we seek to
+avoid; instead, we focus on describing the grid-related functionalities involved in grid-forming versus grid-following
+control at a higher level.
+
+=== page 24 ===
+13
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+3 Inverter Control State-of-the-Art and Open Research
+Questions
+In this section, we provide a brief snapshot of the capabilities of grid-forming controllers within
+the context of frequency and voltage control. To provide a more complete picture of the current
+state of inverter technologies, we also highlight relevant grid-support functions that are being
+used on grid-following inverters today. After delineating contemporary advances, we highlight
+open research questions that must be addressed to enable the widespread adoption on bulk power
+and distribution grids.
+3.1 Frequency Control
+3.1.1 Classic Frequency Control
+Frequency control refers to generation control actions that are designed to maintain the system
+frequency near the nominal value (e.g., 60 Hz in North America and 50 Hz in Europe). For
+machine-based grids, system frequency is intricately tied to the Newtonian mechanics of the
+rotating generator masses and the speed-governor droop law at each generator. Lower system
+inertia leads to higher rates of change in frequency. As a corollary to this property, lower inertia
+results in the arrest of frequency at lower (higher) frequency values, which is called the nadir (or
+the zenith), after an abrupt loss of generation (or decrease in load). The nadir (or zenith) is
+formed when the machines across a system reach a common steady-state frequency with a
+deviation from the nominal value that is proportional to the P-omega droop slope. These
+dynamics, which arise as a result of the machine-level physics and droop controls, are referred to
+as primary frequency control and take place in a matter of seconds. The system inertia primarily
+correlates with the combined rotating mass of the subset of machine-based generators operating
+in grid-forming, or synchronous droop, control. As more synchronous rotational mass is added or
+subtracted from the grid, inertia is proportionally added or subtracted, and, likewise, system
+damping20 is increased or decreased. Inverter-based resources do not contribute inertia to a
+power system. As traditional resources are replaced with inverter-based resources, system inertia
+and thus damping is reduced, making the risk of frequency swings higher (and thus are referred
+to as "weak grids"; see IEEE/NERC [2018]). Operationalizing grid-forming controls for inverter-
+based resources, along with headroom operation, would counteract both the loss of inertia and
+primary frequency control provided by retired synchronous generation. Similar to the natural
+behavior of synchronous machines, grid-forming inverter-based resources would autonomously
+detect the frequency swing and autonomously adjust its power injection during a low frequency
+event.
+To restore the system frequency to its nominal value, a secondary communications-based
+method, called automatic generation control, issues updates in the generation set points during a
+period of tens of seconds to a few minutes (Kundur, Balu, and Lauby 1994; Sauer and Pai 1998).
+At the slowest timescale, a tertiary dispatch layer issues updated commands via an economic
+
+20 Additional basic controls theory and power system modal analysis are beyond the scope of this report. Damping is
+also affected by the electromagnetic characteristics of grid equipment and load response to frequency; see
+IEEE/NERC (2018). Other key concepts include resonance, tuning gains, deadband, etc. For traditional background
+information, see Kundur, Balu, and Lauby (1994); Sauer and Pai (1998).
+
+=== page 25 ===
+14
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+optimization routine that is executed typically every 5 to 15 minutes. It is noteworthy that the
+primary, secondary, and tertiary controllers act on these distinct timescales. This strategy is also
+observed on inverter microgrids, as discussed in following sections.
+3.1.2 Frequency Dynamics of Low-Inertia Systems
+As inverters displace machines on a system, it is evident that the total inertia on that system is
+reduced (IEEE/NERC 2018), as shown for the Eastern Interconnection in Figure 5. Reduced
+inertia results in a larger rate of change of frequency and more volatile system dynamics, and it
+also necessitates faster control actions to arrest frequency swings (Ulbig, Borsche, and
+Andersson 2014). Because the magnitude of the frequency swing after a disturbance is largely
+tied to the imbalance between generation and load, enough untapped capacity must be reserved
+as headroom for frequency control. This can take the form of storage, spinning generators, and/or
+renewable-powered inverters that are operated at less than their nameplate rating or maximum
+available power level. Inverter-interfaced batteries can also be deployed. A drawback is that
+unused capacity could represent an opportunity cost for both renewable and fossil-fueled
+generation because power output must be throttled to less than the available amount.
+
+Source: NERC 2017a
+Figure 5. Decreasing total system inertia for the Eastern Interconnection
+Regardless of whether machine- or inverter-interfaced resources are used as reserves, their
+dynamic time constants must be carefully considered and respected. For instance, the physical
+time constants of electromechanical machines are relatively slow and act as an intrinsic
+bottleneck. In low-inertia systems where frequency deviations could be large, spinning
+mechanical reserves might not be fast enough to provide primary frequency control (Ulbig,
+
+=== page 26 ===
+15
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Borsche, and Andersson 2014; IEEE/NERC 2018). This leaves inverters and other fast-acting
+assets (such as some loads) as the most viable options for primary frequency control.21
+3.1.3 Inverter-Based Resources for Frequency Control
+Referring to the controllers shown in Figure 4, we provide a brief survey of existing frequency
+control strategies. We first focus on grid-forming controls and recall that they all exhibit P-
+omega steady-state droop laws despite differences in implementation and instantaneous
+dynamics. Of particular importance, those relations govern the steady-state frequency deviation
+after initial transients have subsided. Typically, these relations are tuned such that the frequency
+stays within a narrow range near the nominal frequency. This mirrors established practice of how
+governors are tuned in classic machine-based systems.
+On this note, there are established control strategies for inverter-based microgrids, which are
+similar in spirit to hierarchical control methods in classic power systems. In particular, the
+effective P-omega droop slope at each inverter can be tuned for the desired primary response at
+the timescale of tens of milliseconds to seconds, and schemes using low-bandwidth
+communications have been used for secondary frequency restoration and even tertiary-level
+energy dispatch (Guerrero et al. 2011; Shafiee, Guerrero, and Vasquez 2014; Lasseter et al.
+2002). This suite of methods can be used to manage energy on a microgrid from AC cycles to
+extended periods. Although these approaches have been used on droop-controlled inverters, in
+principle they could be applied to any other grid-forming controller shown in Figure 4 if each
+controller has inputs for external set points.
+Lacking mature grid-forming solutions for distributed generation, communications and
+scalability are key issues that hinder the use of hierarchical microgrid strategies on the broader
+grid. In contrast to microgrids, which are relatively small and contained, bulk systems might
+have hundreds of thousands to millions of controllable devices throughout a large geographic
+area. Hence, centralized secondary and tertiary control becomes impractical without appropriate
+aggregate-control schemes and system partitioning. Note that if partitioned control areas are
+used, they will likely need to remain relatively small to accommodate the large numbers of
+inverters per geographic area. This implies that although distributed hierarchical schemes are
+feasible, they will entail a larger number of control areas and associated communications
+infrastructure. Detailed communications network upgrades are out of scope for this roadmap.
+One can also ask why frequency regulation is needed in an inverter-based system dominated by
+electronics. For today's AC grid, frequency/phase control is foundational at the primary response
+timescale, and hence it is needed relative to the prior discussed power system damping
+requirements during contingency events. To answer this question in detail for the secondary and
+tertiary timescales, however, recall that power set points are most straightforwardly tracked when
+the system frequency is restored to nominal. This is because the traditional linear approach
+works because the machine dynamics are relatively slow, and therefore there is a large linear
+region for dispatch convergence. If the desired result is to dispatch set points that are optimal in
+
+21 The Electric Reliability Council of Texas interconnection, for example, relies on fast (within 0.5 second)
+interruption of industrial loads that provide half the frequency containment reserve, which the Electric Reliability
+Council of Texas procures through its ancillary services market.
+
+=== page 27 ===
+16
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+any sort of system-level economic sense, it might be necessary to restore the system frequency
+by some means.22
+Although the controllers shown in Figure 4 have similar steady-state characteristics, distinctions
+arise when comparing how each grid-forming controller reacts dynamically at the shortest
+timescales. To uncover these differences, we inspect the underlying implementations shown in
+Figure 4.
+Referring first to the droop controller, note that its loop contains filters that are used to remove
+harmonics and pulsating components from the measured signals (Hart, Lasseter, and Jahns 2016;
+Guerrero et al. 2011; Johnson et al. 2017; Lasseter 2002). These filters, which often take the
+form of low-pass and/or notch filters, act as the primary means to adjust the response of a droop-
+controlled inverter. In droop designs, careful trade-offs must be made between harmonics and
+speed while ensuring stability. Of the three grid-forming methods considered here, droop control
+is the most mature and has been validated in multi-inverter setups and in mixed inverter-machine
+systems (Lasseter et al. 2011). Droop-controlled inverters have also been tested in commercially
+operated demonstrations (Alegria et al. 2014). Note that additional variants exist for enhanced
+speed and robustness (Zhong 2013) as well as various types of P and Q versus V and omega
+trade-off relations (e.g., P-V, Q-omega droop).
+In a virtual synchronous machine, the underlying machine model parameters dictate its dynamic
+response. In particular, the damping, inertia, and flux-linkage parameters are virtual and can be
+tuned (Beck and Hesse 2007; Alatrash et al. 2012; Zhong 2016). Although the response of a
+virtual synchronous machine is similar to that of an actual machine, its time constants can be
+compressed. Virtual synchronous machines were proposed in the mid-2000s (Beck and Hesse
+2007) and have been validated in several multi-inverter experiments. Recent improvements
+include virtual elements to prevent instabilities (Natarajan and Weiss 2017), additional loops for
+faster response (Dong and Chen 2017), and designs that give bounds for frequency and terminal
+voltages (Zhong et al. 2017). If we restrict our focus to only virtual inertia methods that emulate
+rotational dynamics, the number of parameters is reduced to the mass and damping factors, and
+the design is considerably simpler. Virtual inertia methods are starting to reach early-stage
+industrial trials (Rahmani et al. 2017).
+Because virtual oscillator methods are based on the emulation of nonlinear circuits, the response
+of these methods is tuned by the selection of the virtual circuit parameters, such as inductance,
+capacitance, and scaling gains. The virtual oscillator is relatively simple, and its parameters can
+be unambiguously computed from a set of AC system performance specifications, such as droop
+slopes, response time, and inverter rating. This control method is relatively new and first
+appeared in 2013 (Dhople, Johnson, and Hamadeh 2013). Although original incarnations lacked
+inputs for set points and a trade-off between speed and harmonics, recent advancements include
+set-point integration and a harmonic-free oscillation (Colombino, Groß, and Dörfler 2017; Seo et
+al. 2018). To date, virtual oscillators have been evaluated in multi-inverter hardware experiments
+
+22 Future 100% power electronics-based grids might be hybrid AC-to-DC systems and/or operate at varied
+frequencies. If so, a method of tracking set points under variable frequencies will need to be developed.
+
+=== page 28 ===
+17
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+(Johnson et al. 2014) and on commercial hardware (Lu et al. 2018), but mixed machine-inverter
+experiments are still needed.
+Although grid-following inverters depend on a well-defined frequency and voltage on a system,
+they can be programmed to mitigate their contribution to frequency swings. This takes the form
+of a grid-support function called frequency-watt control. Noting that frequency-watt methods are
+an extension of established grid-following methods in industry, they have been used in several
+grids, such as Hawaii's (Johnson et al. 2016b). This function, which mimics the P-omega droop
+law, has been compared directly to grid-forming droop control via simulation studies (El Khatib,
+Wei, and Lasseter 2018).
+3.1.4 Research Questions
+In the following discussion, we provide a summary of open research topics that warrant further
+investigation based on assuming the eventual deployment of thousands of grid-forming inverters
+at subtransmission or distribution voltages with automatic frequency and voltage control to
+replace the loss of synchronous generation inertia. We begin by summarizing some issues that
+are particular to grid-forming techniques:
+- Should grid-forming control actions be partitioned according to timescales, and if so, how?
+- Given the second-to-second level potential rate of change of frequency, can we assume
+autonomous (communications-less) primary frequency response is required? Is this feasible
+with grid-forming control?
+- For secondary and tertiary frequency control, what signals, if any, must be communicated
+between distribution-level inverters and system operators such that frequency regulation is
+achieved? What kind of communications infrastructure does this imply (distributed peer-to-
+peer, aggregators, centralized, bandwidth, and latency)?
+- What system operational and dynamic ramifications of grid-forming sources with reserve
+(standby) energy can be provided for the loss of synchronous generation inertia?
+- Grid-forming sources fundamentally provide fast frequency control provided they have the
+necessary reserves. What reserve requirements keep frequency within acceptable bounds?
+Does locating grid-forming resources within the distribution or subtransmission system
+impact this ability to control frequency?
+- Can frequency regulation bands be loosened in a strong grid dominated by grid-forming
+inverters? What are the desired modal damping characteristics of strong and likewise weak
+grids? As the relative inverter-to-machines proportion changes (instantaneous and throughout
+time), are passive or active regulation bands desired?
+Next, we consider issues related to system heterogeneity and frequency regulation:
+- What shares of rotating generators and grid-following and grid-forming inverters can
+guarantee power system stability?
+- Can heterogeneous systems containing grid-following inverters, grid-forming inverters, and
+machines operate together to guarantee frequency regulation and stability?
+- How important is frequency regulation in a system dominated by power electronics?
+- To what extent can "must-run" synchronous generators be reduced and replaced by grid-
+forming inverter-based generation with enhanced functionalities? Could synchronous
+condensers be replaced as well? For both, is there a limit?
+
+=== page 29 ===
+18
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+- What is the target scenario for frequency regulation in future interconnected power systems
+with very high shares of grid-forming inverter-coupled generation? What types of
+experiments are needed to characterize hybrid systems with grid-following inverters, grid-
+forming inverters, and synchronous machines?
+Active power control of inverter-based renewable generation is technically feasible, but such
+plants will require sacrificing some energy production by operating below the maximum power
+point to provide the necessary reserves (Hoke et al. 2017). It is necessary to investigate, develop,
+and validate ways that inverter-based generation, with and without storage, can support grid
+frequency control. Last, we look at operational impacts for renewable generation resources:
+- What are the fundamental issues related to renewable grid-forming inverters providing
+frequency control?
+- What control and operational requirements enable renewable grid-forming inverters to
+replace the loss of inertia for frequency control?
+- What are the impacts of different levels of PV headroom (0% to 30%) on frequencies during
+large events, including frequency load shedding? How do these studies include distributed
+PV?
+3.2 Voltage Control
+Voltage control refers to generation control actions to increase or decrease real and/or reactive
+power production and network switching operations (either dynamic or static) required to
+maintain power system voltages within an acceptable range. The control requirements for these
+actions depend on the topology of the transmission or distribution system, the electrical distance
+between loads and generation, and the loading on the transmission or distribution system.
+Voltage control must be exercised through actions that are local to the voltage issues they seek to
+manage. Generally, voltage control via real power is not preferred given enhanced voltage
+sensitivity to reactive power control, and moreover generator revenue is mostly, if not entirely,
+via real power production. Voltage control is the measured change in voltage magnitude between
+the sending and receiving end of a grid component, such as a transmission or distribution line.
+Voltage regulation describes the ability of a system to provide near constant voltage over a wide
+range of variable load and generation conditions. Passive voltage drop takes place under various
+load conditions. Grid cables and conductors intrinsically have some amount of resistance,
+inductance, and capacitance that all change the voltage continuously along the line. Both the
+magnitude and phase angle of voltage change along the line. Active voltage intervention
+(increasing or reducing voltage to preferred operational limits) might use electromechanical or
+electronic components, from generators to other devices, specifically for voltage control. Such
+devices include load tap changers, voltage regulators, capacitor banks, synchronous condensers,
+and others, along with early-stage commercialization of solid-state technology (power
+electronics).
+For synchronous generators, their automatic voltage regulator adjusts operation voltage output
+either by adjusting power output via the main field or real and reactive power output by
+modulating the exciter field (electromagnetic flux) via controlling the exciter field current.
+Voltage control coordination among synchronous generators is via their Q-V droop control,
+expressed as a linear relationship between reactive power and voltage.
+
+=== page 30 ===
+19
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Grid-forming inverters natively provide voltage regulation via their Q-V droop laws. Mirroring
+terminology from frequency control, this is generally called primary voltage control to
+emphasize that these control actions are done locally. All grid-forming controllers considered
+here except virtual inertia have a linear trade-off between steady-state voltage and reactive
+power, which is often called volt-volt ampere reactive (VAR) control. This closely matches the
+behavior of synchronous machines, which also have such functions in their voltage control loop.
+Thus, grid-forming inverters can be especially helpful in providing voltage support in weak grids
+(IEEE/NERC 2018; NERC 2019). In general, Q-V droop enables multiple generation units to be
+connected in parallel, limits voltage deviations on a system, and mitigates reactive power flows
+between units.
+Recent advances in voltage control for inverter systems are mostly concentrated in microgrid
+systems with droop control (Lasseter and Piagi 2004) and/or off-grid applications. With respect
+to primary-level volt-VAR control, virtual impedances have been used to assist with reactive
+power sharing and to mitigate parameter sensitivity (Erickson, Jahns, and Lasseter 2012;
+Guerrero 2011; Mahmood, Michaelson, and Jiang 2015). To further enhance reactive power
+sharing and reduce steady-state errors, communications-based secondary-level controllers have
+been proposed (Simpson-Porco et al. 2015; Guerrero et al. 2011). To assist with scalability,
+distributed implementations with reduced numbers of communications links have been
+formulated. But because inverters would be much more numerous and geographically dispersed
+on bulk grids, it might be difficult to apply these approaches, which are tailored for microgrids.
+Typical grid-forming inverters do not provide high levels of fault current that typically stabilize
+voltage during transient events.
+As summarized in Figure 2, the timescales associated with machine voltage exciters and inverter
+control loops overlap. Recent findings have uncovered adverse interactions between grid-
+forming inverters and synchronous machine excitation systems that regulate voltages (Khan et al.
+2018a), and similar issues have been observed on grid-following control types (Lin et al. 2017).
+These interactions can destabilize hybrid systems and appear to be common to both grid-
+following and grid-forming inverter controls. Such phenomena were uncovered recently and
+form the basis of ongoing and active research.
+In recent years, grid-following inverters have also been updated with volt-VAR controls. Just as
+frequency-watt functionality is a modification of the typical grid-following controller, volt-VAR
+is a functionality layered on top of the baseline grid-following control loops. In contrast to
+machinery and grid-forming inverters, which exhibit linear volt-VAR trade-offs, a recent trend is
+to program piecewise linear volt-VAR relationships on grid-following inverters (IEEE 2018a).
+To prevent any interactions between volt-VAR controls and the baseline grid-following loops,
+time delays and filters are often used to segregate volt-VAR control action and artificially
+throttle its speed; however, such approaches are known to introduce undesired voltage
+oscillations and interactions between grid-following inverters (Chakraborty, Hoke, and
+Lundstrom 2015) and voltage-regulation equipment on the same distribution network (Zhou and
+Bialek 2007). Recent findings indicate that the coexistence of control delays and piecewise volt-
+VAR relationships might be responsible for such behavior (Farivar, Chen, and Low 2013; Zhu
+and Liu 2016).
+
+=== page 31 ===
+20
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+3.2.1 Research Questions
+Following is a summary of relevant technical challenges for voltage regulation:
+- Investigate the impact on voltage control resulting from the loss of reactive power generation
+in the bulk system as synchronous generators are replaced by thousands of grid-forming and
+grid-following inverters across the transmission, subtransmission, and distribution networks.
+This results in moving the control of reactive power and voltage from the bulk system to an
+array of distributed inverters with local voltage/VAR control. How do thousands of grid-
+forming and grid-following inverters at medium voltages and lower affect system voltage
+stability and control? How do these voltage regulation schemes coordinate with other
+devices, such as capacitor banks, static VAR compensators, synchronous condensers, and
+other voltage support devices? With competing volt-VAR support from different devices,
+how are trade-offs identified and optimization addressed?
+- What stability/interaction issues might arise between grid-forming inverters?
+- What are the interactions between machine excitation systems and inverters with either grid-
+forming or grid-following controls? Can inverter and machine-side controls be tuned to
+eliminate such interactions? Should grid-forming inverters be supplemented with oscillation-
+damping functions that mimic classic power system stabilizers?
+- How should we characterize the input and output impedance of grid-forming inverters across
+a wide frequency spectrum to illuminate the dynamic properties of inverters?
+- What are the requirements concerning the geographic distribution of generation and control
+capabilities? How do grid-following and grid-forming inverters control voltage and reactive
+power?
+- Does reactive power control impact system voltage stability? Are there limits to the mix of
+rotating generators and grid-following and grid-forming inverters to ensure robust voltage
+control with minimum circulating VAR?
+- How should VAR flow be controlled-at each inverter, at locally aggregated inverters, or
+through coupled communications networks?
+- For distribution connected inverters, how will their voltage support be coordinated with
+transmission voltage regulation, especially when transmission and distribution might have
+conflicting control requests? Piecewise linear volt-VAR control for distributed energy
+resources have inherent instability points. How are these avoided?
+- Can grid-following inverters with volt-VAR grid support be operated in tandem with grid-
+forming inverters?
+3.3 System Protection
+Protection of the electric grid is a branch of power systems engineering that involves the
+detection of abnormal grid operating conditions, such as low or high impedance faults, and the
+mitigation of deleterious effects of those abnormal conditions, such as disconnection of faulted
+parts of the network. Power system protection is concerned with ensuring the stability of the
+power system while minimizing how much of the network is disconnected. The overall goal is to
+minimize the geographic and temporal extent of network outages caused by abnormal conditions
+through the operation and coordination of protection devices in different areas of the grid. With
+inverter-based resources replacing synchronous generators, transmission-level protection is
+evolving. Priority focus today is on identifying weak grids (low short-circuit currents) and
+continuing to develop improved protection and relaying (IEEE/NERC 2018). Beyond inherently
+
+=== page 32 ===
+21
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+improving protection for weak grids, this is also associated with inverter-based resources having
+different magnitude and phase characteristics than synchronous generators. Various adaptive
+protection schemes have been proposed, and some are being tested in limited field trials. With
+more extensive inverter-based resources and especially distributed generation, today's protection
+will need to move away from basic, static schemes to more adaptive, situationally aware
+protection schemes.
+Because of the historical prevalence of synchronous generation on the bulk grid, distribution
+power system protection has been optimized for radial systems. The recent increased penetration
+of distributed grid-following resources has produced many technical challenges regarding classic
+distribution protection, with bidirectional power flow as one example. These challenges come
+from the nature of incorporating distributed energy resources on the distribution system as well
+as the dynamics of grid-following controls compared to traditional synchronous machines.
+Although the effect of grid-following controls on the incumbent protection system has been
+studied for a number of protection mechanisms (Martinez et al. 2011; Walling, Gursoy, and
+English 2012; IEEE PES 2013; Farantatos et al. 2013; Fischer and Mendonca 2012; Howard
+2013; Howard, Liang, and Harley 2014; Karaagac et al. 2015; Kocar et al. 2014; Kauffmann et
+al. 2015), and it has been determined that high penetrations of renewable generation result in
+potential incorrect operation of traditional protection mechanisms (EPRI 2014; EPRI 2017a;
+EPRI 2017b; EPRI 2017c; Seguin et al. 2016), the effect of grid-forming inverters on protection
+is fundamentally different than that of grid-following inverters and has not been extensively
+studied. The short-circuit currents from grid-forming inverters can be equivalent to synchronous
+generation but are normally constrained to 4-6 p.u. for short time periods (<10 cycles) before
+steady-state limits (<2 p.u.) are imposed using secondary current or voltage loops (Lasseter et al.
+2011). Brief time period short-circuit response (<10 cycles) is typically limited by semiconductor
+ratings, whereas steady-state short-circuit response is limited by several inverter hardware
+parameters (e.g., copper conductor sizes, thermal management system). It is an open question
+whether the displacement of traditional synchronous machines or grid-following inverters with
+grid-forming inverters will further exacerbate or alleviate the incorrect operation of protection
+mechanisms (NERC 2018c). Adaptive protection is suggested as a solution for such hybrid grids,
+and because of the lack of studies on the issue, we can only speculate on the effects of grid-
+forming inverters on incumbent protection schemes.
+For inverter-based resource implementation to enhance-or at least not hinder-current power
+system protection schemes, it will be necessary to coordinate the controls of grid-forming
+inverters with the 81 protection functions currently defined by the relevant protection standard,
+IEEE C37.2 (IEEE 2008). Although synchronous generation has well-defined and predictable
+currents and voltages during transient events (or well-understood models/experimental testing)
+that allow for protection engineers to ensure subtransient and transient reactance are within
+system specifications, no well-defined set of models and tests are provided from inverter
+manufacturers. Additionally, inverter behavior is dominated by firmware, which can change
+significantly throughout the operational lifetime of inverters, altering the faulted current
+characteristics and invalidating protection system designs. Detailed analytic modeling and
+simulation efforts, similar to those already underway for grid-following controls, are needed to
+examine the effects of grid-forming implementations on power system protection and provide a
+consistent framework for protection design for inverter installations. Without such a framework,
+
+=== page 33 ===
+22
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+protection engineering must carry out extensive studies on inverter behavior or extensive
+redesign of the protection system, which increases the risk, complexity, and cost of inverter
+installations.
+3.3.1 Transition to Distribution Bidirectional Power Flow
+Historically, the grid has been segmented between transmission, which contains the bulk
+generation sources, and distribution, which contains loads. Incorporating additional distributed
+generation sources at the distribution level changes the system paradigm from having
+unidirectional power flow to having branches that experience bidirectional currents because of
+the presence of local sources on the distribution network. If this backflow is in the opposite
+direction of the fault current (and thus decreases the effective net current flow), then the efficacy
+of traditional protection mechanisms is reduced. This backflow power is particularly challenging
+in the case of variable generation sources because changes in current level detected might be a
+result of a fault, change in load, or a change in generation. This variation in current might cause
+nuisance tripping, fail to trip, underreach/overreach problems, loss of coordination, auto-
+reclosing problems, and more.
+The bidirectional power flow problem is further exacerbated by the inability of grid-following
+controls to produce high fault currents (Fu et al. 2015). Traditional synchronous machines can
+produce fault currents of 10 p.u. (Altuve Ferrer and Schweitzer 2010). This large fault current
+allows enough margin for protection devices to actuate in the presence of a fault while
+eliminating unwanted tripping events. Conversely, traditional grid-following controls typically
+provide 2 p.u. or less of fault current in steady state, which is limited by the grid-following
+control scheme (Alvidrez et al. 2016) and inverter hardware engineering (e.g., copper
+conductors, switches, thermal management system). This relative lack of fault current makes the
+detection and mitigation of fault events more challenging and more susceptible to unwanted
+tripping events, especially when backflow power is considered.
+The displacement of grid-following controls with grid-forming inverters will not necessarily
+mitigate this bidirectional power flow problem. In theory, however, the fault current for grid-
+forming inverters, though dominated in the steady state by the control scheme, will have a
+subtransient behavior that more closely mimics synchronous machines and is significantly larger
+than that supplied by grid-following controls. This larger short-circuit subtransient response will
+be limited primarily by the short-circuit response of componentry in the grid-forming inverters,
+which is directly related to its internal impedance. Grid-forming inverters will have an
+intrinsically faster response to faults (i.e., current output increase) than grid-following inverters
+because they do not use a fast inner current-control loop. Additionally, the use of robust
+semiconductor devices with longer short-circuit times would allow for grid-forming inverters to
+source greater short-circuit currents for longer periods, which would yield an increase in the
+efficacy of traditional protection mechanisms than the pure grid-following case, although at a
+subsequent increase in inverter hardware costs.
+The short-circuit response of grid-forming inverters is an open question, and significant research
+is needed to characterize the short-circuit response of grid-forming inverters to many different
+abnormal grid operations (IEEE/NERC 2018). The short-circuit response should be well
+characterized and, if possible, increased using either software or hardware to approach the values
+provided by synchronous machines (Hartono and Setiabudy 2013).
+
+=== page 34 ===
+23
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+One protection issue unique to grid-forming inverters is operation in islanded/microgrid mode
+when a portion of the power system is disconnected from the bulk grid. Traditional grid-
+following controls will automatically shut off without the presence of an external grid signal
+voltage, but grid-forming inverters can continue to operate islanded from the area grid (in many
+cases, such resilient microgrid operation is a primary benefit to grid-forming inverters). To
+protect utility workers and other bystanders, some form of islanding protection will be needed
+for grid-forming inverters to safely operate in islanded mode while ensuring the safety of
+electrical personnel and other bystanders. This must be balanced by the need for system
+resilience because islanded operation is a key benefit of grid-forming inverters as a response to
+widespread catastrophic events. A robust set of standards is necessary to balance autonomous
+grid-forming operation in grid-connected mode during islanded/microgrid operation as well as
+during line maintenance by electrical personnel.
+3.3.2 Negative-Sequence Fault Current
+One method protection devices use to detect unbalanced fault conditions is to monitor negative-
+sequence fault currents. Synchronous machines will generate significant negative- and zero-
+sequence currents during a fault condition that can be used to identify abnormal grid operation.
+Traditional three-phase grid-following controls will not provide zero- or negative-sequence
+currents, which can be used to more easily identify the presence of unbalanced fault conditions;
+grid-following controls are designed to suppress negative-sequence current partially or entirely
+(Teodorescu, Liserre, and Rodriguez 2011; Erlich et al. 2013; IEEE/NERC 2018). European grid
+codes have recently been updated to add negative-sequence current injection performance
+requirements from inverter-based resources. Theoretically, grid-forming inverters should be able
+to reproduce the effects of synchronous machines in a fault condition, including sourcing zero-
+and negative-currents; however, no commercially available three-phase grid-forming inverters
+independently balance phases by providing zero- and negative-sequence currents (both as a result
+of the current dq control paradigm as well as the tendency of commercial inverters to come in
+three-wire, instead of four-wire, configurations as a cost-saving measure), so it is unknown if
+they can source these currents during fault conditions. The ability of current grid-forming
+inverters to produce zero- and negative-sequence current must be analyzed. Future grid-forming
+control schemes should allow for the sourcing of zero- and negative-sequence currents. This
+would yield an increase in the efficacy of traditional protection mechanisms compared to the
+pure grid-following control case and would significantly simplify the identification of
+unbalanced faults.
+3.3.3 Out-of-Step and Power Swing Blocking Protection
+At the transmission level, traditional grid-following controls introduce problems with
+synchronization, resulting in out-of-step protection tripping and power swing blocking. A power
+swing is the variation of power flows caused by changes in system state, such as load changes,
+line switching, and generator disconnect (NERC 2013; Gers and Ariza 2008). During these
+events, impedance line protection equipment differentiates between a fault and a power swing. If
+the protection equipment determines that the change in voltage/current is the result of a power
+swing and not a fault, it blocks protection relays from tripping. Similar to power swing blocking,
+out-of-step protection tripping is meant to differentiate between a normal power swing and one
+that is large enough to result in system instability.
+
+=== page 35 ===
+24
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Both these protection methods operate based on the rate of change of the voltage/current signal
+wave because power swing deviation is dominated by synchronous machine inertia and thus has
+a smaller rate of change than a fault. Because grid-following controls do not have any inherent
+rotational inertia, systems with high penetrations of grid-following inverters exhibit significant
+deviations in power swings and out-of-step protection-tripping characteristics from synchronous
+generation (EPRI 2017b; EPRI 2017c), which might interrupt normal power swing detection and
+cause unwanted tripping events.
+Incorporating grid-forming inverters should significantly mitigate both out-of-step protection
+tripping and power swing blocking protection concerns. Although they do not have traditional
+inertia, their response time is fast enough to stabilize power swings, and as long as sufficient
+headroom exists on the grid-forming generation source, they can simulate the dynamics of
+synchronous machine inertia. It has been shown that grid-forming-based systems can respond
+more quickly than inertia-based synchronous machines.
+Incorporating high penetration levels of grid-following controls has produced many challenges
+for traditional protection devices at both the distribution and transmission levels. As this trend
+accelerates, incorrect operation of protection devices and increases in unwanted tripping events
+is likely. Grid-forming inverters might significantly alleviate many of these problems because
+they are capable of more accurately mimicking the inertial response of synchronous machines, on
+which traditional protection is based; however, the detailed effects of grid-forming inverters on
+protection devices are relatively unknown, and no detailed studies have yet been conducted on
+the issue. Therefore, an open question is whether the displacement of traditional synchronous
+machines with grid-forming inverters or grid-following controls with grid-forming inverters will
+further exacerbate or alleviate these issues. More research is needed regarding the interaction of
+grid-forming-based systems with traditional protection mechanisms at both the transmission and
+distribution levels as grid-forming inverters displace synchronous generation as well as grid-
+following controls.
+Incorrect operation of conventional protection schemes is the most significant immediate barrier
+to incorporating grid-forming controls into the power system. A detailed understanding of grid-
+forming interaction with protection is necessary for system planners and designers to incorporate
+grid-forming controls as a fundamental part of their systems. A robust standards ecosystem that
+can mandate the consistent behavior of grid-forming inverters from different manufacturers to
+the same contingency scenarios is most likely needed to improve the protection of grids with
+grid-forming assets. We must explore whether today's protection schemes are appropriate and
+effective long-term solutions for a grid with a significant proportion of generation produced by
+grid-forming and grid-following inverters or whether a new protection paradigm is needed.
+Significant open research topics regarding the effect of grid-forming inverters on protection
+schemes include:
+- What is the short-circuit response of grid-forming inverters? What is the effect of their
+control schemes?
+- Do grid-forming inverters have the ability to produce zero- and negative-sequence fault
+current under unbalanced fault events?
+- What is the effect of the grid-forming dynamic response on out-of-step protection tripping
+and power swing blocking protection at the transmission level?
+
+=== page 36 ===
+25
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+- What analytic and simulation models are needed for grid-forming inverters under fault
+scenarios that will aid protection engineers in conducting accurate short-circuit studies?
+3.4 Fault Ride-Through Capability and Power System Voltage
+Recovery
+Severe disturbances, such as transmission faults or tripping of relatively large generators, can
+cause deleterious electromagnetic transients that can propagate throughout a large geographic
+area and trigger system-level problems-a cascading event, for example. To ensure that a power
+system reaches a desirable operational equilibrium after being perturbed, generators must remain
+connected and support the grid. The ability of inverter-based generation to remain connected
+while withstanding abnormal transients at its terminals is referred to as voltage ride-through,
+disturbance ride-through, or FRT capability (Fairley 2003).
+In addition to riding through a fault, power inverters must be capable of supporting the
+restoration of a power system to normal operating conditions in terms of voltage magnitude and
+angular speed. This task might be particularly challenging for inverters with grid-following
+controls because they rely on externally generated voltage sources. On the other hand, inverters
+with grid-forming controls could be more supportive of the grid because they are able to
+autonomously generate voltages cycling at a synchronous speed. In general, operating a grid with
+high penetrations of inverter-based generation is challenging because their power electronics
+cannot handle momentarily overrated currents as well as synchronous machines can (Kroposki et
+al. 2017). In the following discussion, we highlight a set of potential research areas pertaining to
+inverters with grid-forming controls to ensure that they are capable of riding thorough faults and
+supporting the grid.
+Modern grid codes mandate that inverter-based generation sources not disconnect as long as their
+voltage magnitudes remain within a prescribed class to regain stable grid operation (NERC 2016;
+NERC 2018c; Dallachy and Tait 2002; IEEE 2008). Also, some codes stipulate that inverters
+might be required by transmission operators to inject currents to support the operation of
+protection systems as well as the recovery of grid voltages during and after faults (Federal
+Energy Regulatory Commission [FERC] 2005). Notably, modern codes are invariant with
+respect to the type of the primary energy source, power inverter topology, and controls-see,
+e.g., FERC (2016) and NERC (2018c)-although FRT standards were first developed in
+response to the integration of wind energy resources (Tsili and Papathanassiou 2009).
+Standard PRC-024-2 (being updated by NERC for precision), for example, specifies a set of
+fundamental frequency voltage magnitudes that all generation must withstand during severe
+disturbances, as shown in Figure 6(a) (NERC 2016). Specifically, this set is defined by "high"
+and "low" time-duration bounds that enclose a "no-trip zone" of normalized voltage
+magnitudes.23 The voltages are considered to be measured at the point of interconnection of an
+inverter-based power plant with the bulk power system. The envelope is constructed from
+simulated voltage magnitude profiles that consider Zone 1 three-phase transmission system faults
+
+23 Time-duration curves specify the cumulative uninterrupted time that voltage magnitudes remain within a
+particular point of interconnection voltage interval.
+
+=== page 37 ===
+26
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+that can be cleared in no more than nine cycles.24 Recently, NERC issued a new
+recommendation to relax the high time-duration bound of PRC-024-2, as depicted in Figure 6(b)
+(NERC 2018c), which relaxes the high-voltage bounds for short-lived overvoltages. This update
+is motivated by the disconnection of PV power plants and the relatively recent publication of
+IEEE 1547-2018. The purpose is to ensure that inverter-based generation will also ride through
+subcycle overvoltage transients that are not included in PRC-024-2 as derived from fundamental
+frequency studies (Wind Generation Task Force 2007; NERC 2016).
+The PRC-024-2 standard also includes a frequency capability envelope, as shown in Figure 7.
+This is of special interest for generation technologies that have rotating mechanical components.
+In inverter-based generation applications, frequency might not be a suitable metric to command
+inverters to trip if inverter voltages and currents remain within operational limits. This fact is
+recognized in the NERC Inverter-Based Resource Performance Task Force guidelines (NERC
+2018c).
+
+a) PRC-024-2
+
+b) Transient overvoltage ride-through envelope
+Figure 6. FRT envelopes (NERC 2016)
+
+24 Zone 1 relays protect lines from faults occurring within 0% and 90%, for example, of the total length of the
+monitored line.
+
+=== page 38 ===
+27
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Figure 7. Off-nominal frequency capability envelope (NERC 2016)
+As noted, standards for inverter-based generation are based on deterministic simulations of
+current power systems, which are dominated by synchronous machinery. Specifically, the impact
+of several severe disturbances-a transmission fault, for example-is simulated to elucidate an
+envelope of operating conditions under which generation should remain connected. Note that in
+these simulations, the recovery of power system voltages after disturbances is established by
+regulated synchronous machine action, flexible AC transmission systems, and the response from
+loads, to name a few mechanisms. Nonetheless, if a significant number of inverter-based
+generation displaces synchronous machinery, such voltage recovery ability might be greatly
+constrained. In contrast to synchronous generators that can supply relatively large off-nominal
+currents for short periods of time, power inverters have hard current limits that could greatly
+restrict the current dynamic voltage recovery capability of future power grids. In fact, studies to
+derive modern voltage ride-through grid codes might no longer apply because they were derived
+from the observations of conventional power system behavior. For example, inverter-based
+generation might be limited to support the voltage recovery of grids with high penetrations of
+motor loads, which might slow down the voltage recovery because of high inrush current (Sun et
+al. 2019). Hence, inverter-based generation with grid-forming control might need to operate
+under low-voltage/high-current conditions for longer times than they do today, which leads to the
+following questions:
+- Will modern FRT grid codes apply to power systems with high penetrations of inverter-based
+generation with grid-forming controls?
+- Will FRT codes need to evolve to cover bulk power systems with high penetrations of
+inverter-based resources considering different fundamental behavior?
+- What voltage regulation capability will inverters with grid-forming controls need to provide
+to recover grid voltages after faults?
+In the context of inverter-based generation with grid-forming controls, an additional technical
+challenge is to ensure that these assets will be capable of satisfying future FRT grid codes (in any
+form provided). To this end, it would be useful to simulate and test inverters and their controls
+under extreme physical operating scenarios. This task requires a set of voltage disturbances that
+
+=== page 39 ===
+28
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+could make grid-forming controls fail. Generating this signal requires appropriate mathematical
+tools. The objective would be to develop robust grid-forming control strategies that can respond
+to all possible disturbances specified by FRT codes. A potential approach to solving this problem
+is the application of reachability analysis. This scientific tool is instrumental for ascertaining the
+dynamic performance of inverter-based generation driven by unknown-but-bounded disturbances
+(Villegas Pico and Aliprantis 2014; Villegas Pico and Aliprantis 2016). It is also useful to
+elucidate deleterious disturbance trajectories-terminal voltages, for example-that might drive
+a dynamic system such as inverter-based generation to surpass its limits (Villegas Pico and
+Aliprantis 2018).
+Addressing this challenge could be critical to answering the following questions:
+- What analysis tools are necessary to model the behavior of inverter-based systems with grid-
+forming controls in the context of FRT code compliance?
+- What set of voltage disturbance trajectories within the no-trip zone of FRT codes could lead
+to the disconnection of a grid-forming control strategy?
+In addition, coordination between the inverter controller and protection devices is very
+important. PRC-024-02 and similar codes are commonly used to set up automated disconnection
+schemes in protective relays. Unpredicted inverter controller behavior might cause problems for
+the schemes, which lead to the following research questions:
+- How should FRT codes be coordinated with the operation of protective relays?
+- Are the assumed communications-less schemes sufficiently robust for a primary response
+time period (e.g., <30 seconds)? Do communications and the integration of inverter control
+and protection technology help solve the problem?
+3.5 Modeling and Simulation Approaches
+The traditional grid dominance of synchronous machinery has shaped today's state-of-the-art
+grid analysis tools and their transient response performance. A common assumption applied to a
+wide range of modern simulation tools is that a power system has a hypothetical synchronous
+speed reference-i.e., center-of-inertia speed-that remains relatively close to nominal (e.g.,
+rad/s) during and after a transient. Consequently, the power transmission network has been
+classically represented by an abstract algebraic system in which electrical variables are sinusoids
+cycling at this reference speed (hence, captured as phasors) (Sauer and Pai 1998; Guttromson
+2002). This consideration is advantageous because simulations of bulk power systems with
+synchronous machines can be conducted efficiently in terms of computational performance. Such
+an assumption is justifiable in classic systems because synchronous machinery with relatively
+large rotor inertia constants can maintain close to nominal rotor speed during and after faults.
+Software that rely on this rationale include PSLF and PSS/E. This assumption is sometimes
+applied to electromagnetic transient simulation tools as well because voltages and currents within
+transmission lines can be considered sinusoidal functions of constant frequency (Sauer and Pai
+1998). Available electromagnetic transient simulation programs to study bulk power systems
+include PSCAD, CYME, and MATLAB/SIMULINK + SimPower.
+Increased inverter-based generation might invalidate the constant frequency assumption because
+of the lack of rotating inertia. Specifically, the cycling speed of generated voltages by inverters
+
+=== page 40 ===
+29
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+with controls such as droop and virtual oscillator control might change abruptly during faults.
+This can occur because the cycling speed of these controllers depends on the instantaneous
+power/current that is delivered by the power inverters. For example, AC power provided by an
+inverter could be as low as zero during faults, which causes the cycling speed to significantly
+deviate from nominal because of droop laws. Hence, such an operating scenario could challenge
+the underlying assumptions that underpin positive-sequence simulations, which are widely used
+today (Miller et al. 2003; Clark, Walling, and Miller 2011; Kosterev et al. 2008). To be able to
+capture the fast inverter dynamics during transients, electromagnetic transient simulation might
+be needed. Presently, some independent system operators and developers are using
+electromagnetic transient simulations to study small systems with high instantaneous levels of
+inverter generation.
+Because of the high computational burden of large-scale electromagnetic transient simulations,
+synchronous model and positive-sequence simulations will remain the main tool for bulk power
+system studies in the near future. Thus, there is an important need for appropriate inverter-based
+generation models for existing positive-sequence simulation tools. Currently, such models are
+usually highly simplified and often are not able to accurately capture the behavior of the system.
+Recently, the importance of improving the grid-following model to capture this behavior has
+been recognized (Ramasubramanian et al. 2017). Similarly, this is an important issue for grid-
+forming inverters. Because grid-forming controls are still in the early stage, this is an open
+research question that needs to be addressed.
+An additional problem when simulating inverter-based generation in power system simulations is
+that the characteristics of primary energy sources, such as wind turbines and PV arrays, are
+typically omitted. Incorporating these energy sources is important in a simulation because they
+are useful to determining whether generation will be able to meet demand after a large transient.
+Presently, positive-sequence models such as the DER_A neglect primary energy sources
+(Pourbeik 2017); therefore, an analyst will be unaware of whether there will be dynamic load-
+generation balancing problems after a large transient.
+Another challenge in modeling inverter-based generation is that compared to synchronous
+machines, many types of inverter-based generation are small, large in numbers, and connected to
+the grid at the distribution level. How to best represent many heterogeneous inverter-based
+generation in bulk power system simulations is an open research question (Clark, Walling, and
+Miller 2011). One way to bridge this gap is to start with a small unit and design a scaling law to
+model a collection of units (Khan et al. 2018a; Khan et al. 2018b; Lin et al. 2017; Purba et al.
+2018). Another approach is to use system identification methods to develop gray-box models
+directly at the feeder-head level.
+This analysis leads to the following research questions:
+- What is the appropriate inverter-based generations model for existing positive-sequence
+simulation tools?
+- What are the limitations of positive-sequence simulations to study the FRT of grids
+dominated by inverter-based generation during large transients?
+- Are the transmission model assumptions valid for studying small and large transients for
+systems with high penetration levels of inverter-based generation?
+
+=== page 41 ===
+30
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+- What modeling fidelity of the transmission system and inverter-based generation is
+necessary/appropriate for a comprehensive study on electric grids undertaking large
+transients?
+- How can the speed of computation of electromagnetic transient simulation software be
+increased to conduct very large power system simulations with high penetrations of inverter-
+based generation?
+- If aggregation is deemed necessary to increase the speed of computations, especially for
+characterizing significant distribution-connected grid-following and/or grid-forming
+inverters, what is the reliable aggregation approach to capture key behaviors?
+- Is considering generation capacity variation and dynamics of the primary energy sources
+critical for transient studies?
+- How are the models and simulations validated? Have the simulations covered all the possible
+contingency scenarios, especially for growth of grid-following inverter-based resources,
+changing load minimum/maximum/variability conditions, or interaction with other legacy
+grid devices?
+- Is a field trial required and feasible for model validation?
+- Is there sufficient industry availability and access to test data sets and public network
+models?
+An additional problem pertaining to the integration of inverter-based generation is that the
+primary energy sources are variable and thus uncertain. This implies that a framework is needed
+to assess uncertain dynamic simulations. This signifies that power system tools will be required
+to solve ordinary differential equations and/or algebraic differential equations with uncertain
+initial conditions and inputs. If uncertainties are not considered in simulations, deterministic
+simulations might be unable to predict adverse dynamic behavior introduced by variable initial
+conditions and inputs. At the present time, a variety of tools have been proposed that are capable
+of handling uncertainties pertaining to fault clearing time (Sharma et al. 2018) and initial
+conditions, such as trajectory sensitivity (Hiskens and Pai 2000), probabilistic collocation
+(Hockenberry and Lesieutre 2004), semidefinite programming (Choi, Seiler, and Dhople 2017),
+Lyapunov function families (Vu and Turitsyn 2016), and Taylor polynomials (Villegas Pico,
+Aliprantis, and Lin 2017). A common problem with these tools is the curse of dimensionality,
+which could be addressed by proper computational algorithms. The iTesla project also led an
+effort in developing a toolbox for simulating uncertain power systems (iTesla 2016). These
+considerations raise the following questions:
+- What is an appropriate tool to handle uncertainties in inverter-based systems driven by grid-
+forming controls?
+- How should we deal with the computational performance within the tool?
+
+=== page 42 ===
+31
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+4 Roadmap for the Development and Deployment of
+Grid-Forming Inverters
+Section 3 reviewed the present state of research on power system stability, protection, and
+modeling/simulation for grid-forming inverters. It outlined a wide range of open research
+questions that must be addressed. This section integrates and recasts these research questions in
+the form of a roadmap that discusses near- and long-term research priorities.
+In the near term, significant additional research, development, and field trials of grid-forming
+inverters are needed to build on and expand early, promising research findings on the
+opportunities for increased grid control with inverter-based forms of generation and storage
+(NERC 2018c). In the midterm, priorities will begin to shift (and in some instances have already
+shifted) to focus on the opportunities for grid-forming inverters to contribute materially to the
+performance of specific types of grids whose performance cannot be improved through other,
+less expensive means (such as weak grids with low short-circuit strength). Through these early-
+stage deployments, consensus will begin to emerge around the best ways to use grid-forming
+inverters to improve grid operations and deployments will begin to standardize. At this stage,
+experimentation and one-off deployments will transition to an accepted set of standard design
+practices and with supporting tools that will enable widespread deployment. See Figure 8.
+
+Figure 8. Key steps for maturing grid-forming inverter technologies
+As shown in Figure 9, some small island systems are already operating at or near 100% wind and
+solar, which include basic grid-forming controls supported by energy storage. The Maui, Hawaii,
+system now includes both transmission and distribution assets, and it is large enough to warrant
+formal coordination by the utility of the operation of utility-owned generation plants with a high
+penetration of residential rooftop solar. Scaling from smaller systems such as these to more
+complex grids will require a maturing of grid-forming inverter controls and power system
+stability design and operations experience.
+Grid-forming
+inverter key
+research
+questions
+Research and
+development
+Grid-forming
+validation and
+demonstration
+Standardize
+grid-forming
+deployments
+Tools for
+practitioners
+Wide grid-
+forming
+adoption
+
+=== page 43 ===
+32
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Source: Kroposki 2019
+Figure 9. Total annual and instantaneous inverter-based wind and solar generation based on
+power system size
+This roadmap attempts to anticipate the transitions from development to deployment by linking
+research needs to key stages in the growth of systems integration requirements for grid-forming
+inverters, starting from microgrids, to island or other smaller weak grids, and eventually to entire
+interconnections. This multiyear perspective recognizes that the scale and scope of the types of
+power systems for which inverters will be called on to provide grid-forming services will and
+should begin modestly. Specifically, it recognizes that the dominant form of inverter control
+today is grid-following and that future power systems will involve a mix of inverter-based
+sources with both grid-following and grid-forming control. Growth over time will be paced or
+enabled by how well grid-forming inverters perform and what advantages they bring. This
+recognition, in turn, establishes a natural sequence of priorities for the research questions that we
+must address.
+Figure 10 conceptualizes the early multiyear activities. Present efforts map to this roadmap for
+understanding grid-forming trends and focusing on key grid stability and systems integration
+areas. As research challenges are resolved, this will lead to lab demonstrations and then field
+trials, with early deployments for challenging grid conditions such as 100% renewable
+microgrids or weak grid scenarios on area power systems. With enough industry experience, this
+will translate into early standards work and the beginning of uniform deployments for grid-
+forming inverter-based resources.
+
+=== page 44 ===
+33
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+
+Figure 10. Multiyear systems integration activities for grid-forming inverter-based resources
+Scaling applications of grid-forming inverters from microgrids to large interconnections is
+addressed in the subsequent subsections. We conclude with short descriptions of two specific
+near-term research priorities: the review of regulatory and technical standards and the
+development of advanced modeling techniques. These priorities are foundational. We
+recommend immediate pursuit of them in parallel with and in direct support of the research
+outlined by our multiyear perspective. We also note that the timeline should reflect a
+conservative estimate of how technological development is likely to occur. Note that this might
+depart from actual renewable penetration levels, which are increasing rapidly and might outpace
+our anticipated timeline. This mismatch highlights the urgency for increased research activities
+within the grid-forming domain.
+4.1 From Microgrids to Isolated Power Systems to Continental-Scale
+Power Systems
+Replacing synchronous machines with grid-forming inverters at the transmission level will, in
+general, be the most mature iteration of grid-forming usage. This phase has a relatively long
+timeline (~10-30 years) and will be achieved only once a research base of protection, controls,
+and interoperability has been established and a robust standards environment defining the
+required functionality of grid-forming inverters on the bulk grid exists.
+In other words, the maturation process of grid-forming inverters will most likely unfold in a
+staged approach with lessons learned as well as operational experience and expertise gained
+throughout many years. Microgrid research during the past 20 years has already demonstrated
+that grid-forming microgrids are feasible in various settings-see, for example, the CERTS
+microgrid test bed in Lasseter et al. (2011). Also, we are now seeing the emergence of early-
+stage grid-forming inverters as a solution in islanded microgrids with high penetrations of
+renewable generation, such as Kauai, Hawaii. Demonstrating operations and reliability in these
+contexts provides the knowledge base and confidence required to incorporate grid-forming
+controls into larger electric grids. Bulk system grid planners and operators are already starting to
+Present
+-Early trends in grid-
+forming applications
+-Identify research
+challenges in:
+-Voltage control
+-Frequency control
+-System protection
+-System recovery
+-Modeling and
+simulation.
+1-3 years
+-Solve research
+challenges
+-Develop grid-forming
+hardware, software,
+and controls
+-Develop grid-forming-
+based grid controls
+-Lab testing and
+evaluation
+-Identify grid-forming
+integration challenges
+for demonstration.
+3-6 years
+-Microgrids to island
+grids grid-forming
+demonstration
+-Solve system
+integration challenges
+-Demonstration in weak
+grids/bulk grid
+-Demonstrate grid-
+forming grid controls
+-Draft standards.
+>6 years
+-Establish technical
+standards for grid-
+forming
+-Standardize grid-
+forming inverter models
+-Begin adaptation of
+grid-forming inverters
+for standard operation
+in bulk grids.
+
+=== page 45 ===
+34
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+consider their need for weaker portions within the North American interconnections (NERC
+2018c). Short seasonal or situational operating times with instantaneous periods of high inverter-
+based resources will be the initial focus areas.
+To pave the way for integrating increasing amounts grid-forming-controlled generation with
+decreasing amounts of synchronous generation in the bulk grid, several practical and small-scale
+applications of grid-forming inverters will need to be realized. Each implementation of grid-
+forming inverters provides practical knowledge about their use and operations, answers research
+questions, and brings new questions to the fore. A particularly challenging set of issues will
+involve adaptations or modifications to existing bulk power system control approaches-all of
+which have been based on comparatively slower acting electromechanical sources-to take
+advantage of the much faster acting control that is possible with inverter-based sources.
+The industry needs design evaluation and validation for grid-forming inverters. Robust design
+processes and stakeholder engagement therefore require:
+- Definition: Inverter manufacturer and power systems/utility engineer agreement on
+grid-forming definition and high-level capabilities. As highlighted at a high level in
+Section 2, clearer demarcations are needed for grid-following versus grid-forming
+capabilities.
+- Requirements specification: A stakeholder-derived list of device/component, packages,
+and technology requirements for grid-forming inverters (and/or plant controllers) for
+generation plant application-level requirements. A stakeholder-derived list of power
+system requirements for integrating the grid-forming device(s) into the area power
+system for secure operation.
+- Functional specification: The requirements specifications list should be mapped to the
+functional design requirements and development needs for (1) the inverters, (2) any
+plant supervisory controls, and (3) upgrades or development to the area power system.
+Functional specification should consider systems integration issues, such as inverter
+fault current contribution and existing/proposed protection schemes, especially for
+unbalanced conditions.
+- Modeling and simulation: Modeling and simulation of the grid-forming inverter-based
+resource and area power system must be used to evaluate and ensure that functional
+specifications meet target power system reliability and resilience requirements. Models
+should consider contingency operation and system end-to-end performance. Simulation
+results should correlate with subsequent testing and validation.
+- Testing and validation: Testing and validation should test the grid-forming capabilities
+against the functional specifications and proceed through robust system end-to-end
+testing. Testing should start with factory acceptance tests, proceed to preproduction site
+acceptance testing (possibly including hardware-in-the-loop testing) and production site
+acceptance testing, and then to commissioning testing.
+- Disseminating results: Industry will need to inform the design and testing; thus, the
+results of this process should be shared and debated. This will accelerate early
+standardization of grid-forming capabilities.
+
+Grid-forming implementation will most likely occur through phased implementations of grid-
+forming inverters, starting with smaller, more constrained microgrids and eventually moving
+
+=== page 46 ===
+35
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+toward larger grids (Figure 11). Even within application areas, phased implementation is likely
+to take place, with initial grid-forming implementation being seasonal or taking place during
+situational periods when additional firm sources are needed (e.g., instantaneous inverter-based
+generation periods or to provide voltage regulation under local, specific contingencies) before
+the widespread adoption of grid-forming-dominated systems. Therefore, there is a staging of
+implementation between different usage levels as well as stages of usage within application areas
+(denoted by a color gradient within an application area).
+
+Figure 11. Incorporating grid-forming (GFM) controls into the bulk electric grid will take place
+gradually after key functionalities have been demonstrated and confidence has been gained by
+operating them in smaller microgrids and island power systems.
+We are currently seeing (and will continue to see for the foreseeable future) the incorporation of
+grid-forming inverters in island microgrid environments. These microgrids, which are already
+being incorporated in a variety of areas (for example, rural villages in Alaska, university
+campuses, and military bases) run hybrid diesel-renewable grids with grid-forming inverters on
+energy storage. As the technology of grid-forming inverters matures, we will begin to see the
+emergence of 100% grid-forming islanded microgrids with scalable multi-inverter, multiple grid-
+forming-based architectures, and energy sources. Such microgrids, although small, can still
+provide a wealth of practical knowledge in the deployment of grid-forming inverters. Issues that
+can be examined in such environments include:
+- Distribution protection
+- Fault ride-through
+- Frequency/voltage support
+- Interoperability with a few (<10) rotational machines, other grid-forming inverters, and grid-
+following controls
+GFM in
+bulk grids
+10-30 years
+Instantaneous GFM challenges
+in weak portions of bulk grids.
+WECC, ERCOT, etc.
+3+ years
+GFM in larger island grids.
+3-15 years
+Instantaneous GFM challenges in island grids.
+Puerto Rico, Hawaii, etc.
+1+ years
+GFM in microgrids
+Rural villages, millitary bases, university campuses, community microgrids, etc.
+Present-10 years
+
+=== page 47 ===
+36
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+- Differences in grid-forming operation for various primary energy sources on the back-end
+source (e.g., battery, solar, and wind).
+As the technology for grid-forming-based microgrids mature, grid-forming-based
+implementations will begin to appear in larger island grid settings (3-15 years), such as in
+Hawaii and the Caribbean. These grids have a larger number of interoperating sources and loads,
+are geographically larger, and exhibit much larger and more complex behavior compared to site-
+level microgrids. Additionally, although site-level islanded microgrids are primarily built at
+distribution-level voltages, many island grids have subtransmission-level voltages.
+One pressing issue is the increase in grid-connected PV sources using grid-following inverters
+and the resulting difficulty of keeping frequency within bounds. The emerging frequency issues
+on the Hawaiian island of Oahu are directly attributed to the penetration level of grid-following
+inverters. This is happening now, independent of a full understanding of the grid-forming
+technology (El Khatib, Wei, and Lasseter 2018). Hence, tools and study cases need to be
+developed to bring more understanding to the issues experienced at Oahu and in the Caribbean.
+Other specific issues that will be demonstrated in this context are:
+- Subtransmission protection
+- Interoperability with some (<100) rotational machines, other grid-forming inverters, and
+grid-following controls dispersed over an island-scale geographic area
+- Upgrading existing grid-following inverters to have grid-forming capability
+- Stability analysis.
+Validations through these comparatively smaller grids will contribute to the irreplaceable field
+and operational experience, along with supporting technical requirements and standards, needed
+to guide the large-scale implementation of grid-forming inverters within large interconnected,
+high-voltage transmission grids. These implementations will begin piecemeal and respond to
+specific operational problems created by increased inverter-based generation (relative to
+synchronous generation), such as the need to shore up weaker regions within the interconnection
+(7-20 years). Although operations in smaller grids will provide key insights about operational
+practices and interoperability, some fundamental research gaps still exist preventing widespread
+implementation on large grids that are currently dominated by synchronous machines. These
+include:
+- Transmission protection
+- Interoperability with many (>1,000) rotational machines, other grid-forming inverters, and
+grid-following controls dispersed throughout a continental area
+- Bulk system stability.
+4.2 The Need to Establish a Technical Standards Environment for
+Grid-Forming Inverters
+Because grid-forming inverters exhibit voltage source-like behavior, they have distinct behaviors
+that imply a need for tailored standards. For instance, existing IEEE 1547 standards for
+distribution-level assets emphasize current harmonics limits, reactive power limits, and anti-
+islanding functions. In contrast, grid-forming units are predominantly used for voltage regulation
+
+=== page 48 ===
+37
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+instead of current regulation, reactive power can vary for voltage support, and grid-forming
+inverters natively provide uninterrupted power during islanded conditions.25
+The following aspects should be considered in the context of ongoing efforts to modernize
+standards for grid-connected inverters within IEEE, the International Electrotechnical
+Commission, FERC, and NERC-see NERC (2018c) for an example of ongoing modernization
+efforts:
+- Current versus voltage waveform quality: Under the existing regulatory paradigm, inverters
+are controlled to inject sinusoidal currents with minimal harmonic content. This aligns with
+prevailing practices in which harmonics demanded by nonlinear loads are provided by
+machines and reactive components, whereas inverters inject only 60-Hz components. If
+machines are displaced by grid-forming inverters, however, then inverters will need to
+provide these current harmonics, which some loads will require. In the future, the primary
+function of inverters will be to provide well-regulated system voltages for loads. The
+challenge is to devise a set of standards that emphasizes voltage control while recognizing
+the physical current-carrying limits of inverters.
+- Standards for Q-V droop functions: Industry practice is largely predicated on grid-following
+inverters that operate at or near unity power factor. In recent years, this constraint has been
+relaxed with slow-acting volt-VAR controls that are intended to support system voltages. As
+machines are gradually displaced by grid-forming inverters, the burden of satisfying reactive
+power demanded by loads will shift further toward these inverters. In this future scenario,
+grid-forming inverters must be allowed to respond according to their autonomously executed
+and fast-acting Q-V droop functions to simultaneously satisfy loads and support system
+voltages. These Q-V droop functions for grid-forming inverters are distinct from the volt-
+VAR standards currently in place.
+- Rethinking unintentional islanding functions: Because a grid-following inverter needs a well-
+defined voltage at its terminals, it can function in islanded settings only under specific
+conditions (e.g., inverter power must match load demand before the system is islanded).
+Because grid-forming inverters act like voltage sources, they generally continue operating
+during islanded conditions. This behavior departs from the existing regulatory framework.
+Future standards must reconcile the following questions:
+o How can distribution engineers de-energize systems before carrying out
+maintenance?
+o Should islanded subsystems within a larger grid remain energized to enhance
+reliability and facilitate a system black-start?
+
+25 If the cumulative capacity of grid-forming inverters on a system exceeds the load, islanded operation can be
+sustained.
+
+=== page 49 ===
+38
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+4.3 The Need to Begin Developing Appropriate Models for Existing
+Simulation Tools as Well as Enhanced Modeling and Simulation
+Tools
+Modern state-of-the-art grid analysis tools have been tailored toward grids dominated by
+synchronous machines. A widely adopted assumption within these tools is that the synchronous
+speed of power systems remains relatively close to nominal during and after a transient;
+however, this widely adopted assumption might not be valid in systems with high penetrations of
+inverter-based generation because they lack synchronously connected rotor inertia. Hence,
+researching appropriate modeling and simulation tools that are suitable to study the transition
+from machine-based systems to inverter-based ones is a high priority. In fact, some independent
+system operators and developers require this capability immediately, highlighting the importance
+and urgency of appropriate modeling and simulation tools.
+Another important challenge is to simulate inverter controllers as implemented in the field to
+accurately predict undesirable performance. This problem was highlighted during the recent Blue
+Cut Fire, Canyon Fire 2, and subsequent events, where disconnections of inverters were not
+predicted by current simulation (NERC 2017; NERC 2018a). This problem can extend to the
+future incorporation of inverters with grid-forming controls; hence, appropriate models for
+existing transient simulation tools should be implemented.
+Other modeling and simulation challenges include:
+- How can we represent a large number of distribution-connected inverters? How can we
+include primary renewable energy source models?
+- What is necessary to reduce the bulk power system simulation computation burden with
+added inverter-based generation?
+- How are the models and simulations validated? Have the simulations covered all the possible
+contingency scenarios, especially for growth of grid-following inverter-based resources,
+changing load minimum/maximum/variability conditions, or interaction with other legacy
+grid devices?
+- When are field trials required and when are they feasible for model validation?
+- How can we ensure robust industry availability and access to test data sets and public
+network models?
+
+=== page 50 ===
+39
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+5 Conclusions
+This report is intended to provide a comprehensive analysis of the challenges in integrating
+inverter-based resources and offer recommendations on potential technology pathways to inform
+the academic community, industry, and government research organizations. This roadmap
+attempted to envision the key short- and long-term research-and-development needs for inverter-
+based resource grid-forming controls, protection, and modeling as part of hybrid grids. For the
+next decade and beyond, the large interconnections in North America will comprise both
+electromechanical and inverter-based resources. Inverter-based, grid-forming resources will be
+necessary for the stable operation of the bulk power grid. An ongoing assessment of system
+performance and grid-forming inverter evolution will be needed.
+Additional short-term and long-term roadmapping will be needed for detailed inverter-based
+resource performance, including from distributed energy resources, during contingency events. A
+key example is inverter-based resource and grid-forming capabilities to support black-start.
+Small but megawatt-scale challenges are already emerging (Walton 2019). Ongoing
+roadmapping is needed for a systems perspective given the complexity of these contingency
+events and lack of industry experience with inverter-based, grid-forming generation.
+Detailed system performance metrics will need to be developed that support analyzing this
+transition. Technology and system roadmaps will need to be created that address technology
+development, validation, and maturity assessment. These metrics will need to balance the
+physical performance metrics of hybrid grids with expected improved performance from all
+generators. Inverter-based resources are capable of faster and more effective grid-support
+capabilities compared to traditional synchronous generation with electromechanical limits
+(Loutan et al. 2017). The capabilities of synchronous generators are expected to evolve for better
+use in conjunction with inverter-based resources. Future roadmapping efforts will need to
+forecast this evolution to assess how each generator type might evolve for the transitioning grid.
+Transitioning to even more inverter-based resources could eventually necessitate establishing a
+roadmap for 100% power electronics grids ranging from large island grids to weak portions of
+the bulk grids. This future roadmap could leverage the learning and experiences from
+instantaneous, high-penetration periods of inverter-based resources. One hundred percent power
+electronics grids would be based on the physical properties and control responses of inverter and
+converter systems in conjunction with expanded use of DC interconnections. These challenges
+stem from the recognition that there is no established body of experience for operating hybrid
+AC-to-DC power electronics-based power systems at the scale of today's North American
+interconnections. System design as well as steady-state and contingency operations research and
+development of 100% power electronics grids will be necessary, and this should be based on a
+robust roadmap of systems technology development and testing.
+Future assessment and roadmapping will also need to address the many areas beyond the scope
+of this report that more broadly correlate to long-term grid modernization efforts. For instance,
+future evaluation is needed on the following topics: distribution system engineering and
+operations for grid-forming inverter controls, a grid of microgrids and effective dynamic
+islanding topology solutions, unintentional islanding on distribution grids, evolution of sensing
+and communications systems-including more effective use of synchrophasors (e.g., phasor
+
+=== page 51 ===
+40
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+measurement units) -considering growth of power electronics-based loads and their control,
+various other power quality issues (e.g., harmonics), hybrid AC-to-DC systems, system costs
+analysis, economic dispatch, system adequacy and reserves assessments for power electronics
+dominated grids, traditional security evaluation (i.e., contingency analysis, black-start), market
+design, economic regulation, and cybersecurity. Power system stability and protection are
+foundational technical issues, and these characteristics are central to our discussion of grid-
+forming inverters, so it is our hope that this roadmap becomes a cornerstone for future work on
+power systems modernization.
+
+=== page 52 ===
+41
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+References
+Alatrash, H., et al. 2012. "Generator Emulation Controls for Photovoltaic Inverters." IEEE
+Transactions on Smart Grid 3.2: 996-1011.
+Alegria, E., T. Brown, E. Minear, and R.H. Lasseter. 2014." CERTS Microgrid Demonstration
+with Large-Scale Energy Storage and Renewable Generation." IEEE Transactions on Smart Grid
+5, no. 2: 937-943.
+Altuve Ferrer, H., and E.O. Schweitzer III. 2010. Modern Solutions for Protection, Control and
+Monitoring of Electric Power Systems. Pullman, WA: Schweitzer Engineering Laboratories,
+Quality Books, Inc.
+Alvidrez, J., S. Ranade, S. Brahma, S. Bukowski, C.S. Monroy, and A. Ellis. 2016. "An
+Analytical Model of a Single Phase DQ-Controlled Inverter for Power System Short-Circuit
+Calculations." Paper presented at the 2016 North American Power Symposium (NAPS).
+Beck, H.-P., and R. Hesse. 2007. "Virtual Synchronous Machine." Proceedings of the Electrical
+Power Quality and Utilisation (EPQU 2007), 9th International Conference. Piscataway, NJ:
+Institute of Electrical and Electronics Engineers.
+Chakraborty, S., A. Hoke, and B. Lundstrom. 2015. "Evaluation of Multiple Inverter Volt-Var
+Control Interactions with Realistic Grid Impedances." Proceedings of the 2015 IEEE Power
+Energy Society General Meeting. Piscataway, NJ: Institute of Electrical and Electronics
+Engineers.
+Chandorkar, M.C., D.M. Divan, and R. Adapa. 1993. "Control of Parallel Connected Inverters in
+Standalone ac Supply Systems." IEEE Transactions on Industrial Applications 29, no. 1
+(January/February).
+Choi, H., P.J. Seiler, and S.V. Dhople. 2017. "Propagating Uncertainty in Power-System DAE
+Models with Semidefinite Programming." IEEE Transactions on Power Systems 32, no. 4:
+3146-3156.
+Clark, K., R.A. Walling, and N.W. Miller. 2011. "Solar Photovoltaic (PV) Plant Models in
+PSLF." Proceedings of the 2011 IEEE Power and Energy Society General Meeting. Piscataway,
+NJ: Institute of Electrical and Electronics Engineers, 1-5.
+Colombino, M., D. Groß, and F. Dörfler. 2017. "Global Phase and Voltage Synchronization for
+Power Inverters: A Decentralized Consensus-Inspired Approach." Proceedings of the 2017 IEEE
+56th Conference on Decision and Control (CDC). Piscataway, NJ: Institute of Electrical and
+Electronics Engineers.
+Dallachy, J.L., and I. Tait. 2002. "Guidance Note for the Connection of Wind Farms." 2.2.2, SP
+Transmission and Distribution, Scottish Hydro-Electric.
+Dhople, S.V., B.B. Johnson, and A.O. Hamadeh. 2013. "Virtual Oscillator Control for Voltage
+Source Inverters." Communication, Control, and Computing (Allerton), Proceedings of the 2013
+
+=== page 53 ===
+42
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+IEEE 51st Annual Allerton Conference. Piscataway, NJ: Institute of Electrical and Electronics
+Engineers.
+Dong, S., and Y.C. Chen. 2017. "Adjusting Synchronverter Dynamic Response Speed via
+Damping Correction Loop." IEEE Transactions on Energy Conversion 32: 608-619.
+El Khatib, M., D. Wei, and R. Lasseter. 2018. "Evaluation of Inverter-Based Grid Frequency
+Support Using Frequency-Watt and Grid-Forming PV Inverters." Proceedings of the 2018 IEEE
+Power and Energy Society General Meeting. Piscataway, NJ: Institute of Electrical and
+Electronics Engineers, 1-5.
+Electric Power Research Institute (EPRI). 2014. Impact of Renewables on System Protection:
+Frequency Domain Short-Circuit Models of Converter Interfaced Renewables and Guidelines for
+Protection Studies (3002002810). Palo Alto, CA.
+---. 2017a. Advanced Short-Circuit Modeling, Analysis and Protection Schemes Design for
+Systems with Renewables-TVA Case Study: Revision of Line Distance Protection Schemes
+Using Detailed Models for Renewables and Digital Relays in Electromagnetic Transient
+Programs (30020109507). Palo Alto, CA.
+---. 2017b. Impact of Renewables on System Protection: Short-Circuit Phasor Models of
+Renewables and Impact of Renewables on Power Swing Detection and Distance Protection. Palo
+Alto, CA.
+---. 2017c. System Protection Guidelines for Systems with High Levels of Renewables:
+Impact of Wind & Solar Generation on Negative-Sequence and Power Swing Protection
+(3002010937). Palo Alto, CA.
+Erickson, M.J., T.M. Jahns, and R.H. Lasseter. 2012. "Improved Power Control Bandwidth of
+Grid-Forming Sources in a CERTS Microgrid." Proceedings of the 2012 IEEE Energy
+Conversion Congress and Exposition. Piscataway, NJ: Institute of Electrical and Electronics
+Engineers, 2366-2373.
+Erlich, I., T. Neumann, F. Shewarega, P. Schegner, and J. Meyer. 2013. "Wind Turbine Negative
+Sequence Current Control and its Effect on Power System Protection." Proceedings of the IEEE
+Power and Energy Society General Meeting. Piscataway, NJ: Institute of Electrical and
+Electronics Engineers, 1-5.
+Fairley, P. 2003. "Steady as She Blows." IEEE Spectrum 40.8 (August): 35-39.
+Farantatos, E., U. Karaagac, H. Saad, and J. Mahseredjian. 2013. "Short-Circuit Current
+Contribution of Converter Interfaced Wind Turbines and the Impact on System Protection."
+Paper presented at the 2013 Bulk Power Systems Dynamics and Control - IX (IREP),
+Rethymnon, Crete, Greece, August 25-30.
+Farivar, M., L. Chen, and S. Low. 2013. "Equilibrium and Dynamics of Local Voltage Control in
+Distribution Systems." Proceedings of the 2013 IEEE 52nd Annual Decision and Control
+(CDC). Piscataway, NJ: Institute of Electrical and Electronics Engineers, 4329-4334.
+
+=== page 54 ===
+43
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Federal Energy Regulatory Commission (FERC). 2005. "Interconnection for Wind Energy."
+FERC Order 661-A, December. http://www.ferc.gov.
+---. 2016. "Reactive Power Requirements for Non-Synchronous Generation." FERC Std.
+Order No. 827, June, docket No. RM16-1-000.
+Fischer, M., and A. Mendonca. 2012. "Representation of Variable Speed Full Conversion Wind
+Energy Converters for Steady-State Short-Circuit Calculations." Proceedings of the IEEE Power
+and Energy Society Transmission & Distribution Conference & Exposition. Piscataway, NJ:
+Institute of Electrical and Electronics Engineers.
+Fu, Q., A. Nasiri, A. Solanki, A. Bani-Ahmed, L. Weber, and V. Bhavaraju. 2015. "Microgrids:
+Architectures, Controls, Protection, and Demonstration." Electric Power Components and
+Systems 43 no. 12: 1453-1465.
+Gers, J.M., and J. Ariza. 2008. "Operation Simulation of OOS Relays Using COMTRADE Files
+and Transient Stability Analysis."
+Golestan, S., J.M. Guerrero, and J.C. Vasquez. 2017. "Three-Phase PLLs: A Review of Recent
+Advances." IEEE Transactions on Power Electronics 32 no. 3: 1894-1907.
+Guerrero, J.M., et al. 2011. "Hierarchical Control of Droop-Controlled AC and DC Microgrids-
+A General Approach Toward Standardization." IEEE Transactions on Industrial Electronics 58
+no. 1: 158-172.
+Guttromson, R.T. 2002. "Modeling Distributed Energy Resource Dynamics on the Transmission
+System." IEEE Transactions on Power Systems 17 no. 4 (November): 1148-53.
+Hart, P.J., R.H. Lasseter, and T.M. Jahns. 2016. "Symmetric Droop Control for Improved Hybrid
+AC/DC Microgrid Transient Performance." Proceedings of the 2016 IEEE Energy Conversion
+Congress and Exposition (ECCE). Piscataway, NJ: Institute of Electrical and Electronics
+Engineers.
+Hartono, B.S., and R. Setiabudy. 2013. "Review of Microgrid Technology." Proceedings of the
+IEEE International Conference on Quality in Research. Piscataway, NJ: Institute of Electrical
+and Electronics Engineers, 127-132.
+Hiskens, I.A., and M.A. Pai. 2000. "Trajectory Sensitivity Analysis of Hybrid Systems." IEEE
+Transactions in Circuits and Systems 47 no. 2 (February): 204-220.
+Hockenberry, J., and B. Lesieutre. 2004. "Evaluation of Uncertainty in Dynamic Simulations of
+Power System Models: The Probabilistic Collocation Method." IEEE Transactions on Power
+Systems 19 no. 3 (August): 1483-1491.
+Hoke, A.F., M. Shirazi, S., Chakraborty, E., Muljadi, and D. Maksimovic. 2017. "Rapid Active
+Power Control of Photovoltaic Systems for Grid Frequency Support." IEEE Journal of Emerging
+and Selected Topics in Power Electronics 5 no. 3: 1154-1163.
+
+=== page 55 ===
+44
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Howard, D.F. 2013. "Short-Circuit Currents in Wind-Turbine Generator Networks." Ph.D. diss.,
+Electrical and Computer Engineering, Georgia Institute of Technology.
+Howard, D.F., J. Liang, and R.G. Harley. 2014. "Short-Circuit Modeling of DFIGs with
+Uninterrupted Control." IEEE Journal of Emerging and Selected Topics in Power Electronics 2
+no. 1 (March): 47-57.
+Institute of Electrical and Electronics Engineers (IEEE) Power and Energy Society (PES) Joint
+Working Group. 2013. Fault Current Contributions from Wind Plants. Piscataway, NJ: Institute
+of Electrical and Electronics Engineers.
+Institute of Electrical and Electronics Engineers (IEEE). 2018a. "IEEE 1547 Standard for
+Interconnection and Interoperability of Distributed Energy Resources with Associated Electric
+Power Systems Interfaces."
+---. 2008b. "C37.2 IEEE Standard Electrical Power System Device Function Numbers,
+Acronyms, and Contact Designations."
+Institute of Electrical and Electronics Engineers (IEEE)/North American Electric Reliability
+Corporation (NERC) Task Force on Short-Circuit and System Performance Impact of Inverter
+Based Generation. 2018. Impact of Inverter Based Generation on Bulk Power System Dynamics
+and Short-Circuit Performance. Piscataway, NJ: Institute of Electrical and Electronics
+Engineers.
+iTesla. 2016. "The project framework and ambitions." http://www.itesla-project.eu/project.html.
+Johnson, B., S. Dhople, A. Hamadeh, and P. Krein. 2014. "Synchronization of Parallel Single-
+Phase Inverters Using Virtual Oscillator Control." IEEE Transactions on Power Electronics
+29.11 (November): 6124-6138.
+Johnson, B.B., et al. 2016a. "Synthesizing Virtual Oscillators to Control Islanded Inverters."
+IEEE Transactions on Power Electronics 31 no. 8: 6002-6015.
+Johnson, B.B., et al. 2017. "Comparison of Virtual Oscillator and Droop Control." Proceedings
+of the 2017 IEEE Control and Modeling for Power Electronics (COMPEL). Piscataway, NJ:
+Institute of Electrical and Electronics Engineers.
+Johnson, J., J. Neely, J. Delhotal, S. Gonzalez, and M. Lave. 2016b. "Photovoltaic Frequency-
+Watt Curve Design for Frequency Regulation and Fast Contingency Reserves." IEEE Journal of
+Photovoltaics 6 no. 6 (November): 1611-1618.
+Karaagac, U., T. Kauffmann, I. Kocar, H. Gras, J. Mahseredjian, B. Cetindag, and E. Farantatos.
+2015. "Phasor Domain Modeling of Type-IV Wind Turbine Generator for Protection Studies."
+Proceedings of the 2015 IEEE Power and Energy Society General Meeting. Piscataway, NJ:
+Institute of Electrical and Electronics Engineers.
+Katiraei, F., M.R. Iravani, and P.W. Lehn. 2005. "Micro-Grid Autonomous Operation During
+and Subsequent to Islanding Process." IEEE Transactions on Power Delivery 20 no. 1: 248-257.
+
+=== page 56 ===
+45
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Kauffmann, T., U. Karaagac, I. Kocar, H. Gras, J. Mahseredjian, B. Cetindag, and E. Farantatos.
+2015. "Phasor Domain Modeling of Type-III Wind Turbine Generator for Protection Studies."
+Proceedings of the 2015 IEEE Power and Energy Society General Meeting. Piscataway, NJ:
+Institute of Electrical and Electronics Engineers.
+Khan, M.M.S., Y. Lin, B. Johnson, M. Sinha, and S. Dhople. 2018a. "Stability Assessment of a
+System Comprising a Single Machine and a Virtual Oscillator Controlled Inverter with Scalable
+Ratings." Proceedings of the 2018 IEEE 44th Industrial Electronics Society IECON. Piscataway,
+NJ: Institute of Electrical and Electronics Engineers, 4057-4062.
+Khan, M.M.S., Y. Lin, B. Johnson, V. Purba, M. Sinha, and S. Dhople. 2018b. "A Reduced-
+Order Aggregated Model for Parallel Inverter Systems with Virtual Oscillator Control."
+Proceedings of the 2018 IEEE 19th Workshop on Control and Modeling for Power Electronics
+(COMPEL). Piscataway, NJ: Institute of Electrical and Electronics Engineers, 1-6.
+Kocar, I., T. Kauffmann, U. Karaagac, J. Mahseredjian, and E. Farantatos. 2014. "Phasor
+Domain Modeling of Full-Scale Frequency Converters for Protection Studies." Paper presented
+at the 4th International Workshop on Integration of Solar Power into Power Systems, Berlin,
+Germany, November 2014.
+Kosterev, D., A. Meklin, J. Undrill, B. Lesieutre, W. Price, D. Chassin, R. Bravo, and S. Yang.
+2008. "Load Modeling in Power System Studies: WECC Progress Update." Proceedings of the
+IEEE Power and Energy Society General Meeting-Conversion and Delivery of Electrical
+Energy in the 21st Century. Piscataway, NJ: Institute of Electrical and Electronics Engineers, 1-
+8.
+Kroposki, B., B. Johnson, Y.C. Zhang, V. Gevorgian, P. Denholm, B.-M. Hodge, and B.
+Hannegan. 2017. "Achieving a 100% Renewable Grid: Operating Electric Power Systems with
+Extremely High Levels of Variable Renewable Energy." IEEE Power and Energy Magazine, 15
+no. 2: 61-73.
+Kroposki, B. 2019. Updated figure from "Summarizing the Technical Challenges of High Levels
+of Inverter-based Resources in Power Grids." Presentation at University of Washington
+conference: Grid-forming Inverters for Low-inertia Power Systems.
+https://lowinertiagrids.ece.uw.edu/
+Kundur, P., et al. 2004. "Definition and Classification of Power System Stability." IEEE
+Transactions on Power Systems 19 no. 2: 1387-1401.
+Kundur, P., N.J. Balu, and M.G. Lauby. 1994. Power System Stability and Control, Vol. 7. New
+York: McGraw-Hill.
+Lasseter, R., et al. 2002. Integration of Distributed Energy Resources: The CERTS Microgrid
+Concept. Berkeley, CA: Lawrence Berkeley National Laboratory.
+Lasseter, R.H. 1998. "Control of Distributed Resources." Proceedings of the 1998 International
+Conference on Bulk Power Systems Dynamics and Control IV-Restructuring. 323-330.
+
+=== page 57 ===
+46
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Lasseter, R.H., and P. Piagi. 2004. "Microgrid: A Conceptual Solution." Proceedings of the 2004
+IEEE Power Electronics Specialists Conference Aachen, Germany, Vol. 6. Piscataway, NJ:
+Institute of Electrical and Electronics Engineers, 20-25.
+Lasseter, R.H., J.H. Eto, B. Schenkman, J. Stevens, H. Vollkommer, D. Klapp, E. Linton, Hector
+Hurtado, and J. Roy. 2011. "CERTS Microgrid Laboratory Test Bed." IEEE Transactions on
+Power Delivery 26, no. 1: 325-332.
+Lin, Y., B. Johnson, V. Gevorgian, V. Purba, and S. Dhople. 2017. "Stability Assessment of a
+System Comprising a Single Machine and Inverter with Scalable Ratings." Paper presented at the
+2017 North American Power Symposium (NAPS), 1-6.
+Loutan, C., Klauer, P., Chowdhury, S., Hall, S., Morjaria, M., Chadliev, V., Milam, N., Milan, C.
+and Gevorgian, V., 2017. Demonstration of essential reliability services by a 300-MW solar
+photovoltaic power plant (No. NREL/TP-5D00-67799). National Renewable Energy Laboratory:
+Golden, CO.
+Lu, M., M. Sinha, G. Seo, B. Johnson, and S. Dhople. 2018. "Adaptation of Commercial
+Current-Controlled Inverters for Operation with Virtual Oscillator Control." Proceedings of the
+2018 IEEE Applied Power Electronics Conference. Piscataway, NJ: Institute of Electrical and
+Electronics Engineers.
+Mahmood, H., D. Michaelson, and J. Jiang. 2015. "Accurate Reactive Power Sharing in an
+Islanded Microgrid Using Adaptive Virtual Impedances." IEEE Transactions on Power
+Electronics 30 no. 3: 1605-1617.
+Martinez, J., P.C. Kjar, P. Rodriguez, and R. Teodorescu. 2011. "Short-Circuit Signatures from
+Different Wind Turbine Generator Types." Proceedings of the 2011 IEEE Power Systems
+Conference and Exposition. Piscataway, NJ: Institute of Electrical and Electronics Engineers.
+Miller, N.W., J.J. Sanchez-Gasca, W.W. Price, and R.W. Delmerico. 2003. "Dynamic Modeling
+of GE 1.5- and 3.6-MW Wind Turbine-Generators for Stability Simulations." Proceedings of the
+2003 IEEE Power Engineering Society General Meeting. Piscataway, NJ: Institute of Electrical
+and Electronics Engineers, 1977-1983.
+Natarajan, V., and G. Weiss. 2017. "Synchronverters with Better Stability Due to Virtual
+Inductors, Virtual Capacitors and Anti-Windup." IEEE Transactions on Industrial Electronics
+64: 5994-6004.
+North American Electric Reliability Corporation (NERC). 2013. NERC System Protection and
+Control Subcommittee Report. Protection System Response to Power Swings. Atlanta, GA.
+---. 2016. "Std. PRC-024-2: Generator Frequency and Voltage Protective Relay Settings."
+Atlanta, GA.
+---. 2017a. State of Reliability 2017. Atlanta, GA.
+
+=== page 58 ===
+47
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+---. 2017. 1200 MW Fault Induced Solar Photovoltaic Resource Interruption Disturbance
+Report. Atlanta, GA.
+https://www.nerc.com/pa/rrm/ea/1200_MW_Fault_Induced_Solar_Photovoltaic_Resource_/120
+0_MW_Fault_Induced_Solar_Photovoltaic_Resource_Interruption_Final.pdf.
+---. 2018a. "Inverter-Based Resource Disturbance Analysis - Key Findings and
+Recommendations." Presented via webinar, February 2018.
+---. 2018b. 900 MW Fault Induced Solar Photovoltaic Resource Interruption Disturbance
+Report. Atlanta, GA.
+---. 2018c. Reliability Guideline: BPS-Connected Inverter-Based Resource Performance.
+Atlanta, GA.
+---. 2019. Reliability Guideline: Improvements to Interconnection Requirements for BPS-
+Connected Inverter-Based Resources. Atlanta, GA.
+Pourbeik, P. 2017. "DER_A Model."
+https://www.nerc.com/comm/PC/LoadModelingTaskForceDL/LMTF_DER_A_041817.pdf.
+Purba, V., B.B. Johnson, M. Rodriguez, S. Jafarpour, F. Bullo, and S. Dhople. 2018. "Reduced-
+Order Aggregate Model for Parallel-Connected Single-Phase Inverters." IEEE Transactions on
+Energy Conversion.
+Rahmani, M., Y. Herriot, C. Guyon-Aubert, D. Gualino, A. Dentella, S. Lechat-Sanjuan, and G.
+Gandanegara. 2017. "Control Method of a Virtual Generator" (Patent No. 20170235322).
+Ramasubramanian, D., Z. Yu, R. Ayyanar, V. Vittal, and J. Undrill. 2017. "Converter Model for
+Representing Converter Interfaced Generation in Large Scale Grid Simulations." IEEE
+Transactions on Power Systems 32, no. 1 (January): 765-773.
+Sadamoto, T., A. Chakrabortty, T. Ishizaki, and J. Imura. 2019. "Dynamic Modeling, Stability,
+and Control of Power Systems with Distributed Energy Resources: Handling Faults Using Two
+Control Methods in Tandem." IEEE Control Systems Magazine 39, no. 2 (April): 34-65.
+Sauer, P.W., and M.A. Pai. 1998. "Power System Dynamics and Stability." Urbana.
+Seguin, R., J. Woyak, D. Costyk, J., Hambrick, and B. Mather. 2016. High-Penetration PV
+Integration Handbook for Distribution Engineers (NREL/TP-5D00-63114). Golden, CO:
+National Renewable Energy Laboratory.
+Seo, G.-S., et al. 2018. "Dispatchable Virtual Oscillator Control for Decentralized Inverter-
+dominated Power Systems: Analysis and Experiments" (arXiv preprint arXiv:1811.08842).
+Shafiee, Q., J.M. Guerrero, and J.C. Vasquez. 2014. "Distributed Secondary Control for Islanded
+Microgrids-A Novel Approach." IEEE Transactions on Power Electronics 29 no. 2: 1018-
+1031.
+
+=== page 59 ===
+48
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Sharma, S., S. Pushpak, V. Chinde, and I. Dobson. 2018. "Sensitivity of Transient Stability
+Critical Clearing Time." IEEE Transactions on Power Systems 33, no. 6 (November): 6476-
+6486.
+Simpson-Porco, J.W., et al. 2015. "Secondary Frequency and Voltage Control of Islanded
+Microgrids via Distributed Averaging." IEEE Transactions on Industrial Electronics 62 no. 11:
+7025-7038.
+Sun, H., et al. 2019. "Review of Challenges and Research Opportunities for Voltage Control in
+Smart Grids." IEEE Transactions on Power Systems 34, no. 4: 2790-2801.
+Teodorescu, R., M. Liserre, and P. Rodriguez. 2011. Grid Converters for Photovoltaic and Wind
+Power Systems. Piscataway, NJ: Institute of Electrical and Electronics Engineers/Wiley.
+Tsili, M., and S. Papathanassiou. 2009. "A Review of Grid Code Technical Requirements for
+Wind Farms." IET Renewable Power Generation 3 no. 3 (September): 308-332.
+Ulbig, A., T.S. Borsche, and G. Andersson. 2014. "Impact of Low Rotational Inertia on Power
+System Stability and Operation." Proceedings of the 2014 IFAC 47 no. 3: 7290-7297.
+Villegas Pico, H.N., and D.C. Aliprantis. 2014. "Voltage Ride-Through Capability Verification
+of Wind Turbines with Fully-Rated Inverters Using Reachability Analysis." IEEE Transactions
+on Energy Conversion 29, no. 2 (June): 392-405.
+---. 2016. "Voltage Ride-Through Capability Verification of DFIG-Based Wind Turbines
+Using Reachability analysis." IEEE Transactions on Energy Conversion 31 no. 4 (December):
+1387-1398.
+---. 2018. "Reachability Analysis of Linear Dynamic Systems with Constant, Arbitrary, and
+Lipschitz Continuous Inputs." Automatica 95 (September): 293-305.
+Villegas Pico, H.N., D.C. Aliprantis, and X. Lin. 2017. "Transient Stability Assessment of Power
+Systems with Uncertain Renewable Generation," Proceedings of 2017 IREP Symposium-Bulk
+Power System Dynamics and Control-X, Espinho, Portugal, August 27-September 1, 2017.
+Vu, T.L., and K. Turitsyn. 2016. "Lyapunov Functions Family Approach to Transient Stability
+Assessment." IEEE Transactions on Power Systems 31 no. 2 (March): 1269-1277.
+Walling, R.A., E. Gursoy, and B. English. 2012. "Current Contribution from Type III and Type
+IV Wind Turbine Generators During Faults." Proceedings of the IEEE Transmission and
+Distribution Conference and Exposition, Orlando, FL, May 7-10. Piscataway, NJ: Institute of
+Electrical and Electronics Engineers.
+Walton, R. 2019. "Island-wide outage on Kaua'i: Clouds block solar recovery after generator's
+cable failure." Utility Dive. July 23, 2019.
+Wind Generation Task Force. 2007. The Technical Basis for the New WECC Voltage Ride-
+Through (VRT) Standard. Salt Lake City, UT: Western Electricity Coordinating Council.
+
+=== page 60 ===
+49
+This report is available at no cost from the National Renewable Energy Laboratory at www.nrel.gov/publications.
+Yazdani, A., and R. Iravani. 2010. Voltage-Sourced Converters in Power Systems: Modeling
+Control and Applications. Hoboken, NJ: John Wiley & Sons, Inc.
+Zhong, Q.-C. 2013. "Robust Droop Controller for Accurate Proportional Load Sharing Among
+Inverters Operated in Parallel." IEEE Transactions on Industrial Electronics 60 no. 4: 1281-
+1290.
+---. 2016. "Virtual Synchronous Machines: A Unified Interface for Grid Integration." IEEE
+Power Electronics Magazine 3 no. 4: 18-27.
+Zhong, Q.C., G.C. Konstantopoulos, B. Ren, and M. Krstic. 2017. "Improved Synchronverters
+with Bounded Frequency and Voltage for Smart Grid Integration." IEEE Transactions on Smart
+Grid. doi:10.1109/TSG.2016.2565663.
+Zhou, Q., and J.W. Bialek. 2007. "Generation Curtailment to Manage Voltage Constraints in
+Distribution Networks." IET Generation, Transmission & Distribution 1 no. 3: 492-498.
+Zhu, H., and H.J. Liu. 2016. "Fast Local Voltage Control Under Limited Reactive Power:
+Optimality and Stability Analysis." IEEE Transactions on Power Systems 31 no. 5 (September):
+3794-3803.
