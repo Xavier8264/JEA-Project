@@ -1,0 +1,3853 @@
+SOURCE: SEL-2240 Axion Data Sheet (Date Code 20260320)
+AUTHOR: Schweitzer Engineering Laboratories
+URL: n/a (local file)
+RAW FILE: ../2240_DS_20130827_01.pdf
+RETRIEVED: 2026-08-27
+PAGES: 40
+USED FOR: Items 19, 51, 57, 64. Card specs: DI/DO ratings and thresholds, SEL-2241 CPU and serial ports, SEL-2245-4 metering ranges, module burden.
+------------------------------------------------------------------------
+
+=== outline (PDF bookmarks, p. = PDF page) ===
+Major Features and Benefits .. p.1
+Product Overview .. p.2
+. Functional Diagram .. p.2
+. Flexible System Architecture .. p.3
+. RTU and PLC Functionality .. p.4
+. Secure Operation .. p.4
+. Seamless System Configuration .. p.4
+. Deterministic System Performance .. p.5
+. Applications .. p.5
+. . Load Shedding for Industrial Applications .. p.5
+. . Microgrid Control Applications .. p.5
+. . Autosynchronization Systems .. p.6
+. . Remote Terminal Unit (RTU) .. p.6
+. . EtherCAT Network Topologies .. p.6
+. . Remote I/O .. p.7
+. . IEC 61850 GOOSE Concentrator .. p.7
+. . Synchrophasor Concentrator .. p.7
+. . SCADA Data Concentrator .. p.7
+. . Human-Machine Interface .. p.8
+. . Programmable Logic/Automation Controller .. p.9
+. . Intelligent Port Switch .. p.10
+. . Network Gateway .. p.10
+. . Protocol Gateway .. p.11
+. . Time-Synchronization Source .. p.11
+. . Security Gateway .. p.11
+. . Digital Fault Recorder (DFR) .. p.12
+. Ordering Options .. p.12
+Module Features .. p.14
+Diagrams and Dimensions .. p.20
+Specifications .. p.28
+SEL-2240 DFR Specifications .. p.38
+Technical Support .. p.38
+Notes .. p.39
+
+=== page 1 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+Rugged Digital I/O, Analog I/O, Current and
+Voltage Measurements, and Control for
+Your Toughest Applications
+The SEL Axion(R) is a fully integrated modular digital I/O, analog I/O, current and voltage measurement, and control
+solution suitable for many utility and industrial applications. It combines the communications, built-in security, and
+IEC 61131 logic engine of the SEL Real-Time Automation Controller (RTAC) family with a durable suite of I/O mod-
+ules that provide high-speed, deterministic, control performance over an EtherCAT(R) backplane.
+Major Features and Benefits
+-High-Speed and High-Accuracy DC Analog Control. Use the Axion DC Analog Output module to provide
+high-accuracy current and voltage control signals for low-level self-wetted (sourcing) control applications.
+-Proportional Integral Derivative (PID) Control. Use the PID function block to provide advanced closed-loop
+control for analog set points commonly used in generator and process control.
+-Synchronized Current and Voltage Measurements. Retrieve high-accuracy current and voltage measurements with the
+advantage of synchronized measurements. Multiple ac analog input modules in an Axion system sample all measurements
+at the same time to ensure a common reference for all voltages and currents. This enables many time-deterministic control
+applications without performing additional processing to align the measurements to a reference. Use this capability to
+accomplish complex control schemes including load shedding, microgrid control, and autosynchronization.
+-Top of Second Synchronized Measurements. When connected to IRIG, synchronize the measurement of all ac
+analog input modules to the top of the second. This enables Axions in geographically dispersed locations to run
+algorithms on voltage and current measurements and provide time-aligned data from all the Axion modules. This
+expands time-deterministic control capability to wide-area applications because the ac analog input measurements
+from multiple Axion systems are all synchronized.
+SEL-2240 Axion
+
+=== page 2 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+2
+-Protection Against Malware and Other Cybersecurity Threats. Protect your RTAC system with exe-
+GUARD(R), which uses advanced cryptographic algorithms to authorize the execution of any program or service on
+the system. Any tasks not approved by the whitelist are blocked from operation.
+-RTU and PLC in a Single System. Employ the Axion's I/O, SCADA communications, and control logic support
+in many industrial and utility applications.
+-Simple Setup With ACSELERATOR RTAC(R) SEL-5033 Software. Use standard device templates to build a
+system, including I/O modules, quickly.
+-Flexible I/O Selections. Choose a custom mix of digital and analog I/O modules that suit the application. Include
+hundreds of points in a single panel, all connected to a deterministic EtherCAT backplane.
+-Advanced User Authentication and System Security. Enforce LDAP user accounts to maintain security
+perimeter integrity. Apply corporate logging and port control policies to comply with NERC/CIP requirements.
+-Integrated Web-Based Human-Machine Interface (HMI). Integrate the RTAC module (SEL-2241 or
+SEL-2241-2) directly into the Axion system. The RTAC, via the embedded web server, includes a flexible
+graphical HMI system.
+-Deterministic I/O Performance. Update connected I/O at a deterministic frequency; all inputs provide 1 ms
+Sequential Events Recorder (SER) time stamps.
+-More than SCADA. Go beyond SCADA by using the Axion industry-standard communications protocols to
+enable multiple SCADA connections, as well as distributed control networks, among many stations.
+-Networking Options. Implement I/O networks that use optional fiber-optic cables to provide outstanding signal
+isolation and flexibility in module placement.
+-Standard IEC 61131-3 Logic Design. Create innovative logic solutions directly in ACSELERATOR RTAC by
+using editor tools such as Ladder Diagram, Tag Processor, Structured Text, or Continuous Function Chart.
+-Redundant Power Supplies. Install optional dual SEL-2243 power couplers for applications needing redundant
+power sources.
+Product Overview
+Functional Diagram
+
+Figure 1
+Functional Diagram
+Process Inputs
+Contact Outputs
+RTAC Module
+Including IEC 61131
+logic engine and
+system database
+Web Interface
+Optional HMI
+User Administration
+Logging / Alarms
+Touchscreen Display
+Bay Control
+Front Ethernet Port
+Programmable
+Pushbuttons and LEDs
+EtherCAT
+Protocol
+Test Functions
+Control Enable/Disable
+Force Values
+Activity Indicators
+Port LEDs
+Programmable LEDs
+Precise
+Time
+Communications
+Ports
+Security
+Firewall
+Client/Server
+Protocols
+
+=== page 3 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+3
+Flexible System Architecture
+Today's monitoring and control applications need flexi-
+ble system architectures and integrated security. The
+Axion meets these needs by using SEL RTAC as the sys-
+tem CPU. Two configurations are possible. There can be
+an RTAC module installed directly in the Axion node, or
+the node can be connected to a standalone RTAC. A
+standalone SEL RTAC (e.g., an SEL-3350) connects via
+Ethernet to an SEL-2240 node.
+NOTE: The SEL-2242 backplane with 7-inch touchscreen display is only
+compatible with the RTAC module in Slot A. See the SEL-2240 Axion Bay
+Controller data sheet for more details.
+SEL designs all Axion hardware to published standards
+(see Specifications on page 28) and performs tests to ver-
+ify that each component exceeds standards by adequate
+margins. The Power Coupler module (model SEL-2243)
+is a highly reliable device that uses the same power sup-
+ply technology presently in use in SEL protective relays.
+Configure the SEL Axion to include single or redundant
+power couplers for critical applications. In redundant
+configurations, the pair of SEL-2243 modules actively
+share loads to supply power for the entire node. If one
+module should become unavailable, the remaining power
+coupler can accommodate the entire node with no loss of
+system capability. Employ dual power couplers for
+installations where you have dual power sources, one
+that is ac and one that is dc.
+
+Figure 2
+Modules Installed in Chassis/Backplane
+Each Axion node is mounted in a chassis/backplane
+(model SEL-2242) that provides a means for each node
+to include a custom arrangement of modules. A single
+node can contain as many as nine modules. Use any com-
+bination, quantity, and sequence of modules that suits the
+application.
+The node does not need to be entirely full to function
+properly. Leave empty slots for future expansion as nec-
+essary. Many RTU and control systems need more I/O
+points than will fit in a single Axion node. In those cases,
+use the EtherCAT protocol to connect multiple nodes
+together via a real-time Ethernet network. Through use
+of an Axion system EtherCAT network, you can use as
+many as 60 modules in a single network with no loss of
+speed or determinism. Applications on page 5 explores
+several possible network configurations. In each imple-
+mentation, a single RTAC module provides logic func-
+tions and data concentration for the entire network.
+
+=== page 4 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+4
+RTU and PLC Functionality
+The Axion is both a remote terminal unit (RTU) and
+ultra-rugged programmable logic controller (PLC). All
+the modules are rated from -40 degC to +85 degC and can
+optionally include conformal coating. The system is
+designed to be flexible; use the right combination of
+modules and nodes, in almost any arrangement, to suit
+the job. The SEL-2244 Digital Output Module has trip-
+rated contacts (30 A make, 6 A carry) to limit the need
+for interposing relays.
+The RTACs all interface seamlessly with the I/O modules
+and provide easy integration with other serial and Ether-
+net devices via preinstalled communications protocols.
+The RTACs also support multiple SCADA/HMI chan-
+nels. For high-speed communication, use EtherCAT
+fieldbus connections to I/O modules or optional
+IEC 61850 GOOSE messaging with station IEDs. Poll
+data sets and reports from other IEDs with optional
+IEC 61850 MMS client.
+With the Axion, you need no optional hardware or soft-
+ware to have the programmable logic engine required for
+many applications. Each RTAC includes an IEC 61131
+logic engine that ships preconfigured to provide access
+for all system tags, intelligent electronic device (IED)
+and I/O data, diagnostics, alarms, security events, and
+communications statistics. The RTAC provides unified
+tag mapping between protocols and programmable logic
+that simplifies developing applications. You simply use
+any necessary IED and I/O data, calculated values, and
+system tags in deterministic logic for the control of criti-
+cal applications.
+Management of the task processing sequence and solve
+rate in the RTAC is similar to that for traditional PACs.
+Optimize processor use by setting the processing rate no
+faster than necessary for your application.
+Task processing in the logic engine includes protocols,
+I/O, system management, and any custom logic pro-
+grams you create using Structured Text (ST), Ladder
+Logic Diagrams (LD), or Continuous Function Charts
+(CFC). CFC programs are type of IEC 61131-3 Function
+Block Diagram (FBD) that provide more programming
+flexibility than standard FBDs. The ACSELERATOR
+RTAC software, free of charge with purchase of an SEL
+RTAC, includes the IEC 61131-3 and Tag Processor edi-
+tors you will use to manage any protocol information and
+custom logic necessary for your system.
+Secure Operation
+You can use the built-in web interface to manage user
+accounts and system alarms remotely. Each user account
+has a unique username, password, and assigned role that
+defines system permissions. You can also configure the
+system to use LDAP central authentication for user
+account management. There are webpages for monitor-
+ing user logs and maintaining network policies.
+By enabling Ethernet and serial ports independently, you
+can minimize any security threat from unused but
+enabled ports. Employ SSH encryption for remote engi-
+neering access to further protect the system. Combine the
+Axion with other SEL security solutions to simply
+deploy a solution that meets your needs for maintaining a
+secure electronic perimeter for the control system.
+Seamless System Configuration
+ACSELERATOR RTAC is a Microsoft Windows-compati-
+ble configuration software for offline and online use with
+the RTACs. A project in ACSELERATOR RTAC contains
+the complete configuration, settings, and logic for an
+individual RTAC device. Preconfigured device and I/O
+module templates are available for you to quickly create
+all device and master connections for the project.
+Once you create the settings for a specific device connec-
+tion, improve engineering efficiency by saving a custom
+device template for later use with similar projects. Share
+custom templates via email or network for even greater
+savings. The application also includes complete project
+templates for some common project types.
+The Tag Processor view facilitates the mapping of opera-
+tional data between IEDs and SCADA. ACSELERATOR
+RTAC is compatible with Microsoft Excel and other pro-
+grams, so you can save time and increase accuracy by
+copying SCADA maps from the source document.
+There is no need to install or learn more than one soft-
+ware interface. Use the included Structured Text, Ladder
+Diagram, or Continuous Function Chart editors to
+develop custom IEC 61131 logic.
+Enable remote monitoring and control functions by using
+the optional web-based HMI for any of the RTAC
+devices. Figure 3 shows an example of a screen display-
+ing operational data and secure controls from connected
+I/O and other devices. Every tag in the database is avail-
+able for use in HMI screens.
+
+=== page 5 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+5
+
+Deterministic System
+Performance
+If your application includes distributed control strategies,
+sequential logic, or SER reports, the deterministic perfor-
+mance of EtherCAT will meet your needs. The software
+updates all I/O and time-stamps inputs with 1 ms accu-
+racy. Log any tag values and system events to provide a
+system-wide SOE report that you can view online. You
+can also use an ODBC connection to transfer the logs to
+a central database.
+Applications
+Load Shedding for Industrial Applications
+The Axion system eliminates the need for separate input,
+output, and control devices for industrial and microgrid
+load-shedding schemes. Combining system frequency
+and power measurements with the ability to add hun-
+dreds of binary inputs and outputs, the Axion combines
+the measurement, logic engine, and mitigation equip-
+ment into a single unit. Employing the ac analog input
+module's frequency and power elements, the powerful
+logic engine in the Axion incorporates system variables
+into fast-acting control logic for underfrequency or
+demand control load shedding. Complete with the HMI,
+the Axion is a standalone control system for many reme-
+dial action schemes.
+
+Microgrid Control Applications
+The SEL-2245-4 adds dozens of voltage and current
+channels to the hundreds of input, output, and analog
+channels already available in a single Axion system.
+With the capability of linking Axion backplanes as far as
+five kilometers away, the Axion is well suited to monitor
+and control across distances consistent with many micro-
+grid applications. In an Axion system, all ac analog input
+modules sample at precisely the same time, ensuring a
+common reference for all voltages and currents entering
+the RTAC logic engine. This synchronized sampling
+enables many unique microgrid applications, including
+islanding detection, generation restoration, and dispatch
+algorithms.
+
+Figure 3
+Powerful Monitoring Functions Using the Web-
+Based HMI
+
+Figure 4
+Load-Shedding Topology
+
+Figure 5
+Offshore Microgrid
+BUS A
+BUS B
+G1
+Utility Tie
+
+=== page 6 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+6
+Autosynchronization Systems
+Use multiple ac analog input and I/O modules to create
+advanced and highly scalable autosynchronization sys-
+tems. Automatically adjust the governor exciter controls
+as necessary to provide safe, secure, and unattended syn-
+chronization of generation onto the power system. With
+synchronized sampling from multiple ac analog input
+modules, the control algorithm for multiple governor
+exciters all have access to all necessary PT measure-
+ments in the same Axion system. Additionally, the mea-
+surements are already time-aligned, eliminating the need
+to adjust to a common reference. An added bonus is that
+the ac analog input modules can be located remotely
+across the system and provide the synchronized measure-
+ments through the Axion's deterministic EtherCAT net-
+work.
+
+Remote Terminal Unit (RTU)
+Remote terminal units gather digital and analog signals
+at remote sites and supply these data over a variety of
+industry-standard protocols (DNP3, Modbus(R), LG 8979,
+or IEC 61850) to a central supervisory control and data
+acquisition (SCADA) center or HMI. A master controller
+in the SCADA center can perform all logic or distribute
+logic to the RTU. The SEL-2244 I/O modules are avail-
+able in a variety of types to gather many types of I/O at
+RTU locations. The RTAC module has a variety of indus-
+try-standard protocols by which it can integrate seam-
+lessly with any SCADA system. Additionally, the
+versatile IEC 61131 logic engine in the RTAC can meet
+the majority of logic requirements for small to large
+automation projects. The modular design of the Axion
+provides it the ability to perform as an RTU in two ways:
+as a centralized master RTU or as distributed logic in
+each substation.
+Systems using distributed logic at the RTU use an RTAC
+module in each Axion node, thus providing all automa-
+tion capabilities of the RTAC in each RTU. This architec-
+ture allows each RTU to function autonomously even if
+the central SCADA system is offline. Each RTAC can
+communicate with the SCADA master over DNP3, Mod-
+bus, LG 8979, IEC 61850, or SEL Fast Message. The
+following diagram illustrates use of the Axion as a dis-
+tributed RTU communicating over DNP3 to a SCADA
+master.
+
+Systems that do not need autonomous operation at each
+RTU can use a central RTAC and communicate to the
+remote nodes through the SEL-2243 Power Couplers.
+This architecture offers an economical solution to dis-
+tributed I/O over EtherCAT at an extremely fast acquisi-
+tion rate. The master RTAC can host all data from remote
+nodes over DNP3 and interface directly with the SCADA
+system. The master Axion in Figure 7 illustrates this
+functionality.
+EtherCAT Network Topologies
+The SEL-2243 Power Couplers provide not only hot-
+pluggable power supplies, but also fast EtherCAT con-
+nections to remote SEL-2240 nodes. The power couplers
+create EtherCAT links in star network topology, sequen-
+tial network topology, or a combination of both. Star-
+configured topologies still use the sequential message
+format inherent to EtherCAT design and offer greater
+flexibility than wired sequential network topologies in
+creating a network to match your physical system. Refer
+to Appendix C in the ACSELERATOR RTAC SEL-5033
+Software Instruction Manual for detailed information on
+EtherCAT.
+Apply single or dual power couplers in each Axion node
+based on connection or redundancy requirements.
+Figure 8 illustrates a star topology for four remote
+SEL-2240 nodes with single power couplers in the
+remote nodes and dual couplers in the RTAC master.
+
+Figure 6
+SEL Axion Autosynchronization System
+1
+2
+5
+3
+4
+A
+C
+B
+D
+G1
+G2
+G3
+SEL Axion
+Governor
+Controller
+
+Figure 7
+RTACs Distributed With RTUs
+DNP Master
+DNP
+DNP
+DNP
+DNP
+Substation I/O
+RTU
+DNP
+Substation I/O
+RTU
+RTU
+RTU
+SCADA
+SEL-3355
+Substation I/O
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+Substation I/O
+SEL-2240 Axion
+
+=== page 7 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+7
+
+Figure 9 illustrates connections for an EtherCAT sequen-
+tial topology with six Axion nodes. Each node uses a sin-
+gle SEL-2243 Power Coupler to provide connections to
+the previous and next node in the EtherCAT network.
+
+Figure 10 illustrates a combination of star and sequential
+connections with six Axion nodes.
+
+Remote I/O
+When you use single or dual power couplers, the Axion
+serves as a low-cost remote I/O module. As many as
+60 modules or six nodes can connect to one resident
+RTAC module or to a separate RTAC. The Axion is an
+excellent teleprotection device that provides through Eth-
+erCAT a simple means for expanding the number of I/O
+points available in an automation system at rapid data
+acquisition rates.
+
+IEC 61850 GOOSE Concentrator
+Gather a variety of substation I/O with the SEL-2244
+modules and share the data with IEC 61850 Generic
+Object-Oriented Substation Event (GOOSE) messages.
+Use the protocol flexibility of the RTAC to concentrate
+data from non-IEC 61850 relays and convert these data
+to GOOSE messages.
+Synchrophasor Concentrator
+Use standard protocols, such as DNP3, to move synchro-
+phasor data to SCADA operation centers. Include time
+stamps and time quality in the SCADA message to allow
+for system-wide usage of synchrophasor data. Within the
+RTAC logic engine, you can perform complex math and
+logic calculations on synchrophasor data you collect
+from SEL relays and other IEEE C37.118-compliant
+devices.
+
+SCADA Data Concentrator
+Use the RTAC with your protective relays and other IEDs
+as the substation SCADA data concentrator. You can
+configure the RTAC to collect and view station-wide
+SER and event reports. Use MIRRORED BITS(R) protocol to
+ensure compatibility with any SEL device. Retrieve asset
+optimization data from SEL or other IEDs to maintain
+
+Figure 8
+EtherCAT Star Network Topology
+
+Figure 9
+EtherCAT Sequential Network Topology
+
+Figure 10
+EtherCAT Hybrid Network Topology
+RTAC Master
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+RTAC Master
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+
+Figure 11
+IEC 61850 GOOSE Concentrator
+
+Figure 12
+Synchrophasor Concentrator
+Substation I/O
+GOOSE
+SEL-2240 Axion
+SEL-387
+SEL-400G
+SEL-710-5
+SCADA
+SEL-2240 Axion
+SEL-2414
+SEL-751
+SEL-451
+SEL-351
+SEL-2488
+
+=== page 8 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+8
+the best possible system reliability. Take advantage of
+multiprotocol support to collect SCADA information,
+process control commands, and obtain SNTP/NTP time
+synchronization through a single communications link to
+each Ethernet device. Scale values and calculate logic in
+a familiar IEC 61131 configuration environment. Enjoy
+secure, encrypted communications to any device on the
+substation network or serial channel. Remotely access
+the RTAC through the Ethernet connection, and use any
+web browser to manage users, view diagnostics, and
+access logs. Establish a remote connection with any IED
+connected to the RTAC through engineering access com-
+munications channels. Use the SEL Fast Message proto-
+col to maintain SCADA control and metering updates
+throughout the engineering access connection. Use
+ACSELERATOR QuickSet(R) SEL-5030 Software to
+remotely manage protection and control settings in
+attached relays.
+Figure 13
+SCADA Data Concentrator and HMI
+Human-Machine Interface
+Use the built-in web HMI in the RTAC for viewing and
+controlling any tags you configured in the RTAC. Use
+ACSELERATOR Diagram Builder to develop custom HMI
+screens and load them into the RTAC. You can include
+one-line diagrams, annunciators, and graphical
+representations that contain control buttons, and you can
+then display any data in the RTAC. Once you have loaded
+the screens into the RTAC, you can view the screens in
+the RTAC web interface. Because the HMI application is
+web-based, multiple users can view the HMI screens
+simultaneously.
+Substation I/O
+SCADA
+SEL-2240 Axion
+SEL-2240 Axion
+Substation I/O
+SEL-2240 Axion
+Substation I/O
+SEL-2240 Axion
+Substation I/O
+SEL-2240 Axion
+Substation I/O
+SEL-710
+SEL-2411
+SEL-451
+SEL-2440 DPAC
+SEL-710
+SEL-2414
+SEL-2414
+SEL-787
+SEL-2488
+SEL-2488
+SEL-2488
+SEL-2488
+SEL-2488
+SEL-2740
+SEL-2740
+SEL-2740
+SEL-851
+SEL-851
+SEL-400G
+SEL-400G
+
+=== page 9 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+9
+Figure 14
+HMI One-Line Diagram
+The logging system in the RTAC provides comprehen-
+sive logging for all variables in the RTAC, including
+those that connected IEDs provide. The logging system
+compensates for time-stamp differential among data
+from different IEDS, so all data are in sequence and on
+the same time-stamp reference. The RTAC can log data
+for changes in the state of Boolean values, changes in
+string values, and changes in Boolean, analog, or string
+time stamps. The RTAC can also alarm for analog values
+that cross defined thresholds. Assign variables for log-
+ging in the Tag Processor, or use one of the logger func-
+tion blocks in IEC 61131 custom programs.
+There are two user interfaces for viewing logged data.
+These include a secure HTML interface and an open
+database connectivity (ODBC) connection. Access the
+HTML interface through a web browser connection. Use
+the ODBC connection for standard data transfer between
+the logged data and database or spreadsheet software.
+Programmable Logic/Automation
+Controller
+Use the Axion as a programmable logic/automation con-
+troller (PLC/PAC) to automate your real-time tasks
+based on a variety of input conditions and diagnostic
+information. Use the powerful IEC 61131 logic engine to
+write programs in Structured Text, Function Block, or
+Ladder Logic. Schedule periodic tasks, or drive event-
+driven tasks with multiple preconditions. Create function
+blocks of complex tasks for simple configuration. Easily
+replace aging PLCs implemented in Ladder Logic by
+replicating the same logic or by using a conversion tool
+to translate logic to Structured Text.
+
+=== page 10 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+10
+
+Figure 15
+IEC 61131 Logic Example
+Intelligent Port Switch
+Flexible communications parameters make the RTAC a
+great choice for almost any port-switching application.
+Although RTAC multitasking/multiuser and data han-
+dling capabilities make it a very powerful remote auto-
+mation platform, it is still an economical choice for port-
+switching applications. The time-synchronization capa-
+bilities of the RTAC add to its value in this application.
+
+Network Gateway
+Each RTAC has two or more Ethernet ports through
+which it can make serially connected devices available to
+high-speed networks. The RTAC supports virtual termi-
+nal connections through the Ethernet ports. For example,
+Ethernet users can establish secure Telnet sessions and
+communicate with an IED connected to the RTAC.
+
+Begin typing tag name
+over ??? and note auto
+complete feature.
+Right-click on the element and
+use the "Input Assistant" to
+help populate boxes.
+Drag elements from ToolBox to programming area.
+
+Figure 16
+Intelligent Port Switch
+Engineering
+USB Modem
+SEL-2240 Axion
+SEL-451
+SEL-751
+SEL-2414
+SEL-351
+SEL-9192
+SEL-2488
+
+Figure 17
+Network Gateway
+SSH, TLS Encryption and
+User Account Management
+SEL-2240 Axion
+SEL-451
+SEL-751
+SEL-2414
+SEL-351
+SEL-2740
+Engineering
+SEL-2488
+
+=== page 11 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+11
+Protocol Gateway
+Collect downstream data with client protocols. Then
+send these data to your upstream HMI, RTU, or SCADA
+master with server protocols, converting the data from
+one protocol to another in the process. RTAC multitask-
+ing/multiuser and data handling capabilities make it a
+great choice for data concentration.
+
+Time-Synchronization Source
+Synchronize the time clocks in attached devices that
+accept a demodulated IRIG-B time signal. The RTAC
+module regenerates the demodulated IRIG-B signal from
+an external modulated or demodulated source, such as a
+GPS satellite clock receiver, SNTP/NTP source, or serial
+or Ethernet protocol such as DNP3. If an external clock
+source is unavailable, the RTAC generates an IRIG-B
+signal from its internal clock, providing device synchroni-
+zation to a common clock for improved SER data analysis.
+
+Security Gateway
+Secure the automation network with the Axion. Enable
+encryption for any engineering access channel or
+SCADA link. Implement system security auditing, log-
+ging, and password restrictions to enforce NERC stan-
+dards. Comply with role-based requirements by
+implementing per-user security profiles. Optionally,
+incorporate serial and wireless encrypting devices to fur-
+ther secure communications to any device.
+
+Figure 18
+Protocol Converter
+HMI
+DNP3
+DNP3
+DNP3
+Modbus
+IEC 61850
+Substation I/O
+SEL-2240 Axion
+SEL-451
+SEL-751
+SEL-2414
+SEL-2740
+SEL-2440 DPAC
+SEL-3355
+SEL-2488
+
+Figure 19
+Time Synchronization
+Substation I/O
+SEL-2240 Axion
+SEL-451
+SEL-751
+SEL-2414
+SEL-2740
+SEL-2440 DPAC
+SEL-2411
+SEL-2488
+
+Figure 20
+Security Gateway
+Engineering
+Ethernet
+Switch
+SSH, TLS Encryption and
+User Account Management
+Serial
+Encryption
+Alarm
+Notification
+Sensors
+-Door
+-Panel/Cabinet
+-Motion
+-Fence
+. . .
+Alarms
+-Visible
+-Audible
+-Lighting
+. . .
+Dial-Out
+Telephone
+Substation I/O
+SEL-751
+SEL-2240 Axion
+SEL-351
+SEL-751
+SEL-2740
+SEL-2440 DPAC
+SEL-3010
+SEL-3025
+SEL-3025
+SCADA
+SEL-2488
+
+=== page 12 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+12
+Digital Fault Recorder (DFR)
+Use the RTAC and modular SEL-2240 Axion to imple-
+ment a scalable DFR system supporting up to 192 analog
+channels or 1,728 digital channels.
+-Deploy solutions that exceed compliance with
+NERC PRC-002 and PRC-028.
+-Continuously record oscillography data at 3,000
+samples per second for more than 20 days with
+SEL-3555 or SEL-3350 RTACs.
+-Record triggered oscillography records at 24
+kilosamples per second (ksps) with Recording
+Group configuration for combining multiple
+module event reports, including digital values, into
+a single COMTRADE file.
+-Stream PMU data (as fast as 120 messages per
+second (mps)) and oscillography at 3 ksps,
+providing significantly more visibility into power
+system behavior than intermittent event reports.
+-Record as many as 500,000 millisecond-accurate
+substation Sequence of Events logs.
+-Monitor fault locations on transmission line assets.
+-Configure DFR systems easily with the SEL-5033
+DFR Extension.
+-Use SEL-2245-43 modules paired with non-
+intrusive split-core CTs to eliminate the need to
+modify secondary CT wiring and support high-
+density current-input measurements.
+-Apply field calibration to compensate for gain
+and phase errors introduced by the split-core CT
+connections.
+
+Ordering Options
+
+Figure 21
+Digital Fault Recorder
+Table 1
+RTAC Module
+SEL-2241
+Ethernet
+Communication
+Options
+Two Ethernet ports:
+10/100BASE-T copper (standard)
+100BASE-FX fiber-optic (optional)
+100BASE-LX single-mode fiber-optic
+(optional)
+SEL-2241-2
+Ethernet
+Communication
+Optionsa
+a Both SEL-2241-2 options include an additional 10/100/1000 Mbps
+RJ45 copper port.
+Three Ethernet ports:
+Two 10/100/1000 Mbps RJ45 copper ports
+Two 100/1000 Mbps SFP fiber-optic ports
+Web-Based
+HMI
+Basic runtime license and Diagram Builder
+software
+Peer-to-Peer
+Protocols
+IEC 61850 GOOSE
+Client Protocols
+IEC 61850 MMS
+Server Protocols
+IEC 61850 MMS, Ethernet/IP
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 2
+SEL-2242 Chassis/Backplane
+Slot Configuration
+10-slot, 4-slot, or dual 4-slot
+Front Panela
+a Front-panel options are not supported if the SEL-2242 is configured
+for surface mount.
+Bay Controller with 7-inch touchscreen
+display, 6 pushbuttons, and 19 programma-
+ble LEDsb
+b Only available with the 10-slot SEL-2242. Only compatible with
+RTAC modules that are shipped with R149 firmware or later.
+Mounting
+Horizontal surface mount, 5Uc
+Horizontal rack mount, 5U
+Horizontal panel mount, 5U (10-slot or
+dual 4-slot)
+c For applications compliant with IEC 60255-27, surface-mount units
+must be installed in IP4X enclosures.
+Environment
+Conformal coating for chemically harsh
+and high-moisture environments
+Table 3
+SEL-2243 Power Coupler
+Voltage Range
+24/48 Vdc or 120/250 Vac/Vdc
+EtherCAT
+Communication
+Two ports:
+RJ45 Ethernet (standard)
+LC fiber-optic multimode or single-mode
+(optional)
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+
+=== page 13 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+13
+
+Table 4
+SEL-2244-2 24 Digital Input Module
+Input Ratings
+24 Vac/Vdc
+48 Vac/Vdc
+110 Vac/Vdc
+125 Vac/Vdc
+220 Vac/Vdc
+250 Vac/Vdc
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 5
+SEL-2244-3 Standard Current Digital Output
+Module
+Output Types
+16 Form A control outputs
+8 Form A, 8 Form B control outputs
+16 Form B control outputs
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 6
+SEL-2244-4 32 Digital Input Module
+Input Ratings
+24 Vdc
+48 Vdc
+110 Vac/Vdc
+125 Vac/Vdc
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 7
+SEL-2244-5 Fast High-Current Digital Output
+Module
+Output Types
+10 Form A control outputs
+5 Form A, 5 Form B control outputs
+10 Form B control outputs
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 8
+SEL-2245-2 DC Analog Input Module
+Input Types
++/-20 mA, +/-2 mA, +/-10 V
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 9
+SEL-2245-22 DC Analog Input Extended Range
+Module
+Input Types
+5-400 V
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 10
+SEL-2245-221 Low-Voltage (LEA) Monitoring
+Module
+Input Types
+0.05-22 V
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 11
+SEL-2245-3 DC Analog Output Module
+Output Types
++/-20 mA, +/-10 V
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 12
+SEL-2245-4 AC Metering Module
+Input Types
+0.05-22 A, 5-400 V
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 13
+SEL-2245-42 AC Protection Module
+Input Types
+0.1-20 A, 6.7-300 V
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 14
+SEL-2245-411 Standard Current and
+Low-Voltage (LEA) Monitoring Module
+Input Types
+0.05-22 A, 0.05-22 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 15
+SEL-2245-431 Low-Voltage (LEA) and
+Standard Voltage Analog Input Module
+Input Types
+0.033-10 V, 6.7-300 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 16
+SEL-2245-432 Low-Voltage (LEA) Analog
+Input Module
+Input Types
+0.033-10 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+
+=== page 14 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+14
+Module Features
+
+Figure 22
+SEL-2242 10-Slot Chassis/Backplane
+
+Figure 23
+SEL-2242 4-Slot Chassis/Backplane
+Slot identification is
+visible even when in use
+LEDs simplify diagnostics
+by indicating module status
+Lamp test
+pushbutton
+Front-Panel View
+Surface-mounted
+chassis
+Module alignment
+guides make
+installation a breeze
+Rear-Panel View
+Rack-mounted
+chassis
+Rack-mounted
+chassis
+Surface-mounted
+chassis
+Slot identification is
+visible even when in use
+LEDs simplify diagnostics
+by indicating module status
+Module alignment
+guides make
+installation a breeze
+Lamp test
+pushbutton
+Front-Panel View
+Rear-Panel View
+
+=== page 15 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+15
+
+Figure 24
+SEL-2242 Dual 4-Slot Chassis/Backplane
+Rack-mounted
+chassis
+Surface-mounted
+chassis
+Slot identification is
+visible even when in use
+LEDs simplify diagnostics
+by indicating module status
+Module alignment
+guides make
+installation a breeze
+Lamp test
+pushbutton
+Front-Panel View
+Rear-Panel View
+
+=== page 16 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+16
+
+Figure 25
+SEL-2241 RTAC Terminal-Side View
+
+Figure 26
+SEL-2241-2 RTAC Terminal-Side View
+Demodulated IRIG-B
+input and output
+for high-accuracy time
+synchronization
+USB port for quick,
+convenient, system
+setup and checkout
+Three programmable
+bi-color LEDs provide
+custom annunciation
+LEDs simplify diagnostics
+by indicating activity
+on each serial port
+Independent Ethernet
+ports may be RJ45 or LC fiber
+Serial ports are
+EIA-232/EIA-485
+software selectable
+Programmable
+alarm contact
+Enabled, Alarm,
+and two
+programmable
+bicolor LEDs
+DisplayPort
+monitor
+connection
+Two USB ports
+and Gigabit RJ45
+Ethernet port
+Two Gigabit
+Ethernet ports
+(options: two RJ45
+or two small
+form-factor
+pluggable (SFP)
+fiber-optic ports)
+Four RJ45
+EIA-232/422/485
+serial ports
+IRIG-B BNC input
+Form C alarm
+contact output
+
+Figure 27
+SEL-2243 Power Coupler Terminal-Side View
+
+Figure 28
+SEL-2244-2 Digital Input Module Terminal-
+Side View
+Two Power Couplers
+in a node operate
+as a load-sharing
+redundant pair
+Lamp test pushbutton
+and diagnostic LEDs
+Ethernet ports
+may be RJ45 or LC fiber
+Six independent and
+eighteen common-
+return inputs
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+
+=== page 17 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+17
+
+Figure 29
+SEL-2244-3 Standard Current Digital
+Output Module Terminal-Side View
+
+Figure 30
+SEL-2244-4 32 Digital Input Module
+Terminal-Side View
+Sixteen outputs may
+be all Form A, all
+Form B, or eight of each
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Two segments with
+sixteen common return
+inputs each
+
+Figure 31
+SEL-2244-5 Fast High-Current Digital
+Output Module Terminal-Side View
+
+Figure 32
+SEL-2245-2 DC Analog Input Module
+Terminal-Side View
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Ten outputs may be all
+Form A, all Form B,
+or five of each
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Sixteen inputs may
+configure +/-20 mA,
++/-2 mA, or +/-10 V input
+ranges in pairs
+
+=== page 18 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+18
+
+Figure 33
+SEL-2245-22 Analog Input Extended Range
+Module Terminal-Side View
+
+Figure 34
+SEL-2245-221 Low-Voltage (LEA)
+Monitoring Module
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Four inputs for
+0-300 Vdc
+Diagnostic LEDs
+Four inputs for
+0-30 V peak
+All terminals are clearly
+numbered for wiring
+and testing
+
+Figure 35
+SEL-2245-3 DC Analog Output Module
+Terminal-Side View
+
+Figure 36
+SEL-2245-4 AC Metering Module Terminal-
+Side View
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Eight outputs may
+configure +/-20 mA
+or +/-10 V output
+ranges
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Four CT and four PT inputs
+with two-wire connections
+
+=== page 19 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+19
+
+Figure 37
+SEL-2245-42 AC Protection Module
+Terminal-Side View
+
+Figure 38
+SEL-2245-411 Standard Current and
+Low-Voltage (LEA) Monitoring Module
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Three CT and three PT inputs
+with two-wire connections
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Four CT and four low-voltage
+(LEA) inputs with two-wire
+connections
+
+Figure 39
+2245-43 12 Channel Analog Input Module
+
+=== page 20 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+20
+Diagrams and Dimensions
+
+You can mount the Axion in a sheltered indoor environ-
+ment (a building or an enclosed cabinet) that does not
+exceed the temperature and humidity ratings for the
+modules.Equipment must be installed in an enclosure
+that protects against shock and fire to meet UL require-
+ments. Configurations with an SEL-2245-42 as the right-
+most module in a backplane should have the backplane
+installed in a metal enclosure to meet Radiated RF
+Immunity type test requirements. The Axion must be
+mounted such that modules are vertical and have at least
+0.5 inches to the nearest solid surface above and below.
+
+Figure 40
+SEL-2240 10-Slot Front Panel (Rack Mount)
+
+NOTE: For applications compliant with IEC 60255-26, surface-mount
+units must be installed in IP4X enclosures.
+
+Figure 41
+Figure 38 SEL-2240 10-Slot Front Panel (Panel Mount)
+i6459a
+G
+A
+B
+C
+D
+E
+F
+H
+I
+J
+ENABLED
+ALARM
+LAMP
+TEST
+SCHWEITZER
+ENGINEERING
+LABORATORIES
+SEL-2240
+AXION
+
+=== page 21 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+21
+
+Figure 42
+SEL-2240 4-Slot Front Panel
+
+Figure 43
+SEL-2240 Dual 4-Slot Front Panel (Rack Mount)
+
+=== page 22 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+22
+
+Figure 44
+SEL-2240 Dual 4-Slot Front Panel (Panel Mount)
+A
+B
+C
+D
+ENABLED
+ALARM
+LAMP
+TEST
+SCHWEITZER
+ENGINEERING
+LABORATORIES
+SEL-2240
+AXION
+AXION
+SEL-2240
+SCHWEITZER
+ENGINEERING
+LABORATORIES
+D
+C
+B
+A
+ALARM
+ENABLED
+LAMP
+TEST
+
+Figure 45
+SEL-2241 Connections Diagram
+i5397b
+SEL-2241
+ALARM
+OUT 101
+3
+4
+1
+2
+COM
+AUX
+USB
+ENABLED
+ETH 1
+ETH 2
+IN
+OUT
+IRIG-B
+COM
+1
+COM
+2
+COM
+3
+COM
+4
+RTAC
+1
+2
+3
+
+Figure 46
+SEL-2241-2 Connections Diagram
+i6493a
+EN AL
+A1 A2
+SEL-2241-2
+DISPLAY
+PORT
+COM 2
+COM 4
+COM 1
+COM 3
+USB 1 | 2
+ETH 3
+IRIG-B
+IN
+OUT 101
+1
+2
+3
+RTAC
+ETH 2
+ETH 1
+i6492a
+EN AL
+A1 A2
+SEL-2241-2
+DISPLAY
+PORT
+COM 2
+COM 4
+COM 1
+COM 3
+ETH 1
+ETH 2
+USB 1 | 2
+ETH 3
+IRIG-B
+IN
+OUT 101
+1
+2
+3
+RTAC
+
+=== page 23 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+23
+
+Figure 47
+SEL-2243 Connections Diagrams
+
+Figure 48
+SEL-2244-2 Connections Diagram
+i5398d
+i5695b
+
+Figure 49
+SEL-2244-3 Connections Diagrams
+
+Figure 50
+SEL-2244-4 Connections Diagram
+i6494a
+32 DI
+SEL-2244-4
+ENABLED
+ALARM
+1
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+C5
+C6
+C7
+C8
+17
+31
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+32
+C1
+C2
+C3
+C4
+1
+15
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+16
+24V
+DC
+i6495a
+32 DI
+SEL-2244-4
+ENABLED
+ALARM
+1
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+C5
+C6
+C7
+C8
+17
+31
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+32
+C1
+C2
+C3
+C4
+1
+15
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+16
+48V
+DC
+i6496a
+32 DI
+SEL-2244-4
+ENABLED
+ALARM
+1
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+C5
+C6
+C7
+C8
+17
+31
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+32
+C1
+C2
+C3
+C4
+1
+15
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+16
+110V
+AC/DC
+i6497a
+32 DI
+SEL-2244-4
+ENABLED
+ALARM
+1
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+C5
+C6
+C7
+C8
+17
+31
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+32
+C1
+C2
+C3
+C4
+1
+15
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+16
+125V
+AC/DC
+
+=== page 24 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+24
+
+Figure 51
+SEL-2244-5 Connections Diagrams
+
+Figure 52
+SEL-2245-2 Connections Diagram
+
+Figure 53
+SEL-2245-22 and SEL-2245-221
+Connections Diagrams
+
+Figure 54
+SEL-2245-3 Connections Diagram
+
+=== page 25 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+25
+
+Figure 55
+SEL-2245-42 Connections Diagram
+
+Figure 56
+SEL-2245-43 Connections Diagrams
+i6558a
+ENABLED
+ALARM
+SEL-2245-432
+10VAC MAX
+17
+18
++ 09
+19
+20
++ 10
+21
+22
++
+11
+23
+24
++ 12
+12LEA
++ 02
++ 01
++ 03
++ 04
++ 05
++ 06
++ 07
++ 08
+03
+04
+01
+02
+05
+06
+07
+08
+09
+10
+11
+12
+13
+14
+15
+16
+10VAC MAX
+ENABLED
+ALARM
+SEL-2245-431
+17
+10VAC MAX
+18
+19
+21
+VA
+20
+VB
+22
+23
+VC
+24
+VS
++ 02
++ 01
++ 03
++ 04
++ 05
++ 06
++ 07
++ 08
+03
+04
+01
+02
+05
+06
+07
+08
+09
+10
+11
+12
+13
+14
+15
+16
+8LEA/4PT
+300VAC MAX
+i6557a
+
+Figure 57
+SEL-2245-4 and SEL-2245-411 Connections
+Diagrams
+i6316a
+i6398a
+4CT/4LEA
+ENABLED
+ALARM
+SEL-2245-411
+0 1
+02
+03
+04
+05
+06
+07
+08
+IA
+IB
+IC
+IN
+09
+LOW
+VOLTAGE
+(30V MAX)
+1 0
+1 1
+1 3
+VA
+1 2
+VB
+1 4
+1 5
+VC
+1 6
+VS
+
+=== page 26 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+26
+
+Figure 58
+SEL-2240 Dimensions for 10-Slot Rack- and Surface-Mount Chassis
+
+Figure 59
+SEL-2240 Dimensions for 10-Slot Panel-Mount Chassis
+LEGEND
+in
+[mm]
+i9407a
+7.00
+[177.9]
+6.56
+[166.7]
+TOP
+CABLE ACCESS VIEW
+19.76
+[501.9]
+9.61
+[244.1]
+5.75
+[146.1]
+18.31
+[465.1]
+SIDE
+MINIMUM CLEARANCE REQUIRED
+FOR MODULE REMOVAL
+.61
+[15.4]
+17.75
+[450.9]
+18.31
+[465.1]
+5.75
+[146.1]
+8.80
+[223.5]
+4X Ø.25
+[Ø6.4]
+PANEL CUTOUT
+
+=== page 27 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+27
+
+Figure 60
+SEL-2240 Dimensions for Dual 4-Slot Rack- and Surface-Mount Chassis
+
+Figure 61
+SEL-2240 Dimensions for Dual 4-Slot Panel-Mount Chassis
+LEGEND
+in
+[mm]
+i9408a
+TOP
+SIDE
+MINIMUM CLEARANCE REQUIRED
+FOR MODULE REMOVAL
+.61
+[15.4]
+CABLE ACCESS VIEW
+19.76
+[501.9]
+9.61
+[244.1]
+5.75
+[146.1]
+18.31
+[465.1]
+7.00
+[177.9]
+6.56
+[166.7]
+17.75
+[450.9]
+18.31
+[465.1]
+5.75
+[146.1]
+8.80
+[223.5]
+4X Ø.25
+[Ø6.4]
+PANEL CUTOUT
+
+=== page 28 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+28
+
+Figure 62
+SEL-2240 Dimensions for 4-Slot Rack- and Surface-Mount Chassis
+Specifications
+Instruction Manual
+Compliance
+Designed and manufactured under an ISO 9001 certified quality
+management system
+SEL Axion operates at the specified limits on power up as soon as the
+device enables. Refer to the individual SEL Axion module datasheets
+for compliance and type test specifications.
+UKCA Mark
+IEC 60529 Enclosure Protection
+IP4X Front
+IP2X Product Without SEL-2245-4, SEL-2245-411, SEL-2245-42,
+SEL-2245-431, or SEL-2245-432
+IP1X Product With SEL-2245-4, SEL-2245-411, SEL-2245-42,
+SEL-2245-431, or SEL-2245-432
+Note: The product must be mounted in a locked IP4X enclosure or restricted
+area such that rear terminals are accessible by trained maintenance or
+operation personnel only.
+Product Standards
+IEC 60255-26:2013 - Relays and Protection Equipment: EMC
+IEC 60255-27:2014 - Relays and Protection Equipment: Safety
+IEC 60825-2:2004 + A1:2007 + A2:2010 for fiber-optic communications
+IEC 61850-3:2013 Performance Class 1 - Comm Systems for Power
+Utility Automation
+General
+Operating System
+SEL Linux(R) Yellowstone running Linux kernel 3.x with real-time
+preemption patches
+Operating and Storage Temperature Range
+-40 deg to +85 degC (-40 deg to +185 degF)
+Units should be stored and transported in their original packaging.
+Note: Operating temperature evaluated for UL ambient 0 deg to 40 degC.
+Note: The optional front-panel LCD is impaired for temperatures below
+-20 degC and above +70 degC.
+Operating Environment
+Pollution Degree:
+2
+Overvoltage Category:
+II
+Insulation Class:
+1
+Relative Humidity:
+5%-95%, noncondensing
+Maximum Altitude:
+2000 m
+Vibration, Earth Tremors:
+Class 1
+Dimensions
+Refer to Diagrams and Dimensions on page 20 for dimensions.
+Weight
+SEL-2241 RTAC:
+0.67 kg (1.47 lb)
+SEL-2241-2 RTAC
+(Copper):
+1.29 kg (2.84 lb)
+SEL-2241-2 RTAC (SFP):
+1.42 kg (3.13 lb)
+SEL-2242 19 in Backplane:
+3.24 kg (7.13 lb)
+Panel Mount Bezel:
+0.28 kg (0.63 lb)
+SEL-2242 10-Slot (19 in
+Rack Width) With 7 in
+Touchscreen Display:
+4.0 kg (8.80 lb)
+
+=== page 29 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+29
+SEL-2243-1 HV Coupler:
+0.85 kg (1.87 lb)
+SEL-2243-2 LV Coupler:
+0.89 kg (1.97 lb)
+SEL-2244-2 24 DI:
+0.45 kg (1.00 lb)
+SEL-2244-3 16 DO:
+0.59 kg (1.30 lb)
+SEL-2244-4 32 DI:
+0.40 kg (0.88 lb)
+SEL-2244-5 10 FHCDO:
+0.57 kg (1.26 lb)
+SEL-2245-2 16 AI:
+0.51 kg (1.12 lb)
+SEL-2245-22 4 AI-ER:
+0.42 kg (0.92 lb)
+SEL-2245-221 4 LEA:
+0.42 kg (0.92 lb)
+SEL-2245-3 8 AO:
+0.46 kg (1.01 lb)
+SEL-2245-4 4 CT/4 PT:
+0.54 kg (1.18 lb)
+SEL-2245-411 4 CT/4 LEA: 0.54 kg (1.18 lb)
+SEL-2245-42 3 CT/3 PT:
+0.73 kg (1.60 lb)
+SEL-2245-431 8 LEA/4 PT: 0.52 kg (1.14 lb)
+SEL-2245-432 12 LEA:
+0.51 kg (1.13 lb)
+Module Burden per Module for Each Node
+Note: Total power consumption must not exceed 75 W. User must add burden
+values from the following table for their configuration to ensure this
+constraint is satisfied.
+Module
+Maximum Added Burden (W)a
+SEL-2241 RTAC (Copper
+Ethernet)
+12.5
+SEL-2241 RTAC (Fiber
+Ethernet)
+15
+SEL-2241-2 RTAC (Copper
+Ethernet)
+18
+SEL-2241-2 RTAC (SFP
+Fiber Ethernet)
+20
+SEL-2242R Standard Rack-
+Mount Backplanes
+1
+SEL-2242 With
+Touchscreen Display
+4
+SEL-2243 Power Coupler
+(Fiber Ethernet)
+5a
+SEL-2243 Power Coupler
+(Copper Ethernet)
+2.5b
+SEL-2244-2 24 DI
+2
+SEL-2244-3 16 DO
+8b
+SEL-2244-4 32 DI
+2
+SEL-2244-5 10 FHCDO
+6c
+SEL-2245-2 16 AI
+3
+SEL-2245-22 4 AI-ER
+2
+SEL-2245-221 4 LEA
+2
+SEL-2245-3 8 AO
+13
+SEL-2245-4 4 CT/4 PT
+3
+SEL-2245-411 4 CT/4 LEA 3
+SEL-2245-42 3 CT/3 PT
+6
+SEL-2245-431 8 LEA/4 PT 6
+SEL-2245-432 12 LEA
+6
+Feature Selections
+Typical Burden (W)
+No use of SEL-2241 serial
+port +5 Vdc
+-3
+No use of SEL-2241-2
+serial port +5 Vdc
+-1.5
+No use of SEL-2241-2 USB
+port power
+-1.5
+Each DO port not energized
+(SEL-2241, SEL-2244-3,
+or SEL-2244-5 relay coil) -0.3
+Each AO port not energized
+(SEL-2245-2)
+-0.7
+a) Values include worst-case real power consumption and do not
+include worst-case ac power factor correction (0.4). If the unit will
+not be used in wide temperature extremes, reduce power by up to
+6%.
+b) Each SEL-2243 will draw a minimum of 11 W (quiescent) when the
+total burden of all other modules in the node is less than 11 W.
+c) All DO relay coils may be energized simultaneously and still meet
+specifications.
+SEL-2241 RTAC
+CPU Processing and Memory
+Processor Speed:
+533 MHz
+Memory:
+1024 MB DDR2 ECC RAM
+Storage:
+4 GB (2 GB reserved)
+Time-Code Input (Modulated IRIG-B)
+Input Impedance:
+2 k-
+Accuracy:
+500 us
+Time-Code Input (Demodulated IRIG-B)
+On (1) State:
+Vih > 2.2 V
+Off (0) State:
+Vil < 0.8 V
+Input Impedance:
+2 k-
+Accuracy:
+500 ns
+Time-Code Output (IRIG-B)
+On (1) State:
+Voh > 2.4 V
+Off (0) State:
+Vol < 0.8 V
+Load:
+50 -
+Communications Ports
+Ethernet Ports (To Backplane)
+Ports:
+1
+Data Rate:
+Automatic
+Protocols:
+Dedicated EtherCAT port
+Ethernet Ports (Terminal Side)
+Ports:
+2
+Data Rate:
+10 or 100 Mbps
+Connector:
+RJ45 Female or LC Fiber (Multimode or
+Single-Mode 100 Mbps only)
+Fiber-Optic Ports (Class 1 LASER/LED)
+Wavelength:
+1300 nm
+Optical Connector Type:
+LC
+Multimode Option
+Link Budget:
+11 dB
+Min. TX Power:
+-20 dBm
+Min. RX Sensitivity:
+-31 dBm
+Fiber Size:
+50-200 um
+Approximate Range:
+2 km
+Data Rate:
+100 Mbps
+Typical Fiber
+Attenuation:
+-2 dB/km
+Single-Mode Option
+Link Budget:
+10 dB
+Min. TX Power:
+-15 dBm
+Min. RX Sensitivity:
+-25 dBm
+Fiber Size:
+9 um
+Approximate Range:
+15 km
+
+=== page 30 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+30
+Data Rate:
+100 Mbps
+Typical Fiber
+Attenuation:
+-0.4 dB/km
+Serial Ports
+Ports:
+4
+Types:
+EIA-232/EIA-485 (software selectable)
+Data Rate:
+300 to 115,200 bps
+Connector:
+DB-9 Female
+Time Synchronization:
+IRIG-B
+Power:
++5 Vdc power on Pin 1 (500 mA maximum
+per SEL-2241)
+USB Device Ports
+1 Type B
+Output
+Mechanical Durability
+10 M no-load operations
+DC Output Ratings
+Rated Operational Voltage: 250 Vdc
+Rated Voltage Range:
+19.2-275 Vdc
+Rated Insulation Voltage:
+300 Vdc
+Make:
+30 A @ 250 Vdc per IEEE C37.90
+Continuous Carry:
+6 A @ 70 degC; 4 A @ 85 degC
+Thermal:
+50 A for 1 s
+Contact Protection:
+360 Vdc, 40 J MOV
+Operating Time (Coil
+Energization to Contact
+Closure, Resistive Load):
+Pickup/Dropout time -8 ms typical
+Breaking Capacity (10,000
+Operations) Per
+IEC 60255-0-20:1974:
+24 Vdc
+0.75 A
+L/R = 40 ms
+48 Vdc
+0.50 A
+L/R = 40 ms
+125 Vdc
+0.30 A
+L/R = 40 ms
+250 Vdc
+0.20 A
+L/R = 40 ms
+Cyclic Capacity
+(2.5 Cycles/Second) Per
+IEC 60255-0-20:1974:
+24 Vdc
+0.75 A
+L/R = 40 ms
+48 Vdc
+0.50 A
+L/R = 40 ms
+125 Vdc
+0.30 A
+L/R = 40 ms
+250 Vdc
+0.20 A
+L/R = 40 ms
+AC Output Ratings
+Rated Operational Voltage:
+240 Vac
+Rated Insulation Voltage:
+300 Vac
+Utilization Category:
+AC-15 (control of electromagnetic loads
+> 72 VA)
+Contact Rating
+Designation:
+B300 (B = 5 A, 300 = rated insulation
+voltage)
+Contact Protection:
+270 Vac, 40 J
+Continuous Carry:
+3 A @ 120 Vac
+1.5 A @ 240 Vac
+Conventional Enclosed
+Thermal Current (Ithe)
+Rating:
+5 A
+Rated Frequency:
+50/60 +/- 5 Hz
+Operating Time (Coil
+Energization to Contact
+Closure, Resistive Load):
+Pickup/Dropout time <8 ms typical
+Electrical Durability Make
+VA Rating:
+3600 VA, cosø = 0.3
+Electrical Durability Break
+VA Rating:
+360 VA, cosø = 0.3
+SEL-2241-2 RTAC
+CPU Processing and Memory
+Processor:
+Intel Atom x5-E3940
+Core/Threads:
+4/4
+Frequency:
+1.6 GHz
+Cache:
+2 MB L2
+Memory:
+4 GB ECC SDRAM
+Storage:
+8 GB eMMC (2 GB reserved)
+Time-Code Inputs
+One BNC IRIG-B Input
+Format:
+IRIG-B002 or -B004 (demodulated)
+On (1) State:
+Vih - 2.2 V
+Off (0) State:
+Vil - 0.8 V
+Input Impedance:
+-1.2 k- at 5 V signal level
+Constant Load:
+-4 mA
+Note: IRIG-B004 control bits comply with IEEE C37.118.1-2011 (backward
+compatible with IRIG-B000 and IEEE C37.118-2005).
+Time-Code Outputs
+All RJ45 Serial Ports
+Format:
+IRIG-B004 (demodulated)
+On (1) State:
+Voh - 2.4 V
+Off (0) State:
+Vol - 0.8 V
+Output Drive Capacity
+Each Serial Port:
+TTL 6 mA (>400 -)
+Note: IRIG-B004 control bits comply with IEEE C37.118.1-2011 (backward
+compatible with IRIG-B000 and IEEE C37.118-2005).
+Video and Audio
+Intel HD Graphics 500 Controller
+DisplayPort 2.1 output
+Intel Display Audio digital audio output
+Maximum Resolution*:
+4096 x 2160 @ 60 Hz
+Use DisplayPort cables that have ferrite chokes and are less than 2 m
+(6 ft) in length for Electromagnetic Compatibility Immunity
+compliance.
+* High-resolution displays require high-quality cables. Ensure your display
+cables are as short as possible and rated for the required screen resolution.
+USB
+2 USB A ports
+200 mA maximum combined current
+Use USB cables that have ferrite chokes and are less than 2 m (6 ft) in
+length for Electromagnetic Compatibility Immunity compliance.
+Communications Ports
+Ethernet
+SEL Gigabit Ethernet controllers
+1 10/100/1000 Mbps port, RJ45 copper
+Configurations:
+2 RJ45 copper ports
+2 SFP fiber-optic ports
+Use RJ45 Ethernet cables that are less than 10 m (33 ft) in length for
+protection-level performance and for Surge Immunity Zone A
+compliance.
+Serial
+SEL multiport serial controller
+EIA-232/422/485 Ports:
+4 ports
+RJ45 connectors
+300-115,200 bps
+256 byte TX and RX FIFOs each port
++5 Vdc port power
+COM 1-4:
+200 mA maximum combined current
+IRIG-B output
+Serial cables less than 10 m (33 ft) in length are required for
+Electromagnetic Compatibility Immunity compliance.
+
+=== page 31 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+31
+Standard Output Contact OUT101/Alarm
+Output Type:
+Relay Form C Break Before Make
+Pilot Duty Ratings*:
+B300 (UL), AC-15 (IEC)
+R300 (UL) DC-13 (IEC)
+Rated Voltage†:
+24-250 Vdc
+110-240 Vrms
+Note: The voltage across the contact output terminals must not exceed the
+operational voltage.
+Operational Voltage†:
+0-300 Vdc
+0-264 Vrms
+Contact Protection:
+MOV protection across open contact
+264 Vrms continuous voltage
+300 Vdc continuous voltage
+Continuous Carry†:
+6 A @ 70 degC, 4 A @ 85 degC
+Pickup/Dropout Time†:
+-6 ms (resistive load)
+Power Supply Burden†:
+-1 W
+Mechanical Endurance†:
+10,000 no-load operations
+Make (Short Duration
+Contact Current)†:
+30 Adc
+1,000 operations @ 250 Vdc
+2,000 operations @ 125 Vdc
+Note: 200 ms on, 15 ms off, current interrupted by independent means
+Short-Time Thermal
+Withstand†:
+50 A for 1 s
+Limiting Making
+Capacity†:
+1,000 W @ 250 Vdc (L/R = 40 ms)
+Limiting Breaking
+Capacity/Electrical
+Endurance†:
+10,000 operations
+10 operations in 4 s, followed by 2 min idle
+
+* Per UL 508 and IEC 60947-5-1 for IEC 61010-2-201 compliance.
+† Parameters verified by SEL per IEC 60255-1:2009 and IEEE C37.90-2005.
+Network Time Protocol (NTP) Modes
+NTP Client:
+As many as three configurable servers
+NTP Server
+Simple Network Time Protocol (SNTP) Accuracy
++/-1 ms:
+This does not take into account external
+factors such as network switches and
+topologies
+Precision Time Protocol (PTP)
+PTP Client:
+Peer delay request and end-to-end path
+delay supported
+Backplane (SEL-2242)
+Ethernet Port
+Ports:
+1
+Data Rate:
+10/100 Mbps
+Connector:
+RJ45 Female
+
+Rated Voltage
+Resistive Break
+Inductive Break
+L/R = 40 ms (DC)
+PF = 0.4 (AC)
+24 Vdc
+1.25 Adc
+1.25 Adc
+48 Vdc
+0.63 Adc
+0.63 Adc
+125 Vdc
+0.30 Adc
+0.30 Adc
+250 Vdc
+0.20 Adc
+0.20 Adc
+110 Vrms
+0.30 Arms
+0.30 Arms
+240 Vrms
+0.20 Arms
+0.20 Arms
+Protocols:
+Engineering Access
+Note: SEL-2242 Ethernet port is included with the optional touchscreen,
+10-slot model only.
+Fuse Rating
+Non-Serviceable:
+2.5 A, 125 V, time lag T
+Power Coupler (SEL-2243)
+EtherCAT Ports
+Ports:
+2
+Data Rate:
+Automatic
+Connector:
+RJ45 Female or LC Fiber
+Protocols:
+Dedicated EtherCAT
+RJ45 Ports
+Cable Length:
+<3 m
+Fiber-Optic Ports (Class 1 LASER/LED)
+Wavelength:
+1300 nm
+Optical Connector Type:
+LC
+Multimode Option
+Link Budget:
+11 dB
+Min. TX Power:
+-20 dBm
+Min. RX Sensitivity:
+-31 dBm
+Fiber Size:
+50-200 um
+Approximate Range:
+2 km
+Data Rate:
+100 Mbps
+Typical Fiber Attenuation:
+-2 dB/km
+Single-Mode Option
+Link Budget:
+10 dB
+Min. TX Power:
+-15 dBm
+Min. RX Sensitivity:
+-25 dBm
+Fiber Size:
+9 um
+Approximate Range:
+15 km
+Data Rate:
+100 Mbps
+Typical Fiber Attenuation:
+-0.4 dB/km
+Power Supply
+AC Input Voltage (High-Voltage Model)
+Note: Single phase.
+Nominal Supply Voltage: 120-240 Vac, 50-60 Hz
+Operational Voltage
+Range:
+85-264 Vac, 40-70 Hz
+DC Input Voltage (High-Voltage Model)
+Nominal Supply Voltage: 125-250 Vdc
+Operational Voltage
+Range:
+85-300 Vdc
+DC Input Voltage (Low-Voltage Model)
+Nominal Supply Voltage: 24-48 Vdc
+Operational Voltage
+Range:
+19.1-57.6 Vdc polarity-dependent
+Note: UL operational voltage range is equal to the nominal voltage range +/-10
+percent.
+Fuse Rating
+High-Voltage Model, F1: 3.15 A, high breaking capacity, time lag T,
+250 V (5x20 mm, T3.15AH 250 V)
+High-Voltage Model, F2
+(Non-Serviceable):
+8 A, high breaking capacity, time lag T,
+60 Vdc (2.7x6.1 mm, T8A 60 Vdc)
+Low-Voltage Model:
+6.30 A, high breaking capacity, time lag T,
+250 V (5x20 mm, T6.3AH 250 V)
+
+=== page 32 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+32
+Power Consumption: See Module Burden per Module for Each Node on
+page 29 for power per module.
+Maximum AC Burden:
+160 VA
+Maximum DC Burden:
+75 W
+Interruptions:
+30 ms @ 24 Vdc
+130 ms @ 48 Vdc
+50 ms @ 125 Vac/Vdc
+100 ms @ 250 Vac/Vdc
+The following exceptions for the IEC 61850-3 acceptance criteria for
+normal equipment functioning regarding ac power dips and interruptions
+and dc voltage dips are applicable (refer to IEC 61850-3 subclause 7.5.5,
+Equipment functioning, and 7.5.6, Exceptions).
+Max Inrush:
+17 A
+Isolation:
+3100 Vdc
+Redundant Installation:
+Each node may have one or two SEL-2243
+modules installed. When two are used,
+they operate in load-sharing mode.
+Recommended External Overcurrent Protection
+Breaker Type:
+Standard
+Breaker Rating:
+15 A or 20 A at 250 Vdc
+Current Breaking Capacity: 10 kA
+Grounded Neutral System:
+Device in series with the HOT or energized
+conductor
+DC and Isolated Systems:
+Device in series with both conductors
+Optoisolated Control Inputs (SEL-2244-2)
+When Used With DC Control Signals:
+250 V
+ON for 200-275 Vdc
+OFF below 150 Vdc
+220 V
+ON for 176-242 Vdc
+OFF below 132 Vdc
+125 V
+ON for 100-135.5 Vdc
+OFF below 75 Vdc
+110 V
+ON for 88-121 Vdc
+OFF below 66 Vdc
+48 V
+ON for 38.4-52.8 Vdc
+OFF below 28.8 Vdc
+24 V
+ON for 15-30 Vdc
+OFF for <10 Vdc
+When Used With AC Control Signals:
+250 V
+ON for 170.6-300 Vac
+OFF below 106 Vac
+220 V
+ON for 150.3-264 Vac
+OFF below 93.2 Vac
+125 V
+ON for 85-150 Vac
+OFF below 53 Vac
+110 V
+ON for 75.1-132 Vac
+OFF below 46.6 Vac
+48 V
+ON for 32.8-60 Vac
+OFF below 20.3 Vac
+24 V
+ON for 14-27 Vac
+OFF for <5 Vac
+Burden/Current Draw at
+Nominal DC Voltage:
+2-6 mA (Except for 24 V, 8 mA)
+Rated Insulation Voltage:
+300 Vac
+Rated Impulse Withstand
+Voltage (Uimp):
+5,000 V
+Power Supply
+Requirement
+Exceptiona
+a Voltage interruptions that are longer than the specified
+interruption duration result in a device restart.
+125 Vac
+5 cycles
+(83.33 ms @ 60 Hz,
+100 ms @ 50 Hz)
+50 ms
+50 cycles
+Not applicableb
+b Equipment is not intended to be connected to power supply
+ports that are directly connected to a public low-voltage
+power supply network.
+Input Thermal Derating
+SEL-2244-2 Digital Input Derating Curve
+Control Outputs (SEL-2244-3 Standard Contacts)
+Mechanical Durability
+10 M no-load operations
+DC Output Ratings
+Rated Operational Voltage:
+250 Vdc
+Rated Voltage Range:
+19.2-275 Vdc
+Rated Insulation Voltage:
+300 Vdc
+Make:
+30 A @ 250 Vdc per IEEE C37.90
+Continuous Carry:
+6 A @ 70 degC; 4 A @ 85 degC
+Continuous Carry
+(UL/CSA Derating With
+All Outputs Asserted):
+5 A @ <60 degC; 2.5 A 60 deg to 70 degC
+Thermal:
+50 A for 1 s
+Contact Protection:
+350 Vdc, 145 J MOV protection across
+open contacts
+Operating Time (Coil
+Energization to Contact
+Closure, Resistive Load):
+Pickup/Dropout time -8 ms typical
+Breaking Capacity (10,000
+Operations) Per
+IEC 60255-0-20:1974:
+24 Vdc
+0.75 A
+L/R = 40 ms
+48 Vdc
+0.50 A
+L/R = 40 ms
+125 Vdc
+0.30 A
+L/R = 40 ms
+250 Vdc
+0.20 A
+L/R = 40 ms
+Cyclic Capacity
+(2.5 Cycles/Second) Per
+IEC 60255-0-20:1974:
+24 Vdc
+0.75 A
+L/R = 40 ms
+48 Vdc
+0.50 A
+L/R = 40 ms
+125 Vdc
+0.30 A
+L/R = 40 ms
+250 Vdc
+0.20 A
+L/R = 40 ms
+AC Output Ratings
+Rated Operational Voltage:
+240 Vac
+Rated Insulation Voltage
+(Excluding EN 61010-1):
+300 Vac
+Utilization Category:
+AC-15 (control of electromagnetic
+loads > 72 VA)
+Contact Rating
+Designation:
+B300 (B = 5 A, 300 = rated insulation
+voltage)
+Contact Protection:
+250 Vac, 145 J
+Continuous Carry:
+3 A @ 120 Vac
+1.5 A @ 240 Vac
+Conventional Enclosed
+Thermal Current (Ithe)
+Rating:
+5 A
+Rated Frequency:
+50/60 +/- 5 Hz
+Operating Time (Coil
+Energization to Contact
+Closure, Resistive Load):
+Pickup/Dropout time -8 ms typical
+Electrical Durability Make
+VA Rating:
+3600 VA, cosø = 0.3
+Electrical Durability Break
+VA Rating:
+360 VA, cosø = 0.3
+
+=== page 33 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+33
+Optoisolated Control Inputs (SEL-2244-4)
+When Used With DC Control Signals:
+125 V
+ON for 100-135.5 Vdc
+OFF below 75 Vdc
+110 V
+ON for 88-121 Vdc
+OFF below 66 Vdc
+48 V
+ON for 38.4-52.8 Vdc
+OFF below 28.8 Vdc
+24 V
+ON for 15-30 Vdc
+OFF for <10 Vdc
+When Used With AC Control Signals:
+125 V
+ON for 85-150 Vac
+OFF below 53 Vac
+110 V
+ON for 75.1-132 Vac
+OFF below 46.6 Vac
+Burden/Current Draw at
+Nominal DC Voltage:
+2-6 mA (Except for 24 V, 8 mA)
+Rated Insulation Voltage:
+300 Vac
+Rated Impulse Withstand
+Voltage (Uimp):
+5,000 V
+Maximum Voltage Between
+Inputs That Share a
+Common Ground:
+150 Vpeak
+Use default timer values or greater (-10 ms in DC mode) for EMC
+compliance.
+Control Outputs (SEL-2244-5 Fast High-Current Contacts)
+Mechanical Durability
+10 M no-load operations
+DC Output Ratings
+Rated Operational Voltage: 250 Vdc
+Rated Voltage Range:
+19.2-275 Vdc
+Rated Insulation Voltage:
+300 Vdc
+Make:
+30 A @ 250 Vdc per IEEE C37.90
+Continuous Carry:
+6 A @ 70 degC; 4 A @ 85 degC
+Continuous Carry
+(UL/CSA Derating With
+All Outputs Asserted):
+5 A @ <60 degC; 2.5 A 60 deg to 70 degC
+Thermal:
+50 A for 1 s
+Contact Protection:
+330 Vdc, 145 J MOV protection across
+open contacts
+Operating Time (Coil Energization to Contact Closure, Resistive Load)
+Pickup Time:
+-12 us at 250 Vdc, 16 us at 125 Vdc,
+65 us at 19.2 Vdc typical (results with
+100 k-resistive load)
+Dropout Time:
+-8 ms typical
+Inductive Breaking
+Capacity (10,000
+Operations) Per
+IEC 60255-0-20:1974:
+24 Vdc
+10 A
+L/R = 40 ms
+48 Vdc
+10 A
+L/R = 40 ms
+125 Vdc
+10 A
+L/R = 40 ms
+250 Vdc
+10 A
+L/R = 20 ms
+Cyclic Capacity
+(4 Cycles/Second
+Followed by 2 Min Idle
+Thermal Dissipation) Per
+IEC 60255-0-20:1974:
+24 Vdc
+10 A
+L/R = 40 ms
+48 Vdc
+10 A
+L/R = 40 ms
+125 Vdc
+10 A
+L/R = 40 ms
+250 Vdc
+10 A
+L/R = 20 ms
+AC Output Ratings
+Rated Operational Voltage: 110/120/220/240 Vac
+Voltage Range:
+19.2-250 Vac
+Rated Insulation Voltage:
+250 Vac
+Make:
+30 A @ 240 Vac
+Continuous Carry:
+6 A @ 70 degC; 4 A @ 85 degC
+Continuous Carry
+(UL/CSA Derating With
+All Outputs Asserted):
+5 A @ <60 degC; 2.5 A @ 60 deg to 70 degC
+Thermal:
+50 A for 1 s
+Contact Protection:
+250 Vac, 145 J MOV protection across
+open contacts
+Operating Time (Coil Energization to Contact Closure, Resistive Load)
+Pickup Time:
+-12 us at 250 Vac, 16 us at 125 Vac,
+65 us at 19.2 Vac typical (results with
+100 k-resistive load)
+Dropout Time:
+-8 ms typical
+Note: Per IEC 60255-23:1994, using the simplified method of assessment.
+Note: Make rating per IEEE C37.90-1989.
+Fuse Rating
+Non-Serviceable:
+4 A, 450 V, medium time lag M
+DC Transducer (Analog) Inputs (SEL-2245-2)
+Input Impedance
+Current Mode:
+200 --for +/-20 mA
+5,000 --for +/-2 mA
+Voltage Mode:
+10 M-
+Input Range (Maximum)
++/-20 mA (transducers: 4-20 mA or 0-20 mA typical)
++/-2 mA (transducers: 0-1 mA or 0-2 mA typical)
++/-10 V (transducers: 0-5 V or 0-10 V typical)
+Sampling Rate
+1 ksps
+Anti-Alias Filter
+Corner Frequency:
+330 Hz
+Rolloff:
+20 dBV per decade
+Digital Filter
+Corner Frequency:
+Filter A: 16 Hz
+Filter B: 10 Hz
+Filter C: 0.2 Hz
+50 Hz Rejection:
+Filter A: >30 dB
+Filter B: >50 dB
+Filter C: >70 dB
+60 Hz Rejection:
+Filter A: >60 dB
+Filter B: >70 dB
+Filter C: >70 dB
+Step Response
+No Filter:
+3 ms (10%-90% response)
+Filter A:
+23 ms (10%-90% response)
+Filter B:
+35 ms (10%-90% response)
+Filter C:
+700 ms (10%-90% response)
+Common Mode Range
++/-35 Vdc between separate inputs
++/-250 Vdc all inputs to chassis
+Isolation
+500 Vac between inputs
+2,000 Vac all inputs to chassis
+Accuracy at 25 degC
+ADC:
+16 bit
+Voltage Inputs (+/-10 V):
+0.25% of full-scale typical
+0.05% with field calibration
+2% of full-scale maximum
+High Current Inputs
+(+/-20 mA):
+0.5% of full-scale typical
+0.1% with field calibration
+2% of full-scale maximum
+Low Current Inputs
+(+/-2 mA):
+0.5% of full-scale typical
+0.1% with field calibration
+4% of full-scale maximum
+Accuracy Variation With Temperature
+Inputs:
++/-0.015% per degC of full scale
+(+/-20 mA, +/-2 mA, or +/-10 V)
+ADC:
++/-0.004% per degC
+
+=== page 34 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+34
+Triggered Waveform Recording
+Sampling Rate:
+1 kHz
+Record Duration:
+0.1 second increments from 0.5 s to 144 s
+Record Pre-Trigger:
+0.05 s minimum to a maximum of (record
+length minus 0.05 s)
+Waveform File Format:
+COMTRADE (IEEE C37.111-1999
+compliant)
+DC Analog Inputs Extended Range
+(SEL-2245-22 in DC Mode)
+Input Impedance
+>7 M-
+Input Range (Maximum)
+0-300 V
+Sampling Rate
+24 ksps
+Anti-Alias Filter
+Corner Frequency:
+5 kHz
+Rolloff:
+20 dB per decade
+Digital Filter
+Corner Frequency:
+Filter A: 16 Hz
+Filter B: 10 Hz
+Filter C: 0.2 Hz
+50 Hz Rejection:
+Filter A: >30 dB
+Filter B: >50 dB
+Filter C: >70 dB
+60 Hz Rejection:
+Filter A: >60 dB
+Filter B: >70 dB
+Filter C: >70 dB
+Step Response
+Group Delay (Pre-Filter):
+5.3 ms
+No Filter:
+3 ms (10%-90% response)
+Filter A:
+23 ms (10%-90% response)
+Filter B:
+35 ms (10%-90% response)
+Filter C:
+700 ms (10%-90% response)
+Common Mode Range
++/-250 Vdc between separate inputs
++/-250 Vac all inputs to chassis
+Isolation
+2,500 Vrms between separate inputs
+2,500 Vrms all inputs to chassis
+Accuracy at 25 degC
+ADC:
+16 bit
+Inputs:
+0.25% of full-scale typical
+3% of full-scale worst case
+Accuracy Variation With Temperature (Inputs)
++/-0.015% per degC of full scale
+Triggered Waveform Recording
+Sampling Rate:
+1, 2, 4, 8, 24 kHz
+Record Duration:
+0.1 second increments from 0.5 s to 144 s
+Record Pre-Trigger:
+0.05 s minimum to a maximum of (record
+length minus 0.05 s)
+Waveform File Format:
+COMTRADE (IEEE C37.111-1999
+compliant)
+DC Analog Outputs (SEL-2245-3)
+Current Mode
+Output Range:
+-20.48 to +20.48 mA
+Load Impedance:
+0-750 - @ 20 mA, 100 uH
+Voltage Mode
+Output Range:
+-10.24 to +10.24 volts
+Load Impedance:
+>2,000 -, 1 uF
+Step Response
+1 ms (10%-90% response typical)
+Isolation
+2,000 Vdc between outputs or ground
+Accuracy at 25 degC (Outputs)
+Current Mode:
++/-0.3% of full-scale typical
++/-3% of full-scale worst case (average
+during an EMI event over a 1-second
+period)
+Voltage Mode:
++/-0.2% of full-scale typical
++/-2% of full-scale worst case (average
+during an EMI event over a 1-second
+period)
+Accuracy Variation With Temperature (Outputs)
++/-0.01% of full-scale/ degK (current or voltage mode)
+AC Metering Inputs (SEL-2245-4, SEL-2245-411,
+SEL-2245-221, and SEL-2245-22 Voltage Inputs in AC Mode)
+Frequency:
+50/60 Hz
+Range:
+45-65 Hz
+Typical Accuracy
+SEL-2245-4 and
+SEL-2245-22:
++/-0.005 Hz above 20 V
+SEL-2245-411 and
+SEL-2245-221:
++/-0.005 Hz above 500 mV
+Worst-Case Accuracy
+SEL-2245-4 and
+SEL-2245-22:
++/-0.01 Hz above 20 V
+SEL-2245-411 and
+SEL-2245-221:
++/-0.01 Hz above 500 mV
+Phase Rotation:
+ABC, ACB
+Input Configuration:
+3-Wire Delta, 4-Wire Wye
+Update Interval
+Fundamental Metering:
+200 Hz
+RMS Metering:
+5 Hz
+Current Inputs Phase and Neutral
+INOM:
+1 A or 5 A (no setting required)
+Measurement Range:
+0.050-22 A Continuous
+22-100 A Symmetrical for 25 s
+Thermal Withstand Limit:
+500 A for 1 s
+Typical Accuracy:
++/-0.1% fundamental @ fNOM and > 0.6 A
++/-0.1% rms @ fNOM and > 0.6 A
+Worst-Case Accuracy:
++/-2% +/- 0.005 A fundamental
++/-1% +/- 0.005 A rms
+Angle
+Range:
++/-180 deg
+Typical Accuracy:
++/-0.1 deg fundamental @ fNOM and > 0.6 A
+Worst-Case Accuracy:
++/-2 deg @ fNOM
+Burden:
+<0.1 VA @ INOM
+
+=== page 35 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+35
+Voltage Inputs (SEL-2245-4 and SEL-2245-22 in AC Mode)
+VNOM:
+300 V
+Measurement Range:
+5-400 L-N, 9-693 L-L Vac
+fundamental/rms
+5-300 L-N, 9-520 L-L Vac
+fundamental/rms (UL)
+Maximum:
+600 L-N, 1,039 L-L Vac fundamental/rms
+for 10 s
+Typical Accuracy:
++/-0.1% fundamental @ fNOM and > 20 V
++/-0.1% rms @ fNOM
+Worst-Case Accuracy:
++/-2% fundamental @ fNOM
++/-1% rms plus +/-0.05 V
+Angle
+Range:
++/-180 deg
+Typical Accuracy:
++/-0.1 deg @ fNOM and > 20 V
+Worst-Case Accuracy:
++/-2 deg @ fNOM
+Burden:
+<0.1 VA
+LEA Voltage Inputs (SEL-2245-411 and SEL-2245-221)
+VNOM:
+1.5 V
+Measurement Range:
+30 Vac peak
+0.05-22 Vac rms
+Maximum:
+300 VL-N rms for 10 s (surge)
+Typical Accuracy:
++/-0.1% rms @ fNOM and > 50 mV
++/-0.1% fundamental @ fNOM and > 50 mV
+Worst-Case Accuracy:
++/-3% +/-1 mV @ fNOM fundamental/rms
+Angle
+Range:
++/-180 deg
+Typical Accuracy:
++/-0.1 deg @ fNOM and > 50 mV
+Worst-Case Accuracy:
++/-2 deg @ fNOM
+Burden:
+<0.1 VA
+Sequence Components (SEL-2245-4)
+Values:
+I0, I1, I2, V0, V1, V2
+Typical Accuracy
+Magnitude:
++/-0.2% @ fNOM and V > 6.7 V, I > 0.6 A
+Angle:
++/-0.2 deg @ fNOM and V > 6.7 V, I > 0.6 A
+Worst-Case Accuracy
+Magnitude:
++/-3% @ fNOM and V > 6.7 V, I > 0.6 A
+Angle:
++/-0.2 deg @ fNOM and V > 6.7 V, I > 0.6 A
+Power and Power Factor Per Phase and Three-Phase (SEL-2245-4)
+PA, PB, PC, 3P
+Typical Accuracy:
+0.1% @ PF > 0.1
+Worst-Case Accuracy:
+2%
+QA, QB, QC, 3Q
+Typical Accuracy:
+0.1% @ PF < 0.9
+Worst-Case Accuracy:
+2%
+SA, SB, SC, 3S
+Typical Accuracy:
+0.1%
+Worst-Case Accuracy:
+2%
+PFA, PFB, PFC, 3PF
+Typical Accuracy:
+0.1% @ PF > 0.1
+Worst-Case Accuracy:
+2%
+Power and Power Factor Per Phase and Three-Phase (SEL-2245-411)
+PA, PB, PC, 3P
+Typical Accuracy:
+0.1% @ PF --0.5
+Worst-Case Accuracy:
+2%
+QA, QB, QC, 3Q
+Typical Accuracy:
+0.1% @ PF-- 0.98
+Worst-Case Accuracy:
+2%
+SA, SB, SC, 3S
+Typical Accuracy:
+0.1%
+Worst-Case Accuracy:
+2%
+PFA, PFB, PFC, 3PF
+Typical Accuracy:
+0.1% @ Unity PF
+Worst-Case Accuracy:
+2%
+Synchrophasor
+Conformance:
+IEEE C37.118.1-2011 as amended by
+IEEE C37.118.1a-2014
+IEEE C37.118.2-2011
+Accuracy:
+Level 1 as specified by IEEE C37.118
+Measurements:
+Software selectable (P or M class)
+Voltage:
+VA, VB, VC, VS
+Current:
+IA, IB, IC, IN
+Positive-Sequence:
+V1, I1
+Periodic:
+Frequency and df/dt
+Processing Rate:
+120 Hz
+Frequency Resolution:
++/-1.25 mHz*
+Calculated Power
+Resolution:
++/-0.1%*
+* Resolution values tested on SEL-2245-4 with 69 V voltage inputs, 0.6 A to
+1 A current inputs, and 49.5 to 50.5 Hz frequency range.
+Message Rates
+(60 Hz nominal):
+1, 2, 4, 5, 10, 12, 15, 20, 30, 60, and 120*
+(messages/second)
+Message Rates
+(50 Hz nominal):
+1, 2, 5, 10, 25, 50, and 100*
+(messages/second)
+* This message rate is only supported on the SEL-2245-4, SEL-2245-42, and
+SEL-2245-411 Axion modules. Message rates are supported on the
+SEL-2241-2, SEL-3350, SEL-3555, and SEL-3560.
+Triggered Waveform Recording (SEL-2245-4, SEL-2245-411,
+SEL-2245-22, and SEL-2245-221)
+Sampling Rates:
+1, 2, 4, 8, 24 kHz software selectable
+Record Duration:
+0.1 second increments from 0.5 s to specified
+maximum for each sample rate.
+Maximum Record
+Duration:
+6 s @ 24 kHz
+18 s @ 8 kHz
+36 s @ 4 kHz
+72 s @ 2 kHz
+144 s @ 1 kHz
+Record Pre-Trigger:
+0.05 s minimum to a maximum of (record
+length minus 0.05 s)
+Waveform File Format:
+COMTRADE (IEEE C37.111-1999
+compliant)
+AC Protection Inputs (SEL-2245-42)
+Frequency
+Rated:
+50/60 Hz
+Range:
+40-90 Hz
+Typical Accuracy:
++/-0.005 Hz above 20 V
+Worst-Case Accuracy:
++/-0.01 Hz above 20 V (+/-0.1 Hz for <2.5
+cycles during transients)
+Phase Rotation:
+ABC, ACB
+Input Configuration:
+3-Wire Delta, 4-Wire Wye
+Update Interval
+Fundamental Metering:
+250 Hz
+RMS:
+250 Hz, 1 cycle window
+
+=== page 36 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+36
+THD (15th Harmonic
+Limited):
+250 Hz, 1 cycle window
+Harmonics and THD
+(63rd Harmonic
+Limited):
+10/12 cycle for 50/60 Hz system frequency
+AC Current Channels
+Nominal Current:
+1 ARMS or 5 ARMS (no setting required)
+Current Range Rating
+(With DC Offset at
+X/R = 10, 1.5 Cycles):
+0.1-91 A
+Operational Range:
+0.1-300 ARMS
+Measurement Range:
+0.1-20 ARMS
+Thermal Withstand Limit:
+15 ARMS continuous
+500 ARMS for one second
+Fundamental Measurement Accuracy
+Magnitude:
++/-0.1%, typical, +/-0.001 A
++/-2%, worst case, +/-0.001 A
+Phase:
++/-0.1 deg, typical at fNOM and current > 0.4 A
++/-1 deg, over full rated temperature range
++/-2 deg, worst case
+RMS Measurement Accuracy
+Magnitude:
++/-0.1%, typical, +/-0.001 A
++/-2%, worst case, +/-0.001 A
+Burden:
+<0.1 VA @ 67 V
+Impedance >500 k-
+THD Accuracy (15th
+Harmonic Limited):
++/-5% of measurement plus +/-0.25%
+AC Voltage Channels
+Rated Range:
+67-240 VL-N
+Note: Rated Range refers to the IEEE C37.118 rating system.
+Operational Range:
+0-300 VL-N
+Accuracy Range:
+6.7-300 VL-N
+Rated Insulation Voltage:
+300 VL-N continuous
+600 VL-N for ten seconds
+Galvanic Isolated Channels
+Channel-to-Ground and
+Channel-to-Channel:
+2.5 kVRMS for one minute
+Fundamental Measurement Accuracy
+Magnitude:
++/-0.1%, typical, plus +/-0.05 V
++/-3%, worst case, plus +/-0.05 V
+Phase:
++/-0.1 deg @ fNOM, typical
++/-1 deg @ fNOM, over full rated temperature
+range
++/-2 deg @ fNOM, worst case
+RMS Measurement Accuracy
+Magnitude:
++/-0.1%, typical, plus +/-0.05 V
++/-3%, worst case, plus +/-0.05 V
+Burden:
+<0.01 VA @ 67 V
+Impedance >500 k-
+THD Accuracy (15th
+Harmonic Limited):
++/-5% of measurement plus +/-0.25%
+Sequence Components
+Values:
+I0, I1, I2, V0, V1, V2
+Note: Sequence components are of the fundamental frequency.
+Accuracy
+Magnitude:
++/-1%, typical
+Angle:
++/-0.5 deg, typical
+Power and Power Factor (Per-Phase and Three-Phase)
+Values:
+PA, PB, PC, PAB, PBC, PCA,
+QA, QB, QC, QAB, QAC, QCA,
+SA, SB, SC, SAB, SBC, SCA,
+PFA, PFB, PFC, P3, Q3, S3, PF3
+Accuracy:
++/-1%, typical
+Synchrophasors
+Conformance:
+IEEE C37.118.1-2011 as amended by
+IEEE C37.118.1a-2014
+IEEE C37.118.2-2011
+Accuracy:
+Level 1 as specified by IEEE C37.118
+Measurements:
+Software selectable (P or M Class)
+Voltage:
+VA, VB, VC
+Current:
+IA, IB, IC
+Positive-Sequence:
+V1, I1
+Periodic:
+Frequency and df/dt
+Processing Rate:
+120 Hz
+Frequency Resolution:
++/-1.25 mHz*
+Calculated Power
+Resolution:
++/-0.1%*
+* Resolution values tested with 69 V voltage inputs, 0.6 A to 1 A current
+inputs, and 49.5 to 50.5 Hz frequency range.
+Message Rates (60 Hz
+nominal):
+1, 2, 4, 5, 10, 12, 15, 20, 30, 60, and 120*
+(messages/second)
+Message Rates (50 Hz
+nominal):
+1, 2, 5, 10, 25, 50, and 100*
+(messages/second)
+* Message rates are supported on the SEL-2241-2, SEL-3350, SEL-3555, and
+SEL-3560.
+Triggered Waveform Recording
+Sampling Rates:
+1, 2, 4, 8, 24 kHz software selectable
+Transient Fault Record Length
+Individual Records as
+Long as:
+24 s for 24 kHz
+72 s for 8 kHz
+144 s for 4 kHz
+288 s for 2 kHz
+576 s for 1 kHz
+Pre-Fault Time:
+0.05 s to (max. event length - 0.05 s)
+Data Format:
+IEEE C37.111-2013 COMTRADE
+File Naming:
+IEEE C37.232 COMNAME
+Harmonics
+Processing Window:
+10/12 cycle for 50/60 Hz system frequency
+Measurement Bandwidth:
+40-4,000 Hz (63rd harmonic)
+Accuracy Range
+Fundamental Frequency:
+40-70 Hz
+Voltage (Vfund):
+67-270 V
+Current (Ifund):
+0.5-18.0 A
+Voltage Accuracy
+(40-3,000 Hz):
++/-5% for measurements -1% of Vfund
++/-0.05% of Vfund for measurements <1% of
+Vfund
+Current Accuracy
+(40-3,000 Hz):
++/-5% for measurements -1% of Ifund
++/-0.15% of Ifund for measurements <1% of
+Ifund
+THD Accuracy (63rd
+Harmonic Limited):
++/-5% typical
+Note: Harmonic measurements are calculated as harmonic subgroups,
+representing the rms value of the spectral content within a 15 Hz band
+centered on the target harmonic frequency (7.5 Hz before and after).
+Interharmonic measurements are determined as interharmonic centered
+subgroups, which are the rms values of the spectral content between two
+harmonic subgroups. THD measurements are calculated as the ratio of the
+rms value of the harmonic subgroups, up to the 63rd harmonic, to the rms
+value of the subgroup associated with the fundamental frequency.
+
+=== page 37 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+37
+12 Channel Analog Inputs (SEL-2245-43)
+AC Analog Input Channels (SEL-2245-431)
+Frequency
+Rated:
+50/60 Hz
+Range:
+40-90 Hz
+Typical Accuracy:
++/-0.005 Hz above 20 V
+Worst-Case Accuracy:
++/-0.01 Hz above 20 V (+/-0.1 Hz for <2.5
+cycles during transients)
+Phase Rotation:
+ABC, ACB
+Input Configuration:
+3-Wire Delta, 4-Wire Wye
+Update Interval
+Fundamental Metering:
+250 Hz
+RMS:
+250 Hz, 1 cycle window
+THD (15th Harmonic
+Limited):
+250 Hz, 1 cycle window
+Voltage
+Rated Range:
+67-240 VL-N
+Note: Rated Range refers to the IEEE C37.118 rating system.
+Operational Range:
+0-300 VL-N
+Accuracy Range:
+6.7-300 VL-N
+Rated Insulation Voltage:
+300 VL-N continuous
+600 VL-N for 10 seconds
+Galvanic Isolated Channels
+Channel-to-Ground and
+Channel-to-Channel:
+2.5 kVRMS for 1 minute
+Fundamental Measurement Accuracy
+Magnitude:
++/-0.1%, typical, plus +/-0.05 V
++/-3%, worst case, plus +/-0.05 V
+Phase:
++/-0.1 deg @ fNOM, typical
++/-1 deg @ fNOM, over full rated temperature
+range
++/-2 deg @ fNOM, worst case
+RMS Measurement Accuracy
+Magnitude:
++/-0.1%, typical, plus +/-0.05 V
++/-3%, worst case, plus +/-0.05 V
+Burden:
+<0.01 VA @ 67 V
+Impedance:
+>500 k-
+THD Accuracy (15th
+Harmonic Limited):
++/-5% of measurement plus +/-0.25%
+Data Acquisition
+Resolution:
+24 bit
+LEA Voltage Inputs (SEL-2245-431 and SEL-2245-432)
+Nominal Input:
+333 mV
+Measurement Range:
+0.033-10 VRMS
+Fundamental Measurement Accuracy
+Magnitude:
++/-0.25%, typical (>33 mV), plus +/-1.3 mV
++/-1.2%, worst case, plus +/-3.1 mV
+Phase:
++/-0.1 deg @ fNOM, typical
++/-1 deg @ fNOM, over full rated temperature
+range
++/-2 deg@ fNOM, worst case
+RMS Measurement Accuracy
+Magnitude:
++/-0.25%, typical (>33 mV), plus +/-1.3 mV
++/-1.12%, worst case, plus +/-3.1 mV
+Burden:
+<0.1 VA
+Impedance
+>150 k-
+<10 nF
+Sequence Components
+SEL-2245-431 Values:
+I0X, I1X, I2X, I0Y, I1Y, I2Y, V0, V1, V2
+SEL-2245-432 Values:
+I0X, I1X, I2X, I0Y, I1Y, I2Y, I0Z, I1Z, I2Z
+Note: Sequence components are of the fundamental frequency.
+Accuracy
+Magnitude:
++/-1%, typical
+Angle:
++/-0.5 deg, typical
+Synchrophasors
+Conformance:
+IEEE C37.118.1-2011 as amended by
+IEEE C37.118.1a-2014
+IEEE C37.118.2-2011
+IEC/IEEE 60255-118-1-2018
+Accuracy:
+Level 1 as specified by IEEE C37.118
+Measurements:
+Software selectable (P or M Class)
+SEL-2245-431 Values:
+IAX, IBX, ICX, INX, IAY, IBY, ICY, INY,
+VA, VB, VC, VS, and sequence
+component values
+SEL-2245-432 Values:
+IAX, IBX, ICX, INX, IAY, IBY, ICY, INY,
+IAZ, IBZ, ICZ, INZ, and sequence
+component values
+Periodic:
+Frequency and df/dt
+Processing Rate:
+120 Hz
+Frequency Resolution:
++/-1.25 mHz
+Message Rates (60 Hz
+nominal):
+1, 2, 4, 5, 10, 12, 15, 20, 30, 60, and 120*
+(messages/second)
+Message Rates (50 Hz
+nominal):
+1, 2, 5, 10, 25, 50, and 100*
+(messages/second)
+* Message rates are supported on the SEL-2241-2, SEL-3350, SEL-3555, and
+SEL-3560.
+Triggered Waveform Recording
+Sampling Rates:
+1, 2, 4, 8, 24 kHz software selectable
+Transient Fault Record Length
+Individual Records as
+Long as:
+24 s for 24 kHz
+72 s for 8 kHz
+144 s for 4 kHz
+288 s for 2 kHz
+576 s for 1 kHz
+Pre-Fault Time:
+0.05 s to (max. event length - 0.05 s)
+Data Format:
+IEEE C37.111-2013 COMTRADE
+File Naming:
+IEEE C37.232 COMNAME
+
+=== page 38 ===
+SEL-2240 Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+38
+SEL-2240 DFR Specifications
+
+Technical Support
+We appreciate your interest in SEL products and services. If you have questions or comments, please contact us at:
+Schweitzer Engineering Laboratories, Inc.
+2350 NE Hopkins Court
+Pullman, WA 99163-5603 U.S.A.
+Tel: +1.509.338.3838
+Fax: +1.509.332.7990
+Internet: selinc.com/support
+Email: info@selinc.com
+Channel Counts
+Analog Input Count:
+Supports as many as 192 analog inputs*
+(SEL-2245-42 or SEL-2245-43). More
+channels may be supported depending
+on EtherCAT(R) bandwidth limitations.†
+Digital Input Count:
+Supports as many as 1,728 digital inputs
+(SEL-2244-2 or SEL-2244-4)†
+* An SEL-3555 RTAC is required for systems with more than 96 analog
+channels.
+† Axion I/O supports as many as 60 modules across 6 Axion nodes. The "as
+many as" denotes the maximum; this value decreases as other Axion I/O
+modules are added to the project.
+Triggered Fault Recording
+Recording Rates:
+1, 2, 4, 8, 24
+Maximum Individual
+Recording Lengths in
+Seconds (for above rates,
+respectively):
+576, 288, 144, 72, 24*
+* A maximum of 12 seconds is required for systems with more than 96
+channels.
+Trigger Parameters:
+Over- and Undercurrent
+Over- and Undervoltage
+Real, Reactive, and Apparent Power
+Sequence Component Currents and
+Voltages
+THD
+Harmonics and Interharmonics (up to
+63rd)
+Cross-trigger DFR records via Digital Input modules or via Ethernet
+communications links between devices.
+Record Count:
+as many as 1,024
+COMTRADE formatted records (COMNAME standard)
+Sequence of Event (SOE) Storage
+Maximum of 500,000 SOE records with 1 ms accuracy
+Phasor Measurement Data Streaming
+C37.118 Stream Synchrophasor quantities to SEL-5073 Synchrowave(R)
+Monitoring or external PDC.
+Stream 3,000 sample per second oscillography data to Synchrowave
+Monitoring.
+Time Synchronization (1 ms Accuracy)
+PTP with optional redundant sources
+IRIG-B
+Fault Location
+Single-ended, impedance-based
+Requires 24 kHz event recording from SEL-2245-42 AC Protection
+Modules
+
+=== page 39 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Data Sheet
+39
+Notes
+
+=== page 40 ===
+40
+SEL-2240 Data Sheet
+Date Code 20260320
+(C) 2021-2026 by Schweitzer Engineering Laboratories, Inc.
+Content subject to change without notice.
+Unless otherwise agreed in writing, all SEL product sales are subject to SEL's terms and
+conditions located here: https://selinc.com/company/termsandconditions/.
+EtherCAT(R) is registered trademark and patented technology, licensed by Beckhoff Auto-
+mation GmbH, Germany.
+
+*PDS2240-01*
+2350 NE Hopkins Court - Pullman, WA 99163-5603 U.S.A.
+Tel: +1.509.332.1890 - Fax: +1.509.332.7990
+selinc.com - info@selinc.com

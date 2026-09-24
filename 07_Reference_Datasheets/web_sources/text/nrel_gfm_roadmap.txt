@@ -7,6 +7,21 @@ PAGES: 60
 USED FOR: Item 54. Grid-following PV cannot hold an island; grid-forming sources can.
 ------------------------------------------------------------------------
 
+=== outline (PDF bookmarks, p. = PDF page) ===
+List of Acronyms .. p.4
+Acknowledgments .. p.5
+Executive Summary .. p.6
+Table of Contents .. p.10
+List of Figures .. p.-1
+List of Tables .. p.-1
+Introduction .. p.12
+1 Power System Stability Concepts .. p.16
+2 Overview of Grid-Following and Grid-Forming Controllers for Inverter-Based Generation .. p.19
+3 Inverter Control State-of-the-Art and Open Research Questions .. p.24
+4 Roadmap for the Development and Deployment of Grid-Forming Inverters .. p.42
+5 Conclusions .. p.50
+References .. p.52
+
 === page 1 ===
 Research Roadmap on
 Grid-Forming Inverters

@@ -53,5 +53,35 @@
     "raw": "sel_linam_ugfi.html",
     "used_for": "Item 65. Real precedent for LEDs on pad-mounts and junction boxes (fault indicators).",
     "notes": "selinc.com blocks scripted downloads. Save the page from a browser as raw/sel_linam_ugfi.html."
+  },
+  {
+    "id": "sel_2240_datasheet",
+    "title": "SEL-2240 Axion Data Sheet (Date Code 20260320)",
+    "author": "Schweitzer Engineering Laboratories",
+    "url": "",
+    "kind": "pdf",
+    "local": "../2240_DS_20130827_01.pdf",
+    "used_for": "Items 19, 51, 57, 64. Card specs: DI/DO ratings and thresholds, SEL-2241 CPU and serial ports, SEL-2245-4 metering ranges, module burden.",
+    "notes": "Already in the repo. Converted in place, not copied to raw/."
+  },
+  {
+    "id": "sel_2240_bay_controller_datasheet",
+    "title": "SEL-2240 Axion Bay Controller Data Sheet (Date Code 20250423)",
+    "author": "Schweitzer Engineering Laboratories",
+    "url": "",
+    "kind": "pdf",
+    "local": "../135187.pdf",
+    "used_for": "Comparison only. The Bay Controller has a 7-inch touchscreen; JEA's order is an Axion node without one (2026-09-24 11:12 entry).",
+    "notes": "Already in the repo as 135187.pdf. Converted in place, not copied to raw/."
+  },
+  {
+    "id": "sel_2240_instruction_manual",
+    "title": "SEL-2240 Axion/SEL-5033 Instruction Manual (Date Code 20260320)",
+    "author": "Schweitzer Engineering Laboratories",
+    "url": "",
+    "kind": "pdf",
+    "local": "../Axion Instruction Manual.pdf",
+    "used_for": "Items 51, 64. Installation and wiring (contact-input 8 A limit p.106), DI modules p.615-617, RTAC Modbus p.429-430, metering p.646 and p.865.",
+    "notes": "Already in the repo. Converted in place, not copied to raw/. 'Axion Panel Drawings.pdf' is a re-saved copy of this same manual (identical text on all 1282 pages), so it has no entry."
   }
 ]

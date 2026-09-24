@@ -7,12 +7,17 @@ every page break so citations can still give a page number:
 
   === page 14 ===
 
+A PDF with bookmarks also gets an outline block before page 1, one line per
+bookmark, nested with ". " per level and ending in its PDF page number.
+
 Layout (all next to this script):
 
   sources.json    one entry per source: id, title, author, url, kind (pdf|html), raw, used_for, notes
+                  A file already in the repo uses "local" (path relative to this script)
+                  in place of "raw". It is converted where it sits and never downloaded.
   raw/            the original files, as downloaded
   text/<id>.txt   plain text, with a short header naming the source
-  text/INDEX.txt  one line per source: id, pages, size, title, url
+  text/INDEX.txt  one line per source: id, pages, size, title, url (or local file)
 
 Usage:  python web_to_text.py                  (download missing sources, rebuild all text)
         python web_to_text.py --refresh        (re-download sources that are already saved)
@@ -54,6 +59,7 @@ ASCII_MAP = {
     0x2018: "'", 0x2019: "'", 0x201C: '"', 0x201D: '"',            # curly quotes
     0x2010: "-", 0x2011: "-", 0x2012: "-", 0x2013: "-", 0x2014: "-", 0x2212: "-",  # dashes, minus
     0x2022: "-", 0x25CF: "-", 0x25AA: "-", 0x25B8: "-",            # bullets
+    0x27A2: "-", 0x27A3: "-", 0x27A4: "-", 0x2981: "-",            # arrowhead and spot bullets (SEL manuals)
     0x2026: "...", 0x200B: "", 0xFEFF: "",                          # ellipsis, zero-width, BOM
     0x00B0: " deg", 0x00B1: "+/-", 0x2264: "<=", 0x2265: ">=", 0x00D7: "x",
     0x03BC: "u", 0x03A9: " ohm", 0x2192: "->", 0x00AE: "(R)", 0x00A9: "(C)",
@@ -73,9 +79,15 @@ def fail(msg):
     print("[X] " + msg)
 
 
+def raw_path(src):
+    return (HERE / src["local"]).resolve() if "local" in src else RAW / src["raw"]
+
+
 def download(src, refresh):
     """Fetch src['url'] into raw/. Returns (saved_copy_exists, status message)."""
-    dest = RAW / src["raw"]
+    dest = raw_path(src)
+    if "local" in src:
+        return dest.exists(), "local file" if dest.exists() else f"local file not found: {dest}"
     if dest.exists() and not refresh:
         return True, "already saved"
     req = urllib.request.Request(src["url"], headers={"User-Agent": USER_AGENT})
@@ -95,6 +107,11 @@ def download(src, refresh):
 def pdf_text(path):
     with pymupdf.open(path) as doc:
         pages = [f"=== page {i} ===\n{page.get_text()}" for i, page in enumerate(doc, 1)]
+        # clean() strips leading spaces, so nesting is shown with ". " per level
+        outline = [". " * (level - 1) + " ".join(title.split()) + f" .. p.{page}"
+                   for level, title, page in doc.get_toc()]
+        if outline:
+            pages.insert(0, "=== outline (PDF bookmarks, p. = PDF page) ===\n" + "\n".join(outline) + "\n")
         return "\n".join(pages), doc.page_count
 
 
@@ -149,8 +166,8 @@ def header(src, raw, pages):
     rows = [
         ("SOURCE", src["title"]),
         ("AUTHOR", src.get("author", "")),
-        ("URL", src["url"]),
-        ("RAW FILE", f"raw/{src['raw']}"),
+        ("URL", src.get("url") or "n/a (local file)"),
+        ("RAW FILE", src["local"] if "local" in src else f"raw/{src['raw']}"),
         ("RETRIEVED", retrieved),
         ("PAGES", pages if pages is not None else "n/a (web page)"),
         ("USED FOR", src.get("used_for", "")),
@@ -159,14 +176,15 @@ def header(src, raw, pages):
 
 
 def write_index(sources):
-    lines = ["# id | pages | text KB | title | url"]
+    lines = ["# id | pages | text KB | title | url (or local file)"]
     for src in sources:
         out = TEXT / f"{src['id']}.txt"
+        where = src.get("url") or src.get("local", "")
         if not out.exists():
-            lines.append(f"{src['id']} | MISSING | - | {src['title']} | {src['url']}")
+            lines.append(f"{src['id']} | MISSING | - | {src['title']} | {where}")
             continue
         pages = re.search(r"^PAGES: (.*)$", out.read_text(encoding="utf-8"), re.M).group(1)
-        lines.append(f"{src['id']} | {pages} | {out.stat().st_size / 1024:.0f} | {src['title']} | {src['url']}")
+        lines.append(f"{src['id']} | {pages} | {out.stat().st_size / 1024:.0f} | {src['title']} | {where}")
     (TEXT / "INDEX.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -193,12 +211,15 @@ def main():
         if args.only and src["id"] not in args.only:
             continue
         have_raw, status = download(src, args.refresh)
-        raw = RAW / src["raw"]
+        raw = raw_path(src)
         if not have_raw:
-            fail(f"{src['id']}: {status}. Save {src['url']} from a browser as raw/{src['raw']}, then rerun.")
+            if "local" in src:
+                fail(f"{src['id']}: {status}. Fix \"local\" in sources.json, then rerun.")
+            else:
+                fail(f"{src['id']}: {status}. Save {src['url']} from a browser as raw/{src['raw']}, then rerun.")
             missing += 1
             continue
-        if status not in ("downloaded", "already saved"):
+        if status not in ("downloaded", "already saved", "local file"):
             warn(f"{src['id']}: {status}; converting the copy already saved")
         body, pages = pdf_text(raw) if src["kind"] == "pdf" else html_text(raw)
         out = TEXT / f"{src['id']}.txt"

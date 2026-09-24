@@ -7,6 +7,33 @@ PAGES: 26
 USED FOR: Item 54. Real utility microgrid restoring customers; SEL RTAC used as a microgrid controller in testing.
 ------------------------------------------------------------------------
 
+=== outline (PDF bookmarks, p. = PDF page) ===
+Borrego Springs Community Microgrid .. p.1
+. High-Penetration Microgrid: SDG&E Borrego Springs .. p.2
+. Brief Visual Tour of Borrego Springs .. p.3
+. Borrego Springs Microgrid .. p.4
+. Site Components .. p.5
+. Real-World Experience (Island 1) .. p.6
+Borrego Outage September 6-7 .. p.7
+. Real-World Experience (Island 3) .. p.8
+. Real-World Experience (Island 3) .. p.9
+. HIL Evaluation of Advanced Microgrid Controls .. p.10
+. Microgrid Controller Evaluation Options .. p.11
+. CHIL/PHIL Test Bed .. p.12
+. CHIL/PHIL Test Bed .. p.13
+. Dispatch-Grid-Connected .. p.14
+. Real-World Experience (Island 3) .. p.15
+. Planned Disconnection .. p.16
+. Unplanned Disconnection .. p.17
+. Advanced R&D Control Function Evaluation .. p.18
+. Reference Tracking .. p.19
+. Disturbance Mitigation .. p.20
+. IEEE 2030.8 .. p.21
+Summary .. p.22
+Further Reading .. p.23
+CHIL/PHIL/RHIL Test Bed .. p.25
+Functional Testing Plan Overview .. p.26
+
 === page 1 ===
 Borrego Springs Community
 Microgrid

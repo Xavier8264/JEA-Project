@@ -3492,3 +3492,83 @@ No new numbers.
 - No git commit.
 
 ---
+
+## 2026-09-24 11:54 CDT - SEL PDFs in the repo converted to text
+
+Supersedes the 11:45 "Not done" item about the local SEL PDFs.
+
+### What Jordan asked `[V]`
+
+- "Convert the SEL PDFs already in the repo (datasheet and the 1,282-page Axion manual)".
+
+### Sources read
+
+- The five SEL PDFs in `07_Reference_Datasheets/`, inspected with PyMuPDF 1.28.2 for page count, bookmarks,
+  metadata and text.
+- `web_to_text.py` and `sources.json` from the 11:45 entry.
+
+### Deliverables
+
+- **New text files in `07_Reference_Datasheets/web_sources/text/`:**
+  - `sel_2240_datasheet.txt`: from `2240_DS_20130827_01.pdf` (Date Code 20260320). 40 pages, 5.2 MB -> 84 KB.
+  - `sel_2240_bay_controller_datasheet.txt`: from `135187.pdf` (Date Code 20250423). 28 pages, 4.1 MB -> 57 KB.
+  - `sel_2240_instruction_manual.txt`: from `Axion Instruction Manual.pdf` (Date Code 20260320). 1282 pages,
+    88.6 MB -> 2.7 MB. Starts with a 1763-line outline from the PDF bookmarks.
+- **`sources.json`:** 3 new entries. They use a new `"local"` field in place of `"raw"`.
+- **`web_to_text.py` changes:**
+  - `"local"` entries are converted where they sit. They are never downloaded or copied into `raw/`, which avoids a
+    second 90 MB copy.
+  - Any PDF with bookmarks gets an `=== outline ===` block before page 1: one line per bookmark, a ". " prefix per nesting
+    level, ending in `.. p.N` (PDF page). `clean()` strips leading spaces, so indentation could not be used.
+  - Arrowhead and spot bullets (0x27A2-0x27A4, 0x2981) now map to `-`. The manual had about 3100 of them.
+  - `INDEX.txt` shows the local path when an entry has no URL.
+- **Side effect:** the outline block also added 15-27 lines to three existing texts (islanding primer, GFM roadmap,
+  Borrego slides). Every other line in them is unchanged.
+
+### Decisions and why
+
+- **PyMuPDF kept over `pdftotext -layout`.** Compared on DS p.29 `[V]`:
+  - PyMuPDF keeps each page column in reading order, but splits table rows into alternating label and value lines.
+  - `pdftotext -layout` keeps table rows aligned, but interleaves the two page columns line by line.
+  - PyMuPDF was chosen to match the existing script and its page markers. Tradeoff: a dense spec table may need a
+    look at the PDF page to confirm which value belongs to which row.
+- **Manual page numbers:** the printed page number equals the PDF page number. p.106 prints "106" `[V]`.
+- **`Axion Panel Drawings.pdf` was not converted.** It is a re-saved copy of the instruction manual, not panel
+  drawings `[V]`:
+  - Text is identical on all 1282 pages.
+  - Same 1763 bookmarks, same title and creation date.
+  - Only the modification date (2026-09-02 15:39) and the md5 differ.
+- **The order summary PDF was not converted.** Its font encoding is broken, and both PyMuPDF and `pdftotext` return
+  garbage `[V]`. It needs OCR, and tesseract is not installed. The 11:12 entry read it by rendering the pages to PNG.
+- **URL left blank for the 3 local entries.** Their download URLs are not known and were not guessed.
+
+### Verification actually performed
+
+- Ran `web_to_text.py`: 9 of 9 `[OK]`, exit code 0. A second run was byte-identical (md5).
+- `git diff --numstat` on the existing texts: primer +27/-0, roadmap +15/-0, Borrego +27/-0. The other three are
+  unchanged.
+- Spot checks against pages cited in earlier entries, all found on the stated page:
+  - DS p.29 "533 MHz", DS p.30 "115,200", DS p.32 "240 Vac".
+  - Manual p.106 "shall not exceed 8 A", p.429 Modbus, p.615 SEL-2244-4, p.646 CT inputs.
+- **DS p.4 check did not match the log's wording.** The 09-21 19:24 entry marks "no loadable libraries, no directly
+  addressable GPIO" as `[V]` from DS p.4. Page 4 says the RTAC logic engine is IEC 61131-3 (ST, LD, CFC) edited in
+  ACSELERATOR RTAC. It does not say "no loadable libraries" and does not mention GPIO. That part is an inference from
+  p.4 and should carry `[I]`. Flagged only; item 19 was not reopened.
+- A missing `"local"` file was tested against a scratch manifest: exit code 1, no text file written, and `INDEX.txt`
+  shows MISSING.
+- Non-ASCII: the script, manifest and `INDEX.txt` are pure ASCII. The manual text keeps 153 non-ASCII characters
+  (French safety notes, diameter sign, dagger footnotes, angle sign). The datasheets keep 22 and 17.
+
+### Open items
+
+No new numbers.
+
+### Not done
+
+- The order summary PDF has no text copy. It needs OCR or a manual transcription.
+- The duplicate `Axion Panel Drawings.pdf` was not archived or renamed. That is Jordan's call. Whether a real panel
+  drawing set exists is unknown.
+- `HOMEWORK_READING.md` still points to the PDFs, not to the new text files.
+- No git commit.
+
+---

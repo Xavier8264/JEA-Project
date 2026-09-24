@@ -1,0 +1,2761 @@
+SOURCE: SEL-2240 Axion Bay Controller Data Sheet (Date Code 20250423)
+AUTHOR: Schweitzer Engineering Laboratories
+URL: n/a (local file)
+RAW FILE: ../135187.pdf
+RETRIEVED: 2026-08-27
+PAGES: 28
+USED FOR: Comparison only. The Bay Controller has a 7-inch touchscreen; JEA's order is an Axion node without one (2026-09-24 11:12 entry).
+------------------------------------------------------------------------
+
+=== outline (PDF bookmarks, p. = PDF page) ===
+Major Features and Benefits .. p.1
+Applications .. p.3
+. Control a Bay With Single or Dual Breakers .. p.3
+. Use Distributed I/O to Control Multiple Bays .. p.3
+. Control Breaker-and-a-Half Diameter .. p.3
+Product Overview .. p.4
+. Functional Diagram .. p.4
+. Flexible System Architecture .. p.4
+. Ordering Options .. p.5
+Module Features .. p.7
+Diagrams and Dimensions .. p.11
+Specifications .. p.17
+Technical Support .. p.25
+
+=== page 1 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+Comprehensive Monitoring and Reliable
+Control for All Your Bay Control Applications
+The SEL-2240 Axion Bay Controller combines modular I/O cards, advanced automation, a powerful logic engine, cur-
+rent and voltage measurement, a flexible color touchscreen HMI, and advanced communications protocols to provide
+comprehensive monitoring and reliable control for your bay control application. Choose from a variety of digital and
+analog modules to fit your application requirements. The advanced automation capability, combined with the diversity
+and flexibility of I/O modules, allows you to implement any blocking or interlocking scheme required by the switching
+devices in your substation. Use the Axion Controller as an economical yet powerful solution for monitoring and con-
+trolling one or more substation bays at the transmission or distribution level. Configure custom screens by using the Bay
+Screen Builder application in ACSELERATOR RTAC.
+Major Features and Benefits
+-Switch Position Monitoring. Monitor as many as four position states (open, close, alarm, and in-progress) of two-
+position switches, and as many as eight position states of three-position switches. Monitor as many switches as
+your application requires. Measure switch position directly by using digital input signals or indirectly by using
+other devices via communications protocols (e.g., IEC 61850).
+-Interlocking Control Logic. Use the powerful IEC 61131-3 logic to program complex automation functions,
+interlocking schemes, or bypass logic. Create innovative logic solutions directly in ACSELERATOR RTAC by using
+any of the following editor tools: Tag Processor, Structured Text, Ladder Logic, or Continuous Function Chart.
+-Monitor and Control of Substation Equipment in Local or Remote Mode. Perform local and remote control
+and monitoring of circuit breakers, disconnect switches, shunt reactors, and capacitor banks. The local touchscreen
+display makes the local control quick and efficient. Perform remote control and monitoring by using a variety of
+industry-standard protocols, such as IEC 61850, DNP3, Modbus, MIRRORED BITS communications, and
+IEC 60870-101/103/104.
+SEL-2240 Axion Bay Controller
+
+=== page 2 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+2
+-Synchronism Check. Use the SynchronismCheck function block to verify that the voltages on both sides of the
+breaker are within allowed phase and magnitude. The SynchronismCheck function block compensates for circuit
+breaker close time. Use selectable voltage sources as inputs for the synchronism check on each breaker.
+-Design Custom Screens to Meet Your System Needs. Design bay screens, monitor screens, or meter screens by
+launching ACSELERATOR(R) Bay Screen Builder SEL-5036 Software for Axion Bay Controller. Display the bay
+configuration as a single-line diagram (SLD) on the touchscreen. Use ANSI and IEC symbols, along with analog
+and digital labels, for the SLD to indicate the status of breaker and disconnect switches, bus voltages, and power
+flow through the breaker. In addition to SLDs, design custom screens to show the status of any digital or analog tag
+of the RTAC logic. Design these custom screens with the help of ACSELERATOR Bay Screen Builder in
+conjunction with ACSELERATOR RTAC. You can create as many as 25 custom screens.
+-Programmable Pushbuttons and LED Status Indication. Program six pushbuttons to quickly perform custom
+control commands. Each pushbutton (located on the Axion Bay Controller front panel) includes two
+programmable tricolor LEDs. Seven general-purpose tricolor LEDs are available for alarms or any other local
+indication. Use IEC 61131-3 logic to program custom operator control and LED status functions.
+-Control Multiple Bays. Control and monitor circuit breakers, disconnect switches, and earthing switches for
+multiple bays with a single SEL-2240 Axion Bay Controller system.
+-Flexible I/O Selections for Your Application. Include hundreds of digital and analog I/O points in a single panel.
+-Distributed I/O. Improve safety and reduce copper conductor and installation time by installing the remote Axion
+ac analog input modules and digital I/O modules in the substation yard, near the circuit breaker, and control the
+breakers and monitor current, voltages, and status of contact points from the substation control building.
+-Deterministic I/O Performance. Update connected I/O at a deterministic processing interval; all inputs provide
+1 ms SER time stamps.
+-Redundant Power Supplies for Maximum Availability. Apply redundant power support with two load-sharing
+SEL-2243 power couplers for applications requiring two independent power sources.
+-Synchronized Current and Voltage Measurements. Retrieve high-accuracy current and voltage measurements
+with the advantage of synchronized measurements. Multiple AC Analog Input modules in an Axion system sample
+all measurements at the same time to ensure a common reference for all voltages and currents. This enables many
+time-deterministic control applications without performing additional processing to align the measurements to a
+reference. Use this capability to accomplish complex control schemes including load shedding, microgrid control,
+and synchronism check.
+-Create Historic Data Logs. Leverage the Dynamic Disturbance Recording (DDR) library to continuously record
+fundamental, rms, synchrophasor quantities, or I/O status data.
+-Sensor Integration. Use the SEL-2245-22 DC Analog Input modules to integrate gas pressure, oil level, tap
+position sensor, or any other voltage (-10 to +10 Vdc) or current (-20 mA to +20 mA) sensor. Use the SEL-2600
+Resistance Temperature Detector (RTD) Module to integrate RTD sensors. Sensors can also be integrated via
+communications protocols.
+-Low-Energy Analog (LEA) Inputs. Eliminate outage costs by using the SEL-2245-221 Low Voltage Monitoring
+Input module to connect external split-core current transformers.
+-Secure Operation. Manage user accounts and permissions to only allow access to the touchscreen to approved
+users.
+
+=== page 3 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+3
+Applications
+Control a Bay With Single or Dual
+Breakers
+Use a single SEL-2240 Axion Bay Controller node to
+control a substation bay with as many as 3 breakers and
+20 disconnect switches.
+
+Use Distributed I/O to Control
+Multiple Bays
+Use high-speed and deterministic fiber-optic communi-
+cations from the control house in place of high-energy
+copper cables.
+Install ac measurement modules and digital I/O modules
+near assets in the substation yard and perform bay con-
+trol and monitoring from within the control house.
+
+Control Breaker-and-a-Half Diameter
+Monitor and control breakers and switches in a breaker-and-a-half scheme. Ensure safe connections by using synchro-
+nism check and automate control operations with the powerful logic engine in the RTAC.
+
+SEL-2240 Axion
+
+Fiber Optic
+Fiber Optic
+Fiber Optic
+Control Building
+Bay 1
+Bay 3
+Bay 2
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+
+Fiber Optic
+Fiber Optic
+Fiber Optic
+Control Building
+Bay 1
+Bay 2
+SEL-2240 Axion
+Tie Bay
+SEL-2240 Axion
+SEL-2240 Axion
+SEL-2240 Axion
+
+=== page 4 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+4
+Product Overview
+Functional Diagram
+
+Flexible System Architecture
+Today's monitoring and control applications need flexi-
+ble system architectures and integrated security. The
+Axion Bay Controller meets these needs by using the
+RTAC module (SEL-2241 or SEL-2241-2) as the system
+CPU and providing modular and scalable I/O. SEL
+designs all Axion hardware to published standards (see
+Specifications on page 17) and performs tests to verify
+that each component exceeds standards by adequate mar-
+gins. The SEL-2243 Power Coupler is a highly reliable
+device that uses the same power supply technology used
+in SEL protective relays. Configure the Axion to include
+single or redundant power couplers for critical applica-
+tions. In redundant configurations, the pair of SEL-2243
+modules actively share loads to supply power for the
+entire node. If one module should become unavailable,
+the remaining power coupler can accommodate the entire
+node with no loss of system capability. Employ dual
+power couplers for installations where you have dual
+power sources, one that is ac and one that is dc.
+
+Figure 1 Functional Diagram
+EtherCAT
+Protocol
+Communications
+Ports
+Security
+Firewall
+Client/Server
+Protocols
+Precise
+Time
+Activity Indicators
+Port LEDs
+Programmable LEDs
+Test Functions
+Control Enable/Disable
+Force Values
+Process Inputs
+Contact Outputs
+RTAC Module
+Including IEC 61131
+logic engine and
+system database
+Web Interface
+Optional HMI
+User Administration
+Logging / Alarms
+Touchscreen Display
+Bay Control
+Front Ethernet Port
+Programmable
+Pushbuttons and LEDs
+
+=== page 5 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+5
+
+Each Axion node is mounted in a chassis/backplane
+(model SEL-2242) that provides a means for each node
+to include a custom arrangement of modules. A single
+node can contain as many as nine modules. Use any com-
+bination, quantity, and sequence of modules that suits the
+application.
+NOTE: The SEL-2242 backplane with 7-inch touchscreen display is
+compatible with the RTAC modules and does not support other RTAC
+variants.
+The node does not need to be entirely full to function
+properly. Leave empty slots for future expansion as nec-
+essary. Many remote terminal unit (RTU) and control
+systems need more I/O points than will fit in a single
+Axion node. In those cases, use the EtherCAT protocol to
+connect multiple nodes together via a real-time Ethernet
+network. Through use of an Axion system EtherCAT net-
+work, you can use as many as 60 modules in a single net-
+work with no loss of speed or determinism. Applications
+on page 3 explores several possible network configura-
+tions. In each implementation, a single RTAC module
+provides logic functions and data concentration for the
+entire network.
+Ordering Options
+
+Figure 2 Modules Installed in Chassis/Backplane
+Table 1 RTAC Module
+SEL-2241 Ethernet -
+Communication
+Options
+Two Ethernet ports:
+10/100BASE-T copper (standard)
+100BASE-FX fiber-optic (optional)
+100BASE-LX single-mode fiber-optic
+(optional)
+SEL-2241-2 Ethernet
+Communication
+Optionsa
+a Both SEL-2241-2 options include an additional 10/100/1000 Mbps
+RJ45 copper port.
+Three Ethernet ports:
+Two 10/100/1000 Mbps RJ45 copper
+ports
+Two 100/1000 Mbps SFP fiber-optic
+ports
+Web-Based HMI
+Basic runtime license and diagram
+builder software
+Peer-to-Peer Protocols
+IEC 61850 GOOSE
+Client Protocols
+IEC 61850 MMS
+Server Protocols
+IEC 61850 MMS, Ethernet/IP
+Environment
+Conformal coating for chemically harsh
+and high-moisture environments
+
+=== page 6 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+6
+
+Table 2 SEL-2242 Chassis/Backplane
+Slot Configuration
+10-slot, 4-slot, or dual 4-slot
+Front Panela
+a Front-panel options are not supported if the SEL-2242 is configured
+for surface mount.
+Bay Controller with 7-inch touchscreen
+display, 6 pushbuttons, and 19 program-
+mable LEDsb
+b Only available with the 10-slot SEL-2242. Only compatible with
+RTAC modules that are shipped with R149 firmware or later.
+Mounting
+Horizontal surface mount, 5Uc -
+Horizontal rack mount, 5U-
+Horizontal panel mount, 5U (10-slot or
+dual 4-slot)
+c For applications compliant with IEC 60255-27, surface-mount units
+must be installed in IP4X enclosures.
+Environment
+Conformal coating for chemically harsh
+and high-moisture environments
+Table 3 SEL-2243 Power Coupler
+Voltage Range
+24/48 Vdc or 120/250 Vac/Vdc
+EtherCAT Commu-
+nication
+Two ports:
+RJ45 Ethernet (standard)
+LC fiber-optic multimode or single-
+mode (optional)
+Environment
+Conformal coating for chemically harsh
+and high-moisture environments
+Table 4 SEL-2244-2 24 Digital Input Module
+Input Ratings
+24 Vac/Vdc
+125 Vac/Vdc-
+48 Vac/Vdc
+220 Vac/Vdc-
+110 Vac/Vdc
+250 Vac/Vdc
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 5 SEL-2244-4 32 Digital Input Module
+Input Ratings
+24 Vdc-
+48 Vdc
+110 Vac/Vdc-
+125 Vac/Vdc
+Environment
+Conformal coating for chemically harsh and
+high-moisture environments
+Table 6 SEL-2244-3 Standard Current Digital Output
+Module
+Output Types
+16 Form A control outputs
+8 Form A, 8 Form B control outputs
+16 Form B control outputs
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 7 SEL-2244-5 Fast High-Current Digital Output
+Module
+Output Types
+10 Form A control outputs
+5 Form A, 5 Form B control outputs
+10 Form B control outputs
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 8 SEL-2245-2 DC Analog Input Module
+Input Types
++/-20 mA, +/-2 mA, +/-10 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 9 SEL-2245-22 DC Analog Input Extended Range
+Module
+Input Types
+5-400 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 10 SEL-2245-221 Low-Voltage (LEA) Monitoring
+Module
+Input Types
+0.05-22 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 11 SEL-2245-3 DC Analog Output Module
+Output Types
++/-20 mA, +/-10 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 12 SEL-2245-4 AC Metering Module
+Input Types
+0.05-22 A, 5-400 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 13 SEL-2245-42 AC Protection Module
+Input Types
+0.1-20 A, 6.7-300 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+Table 14 SEL-2245-411 Standard Current and
+Low-Voltage (LEA) Monitoring Module
+Input Types
+0.05-22 A, 0.05-22 V
+Environment
+Conformal coating for chemically
+harsh and high-moisture environments
+
+=== page 7 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+7
+Module Features
+
+Figure 3 SEL-2242 10-Slot Chassis/Backplane
+Slot identification is
+visible even when in use
+Front-Panel View
+Surface-mounted
+chassis
+Module alignment
+guides make
+installation a breeze
+Rear-Panel View
+Rack-mounted
+chassis
+
+=== page 8 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+8
+
+Figure 4 SEL-2241 RTAC Terminal-Side View
+
+Figure 5 SEL-2241-2 RTAC Terminal-Side View
+Demodulated IRIG-B
+input and output
+for high-accuracy time
+synchronization
+USB port for quick,
+convenient, system
+setup and checkout
+Three programmable
+bi-color LEDs provide
+custom annunciation
+LEDs simplify diagnostics
+by indicating activity
+on each serial port
+Independent Ethernet
+ports may be RJ45 or LC fiber
+Serial ports are
+EIA-232/EIA-485
+software selectable
+Programmable
+alarm contact
+Enabled, Alarm,
+and two
+programmable
+bicolor LEDs
+DisplayPort
+monitor
+connection
+Two USB ports
+and Gigabit RJ45
+Ethernet port
+Two Gigabit
+Ethernet ports
+(options: two RJ45
+or two small
+form-factor
+pluggable (SFP)
+fiber-optic ports)
+Four RJ45
+EIA-232/422/485
+serial ports
+IRIG-B BNC input
+Form C alarm
+contact output
+
+Figure 6 SEL-2243 Power Coupler Terminal-Side View
+
+Figure 7 SEL-2244-2 Digital Input Module Terminal-
+Side View
+Two Power Couplers
+in a node operate
+as a load-sharing
+redundant pair
+Lamp test pushbutton
+and diagnostic LEDs
+Ethernet ports
+may be RJ45 or LC fiber
+Six independent and
+eighteen common-
+return inputs
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+
+=== page 9 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+9
+
+Figure 8 SEL-2244-3 Standard Current Digital Output
+Module Terminal-Side View
+
+Figure 9 SEL-2244-4 32 Digital Input Module
+Terminal-Side View
+Sixteen outputs
+may be all
+Form A, all Form B,
+or eight of each
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Two segments with
+sixteen common return
+inputs each
+
+Figure 10 SEL-2244-5 Fast High-Current Digital
+Output Module Terminal-Side View
+
+Figure 11 SEL-2245-2 DC Analog Input Module
+Terminal-Side View
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Ten outputs may be all
+Form A, all Form B,
+or five of each
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Sixteen inputs may
+configure +/-20 mA,
++/-2 mA, or +/-10 V input
+ranges in pairs
+
+=== page 10 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+10
+
+Figure 12 SEL-2245-22 Analog Input Extended Range
+Module Terminal-Side View
+
+Figure 13 SEL-2245-221 Low-Voltage (LEA)
+Monitoring Module
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Four inputs for
+0-300 Vdc
+Diagnostic LEDs
+Four inputs for
+0-30 V peak
+All terminals are clearly
+numbered for wiring
+and testing
+
+Figure 14 SEL-2245-3 DC Analog Output Module
+Terminal-Side View
+
+Figure 15 SEL-2245-4 AC Metering Module Terminal-
+Side View
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Eight outputs may
+configure +/-20 mA
+or +/-10 V output
+ranges
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Four CT and four PT inputs
+with two-wire connections
+
+=== page 11 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+11
+
+Diagrams and Dimensions
+
+You can mount the Axion in a sheltered indoor environ-
+ment (a building or an enclosed cabinet) that does not
+exceed the temperature and humidity ratings for the
+modules. Equipment must be installed in an enclosure
+that protects against shock and fire to meet UL require-
+ments. Configurations with an SEL-2245-42 as the right-
+most module in a backplane should have the backplane
+installed in a metal enclosure to meet Radiated RF
+Immunity type test requirements. The Axion must be
+mounted such that modules are vertical and have at least
+0.5 inches to the nearest solid surface above and below.
+
+Figure 16 SEL-2245-42 AC Protection Module
+Terminal-Side View
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Three CT and three PT inputs
+with two-wire connections
+
+Figure 17 SEL-2245-411 Standard Current and
+Low-Voltage (LEA) Monitoring Module
+Diagnostic LEDs
+All terminals are clearly
+numbered for wiring
+and testing
+Four CT and four low-voltage
+(LEA) inputs with two-wire
+connections
+NOTE: For applications compliant with IEC 60255-26, surface-mount
+units must be installed in IP4X enclosures.
+
+=== page 12 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+12
+
+Figure 18 SEL-2240 10-Slot Front-Panel 7-Inch Touchscreen Display (Rack Mount)
+
+Figure 19 SEL-2240 10-Slot Front-Panel 7-Inch Touchscreen Display (Panel Mount)
+AXION
+SEL-2240
+SCHWEITZER
+ENGINEERING
+LABORATORIES
+PB 1
+PB 2
+PB 3
+PB 4
+PB 5
+PB 6
+ENABLED
+LED 1
+LED 2
+LED 3
+LED 4
+LED 5
+LED 6
+LED 7
+i6449a
+i6458a
+AXION
+SEL-2240
+SCHWEITZER
+ENGINEERING
+LABORATORIES
+PB 1
+PB 2
+PB 3
+PB 4
+PB 5
+PB 6
+ENABLED
+LED 1
+LED 2
+LED 3
+LED 4
+LED 5
+LED 6
+LED 7
+
+=== page 13 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+13
+
+Figure 20 SEL-2241 Connections Diagram
+
+Figure 21 SEL-2241-2 Connections Diagrams
+i5397b
+SEL-2241
+ALARM
+OUT 101
+3
+4
+1
+2
+COM
+AUX
+USB
+ENABLED
+ETH 1
+ETH 2
+IN
+OUT
+IRIG-B
+COM
+1
+COM
+2
+COM
+3
+COM
+4
+RTAC
+1
+2
+3
+i6493a
+EN AL
+A1 A2
+SEL-2241-2
+DISPLAY
+PORT
+COM 2
+COM 4
+COM 1
+COM 3
+USB 1 | 2
+ETH 3
+IRIG-B
+IN
+OUT 101
+1
+2
+3
+RTAC
+ETH 2
+ETH 1
+i6492a
+EN AL
+A1 A2
+SEL-2241-2
+DISPLAY
+PORT
+COM 2
+COM 4
+COM 1
+COM 3
+ETH 1
+ETH 2
+USB 1 | 2
+ETH 3
+IRIG-B
+IN
+OUT 101
+1
+2
+3
+RTAC
+
+Figure 22 SEL-2243 Connections Diagrams
+
+Figure 23 SEL-2244-2 Connections Diagram
+i5398d
+i5695b
+
+=== page 14 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+14
+
+Figure 24 SEL-2244-3 Connections Diagrams
+
+Figure 25 SEL-2244-4 Connections Diagrams
+i6494a
+32 DI
+SEL-2244-4
+ENABLED
+ALARM
+1
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+C5
+C6
+C7
+C8
+17
+31
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+32
+C1
+C2
+C3
+C4
+1
+15
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+16
+24V
+DC
+i6495a
+32 DI
+SEL-2244-4
+ENABLED
+ALARM
+1
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+C5
+C6
+C7
+C8
+17
+31
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+32
+C1
+C2
+C3
+C4
+1
+15
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+16
+48V
+DC
+i6496a
+32 DI
+SEL-2244-4
+ENABLED
+ALARM
+1
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+C5
+C6
+C7
+C8
+17
+31
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+32
+C1
+C2
+C3
+C4
+1
+15
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+16
+110V
+AC/DC
+i6497a
+32 DI
+SEL-2244-4
+ENABLED
+ALARM
+1
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+C5
+C6
+C7
+C8
+17
+31
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+32
+C1
+C2
+C3
+C4
+1
+15
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+16
+125V
+AC/DC
+
+Figure 26 SEL-2244-5 Connections Diagrams
+
+Figure 27 SEL-2245-2 Connections Diagram
+
+=== page 15 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+15
+
+Figure 28 SEL-2245-22 and SEL-2245-221
+Connections Diagrams
+
+Figure 29 SEL-2245-3 Connections Diagram
+
+Figure 30 SEL-2245-42 Connections Diagram
+
+Figure 31 SEL-2245-4 and SEL-2245-411 Connections
+Diagrams
+i6316a
+i6398a
+4CT/4LEA
+ENABLED
+ALARM
+SEL-2245-411
+0 1
+02
+03
+04
+05
+06
+07
+08
+IA
+IB
+IC
+IN
+09
+LOW
+VOLTAGE
+(30V MAX)
+1 0
+1 1
+1 3
+VA
+1 2
+VB
+1 4
+1 5
+VC
+1 6
+VS
+
+=== page 16 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+16
+
+Figure 32 SEL-2240 Dimensions for 10-Slot Rack With 7-Inch, Color Touchscreen Display (Rack Mount)
+
+Figure 33 SEL-2240 Dimensions for 10-Slot Rack With 7-Inch, Color Touchscreen Display (Panel Mount)
+LEGEND
+in
+[mm]
+i9198a
+8.10
+[205.6]
+6.80
+[172.7]
+TOP
+CABLE ACCESS VIEW
+19.00
+[482.6]
+8.72
+[221.5]
+5.75
+[146.1]
+18.31
+[465.1]
+.60
+[15.4]
+SIDE
+MINIMUM CLEARANCE REQUIRED
+FOR MODULE REMOVAL
+LEGEND
+in
+[mm]
+i9406a
+8.11
+[206.1]
+6.56
+[166.7]
+TOP
+CABLE ACCESS VIEW
+19.76
+[501.9]
+9.61
+[244.1]
+5.75
+[146.1]
+18.31
+[465.1]
+SIDE
+MINIMUM CLEARANCE REQUIRED
+FOR MODULE REMOVAL
+.61
+[15.4]
+17.75
+[450.9]
+18.31
+[465.1]
+5.75
+[146.1]
+8.80
+[223.5]
+4X Ø.25
+[Ø6.4]
+PANEL CUTOUT
+
+=== page 17 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+17
+Specifications
+Compliance
+Designed and manufactured under an ISO 9001 certified quality
+management system
+SEL Axion operates at the specified limits on power up as soon as the
+device enables. Refer to the individual SEL Axion module datasheets
+for compliance and type test specifications.
+UKCA Mark
+IEC 60529 Enclosure Protection
+IP4X Front
+IP2X Product Without SEL-2245-4, SEL-2245-411, or SEL-2245-42
+IP1X Product With SEL-2245-4, SEL-2245-411, or SEL-2245-42
+Note: The product must be mounted in a locked IP4X enclosure or restricted
+area such that rear terminals are accessible by trained maintenance or
+operation personnel only.
+Product Standards
+IEC 60255-26:2013 - Relays and Protection Equipment: EMC
+IEC 60255-27:2014 - Relays and Protection Equipment: Safety
+IEC 60825-2:2004 + A1:2007 + A2:2010 for fiber-optic communications
+IEC 61850-3:2013 Performance Class 1 - Comm Systems for Power
+Utility Automation
+General
+Operating System
+SEL Linux(R) Yellowstone running Linux kernel 3.x with real-time
+preemption patches
+Operating and Storage Temperature Range
+-40 deg to +85 degC (-40 deg to +185 degF)
+Units should be stored and transported in their original packaging.
+Note: Operating temperature evaluated for UL ambient 0 deg to 40 degC.
+Note: The optional front-panel LCD is impaired for temperatures below -
+-20 degC and above +70 degC.
+Operating Environment
+Pollution Degree:
+2
+Overvoltage Category:
+II
+Insulation Class:
+1
+Relative Humidity:
+5%-95%, noncondensing
+Maximum Altitude:
+2000 m
+Vibration, Earth Tremors:
+Class 1
+Dimensions
+Refer to Diagrams and Dimensions on page 11 for dimensions.
+Weight
+SEL-2241 RTAC:
+0.67 kg (1.47 lb)
+SEL-2241-2 RTAC
+(Copper):
+1.29 kg (2.84 lb)
+SEL-2241-2 RTAC (SFP): 1.42 kg (3.13 lb)
+SEL-2242 19 in Backplane: 3.24 kg (7.13 lb)
+Panel Mount Bezel:
+0.28 kg (0.63 lb)
+SEL-2242 10-Slot (19 in
+Rack Width) With 7 in
+Touchscreen Display:
+4.0 kg (8.80 lb)
+SEL-2243-1 HV Coupler:
+0.85 kg (1.87 lb)
+SEL-2243-2 LV Coupler:
+0.89 kg (1.97 lb)
+SEL-2244-2 24 DI:
+0.45 kg (1.00 lb)
+SEL-2244-3 16 DO:
+0.59 kg (1.30 lb)
+SEL-2244-4 32 DI:
+0.40 kg (0.88 lb)
+SEL-2244-5 10 FHCDO:
+0.57 kg (1.26 lb)
+SEL-2245-2 16 AI:
+0.51 kg (1.12 lb)
+SEL-2245-22 4 AI-ER:
+0.42 kg (0.92 lb)
+SEL-2245-221 4 LEA:
+0.42 kg (0.92 lb)
+SEL-2245-3 8 AO:
+0.46 kg (1.01 lb)
+SEL-2245-4 4 CT/4 PT:
+0.54 kg (1.18 lb)
+SEL-2245-411
+4 CT/4 LEA:
+0.54 kg (1.18 lb)
+SEL-2245-42 3 CT/3 PT:
+0.73 kg (1.60 lb)
+Module Burden per Module for Each Node
+Note: Total power consumption must not exceed 75 W. User must add burden
+values from the following table for their configuration to ensure this
+constraint is satisfied.
+Module
+Maximum
+Added Burden
+(W) a
+a Values include worst-case real power consumption and do not
+include worst-case ac power factor correction (0.4). -
+If the unit will not be used in wide temperature extremes,
+reduce power by up to 6%.
+SEL-2241 RTAC (Copper Ethernet)
+12.5
+SEL-2241 RTAC (Fiber Ethernet)
+15
+SEL-2241-2 RTAC (Copper Ethernet)
+18
+SEL-2241-2 RTAC (SFP Fiber Ethernet)
+20
+SEL-2242R Standard Rack-Mount Backplanes
+1
+SEL-2242 With Touchscreen Display
+4
+SEL-2243 Power Coupler (Fiber Ethernet)
+5 b
+b Each SEL-2243 will draw a minimum of 11 W (quiescent) when
+the total burden of all other modules in the node is less than
+11 W.
+SEL-2243 Power Coupler (Copper Ethernet)
+2.5 b
+SEL-2244-2 24 DI
+2
+SEL-2244-3 16 DO
+8 c
+c All DO relay coils may be energized simultaneously and still
+meet specifications.
+SEL-2244-4 32 DI
+2
+SEL-2244-5 10 FHCDO
+6 c
+SEL-2245-2 16 AI
+3
+SEL-2245-22 4 AI-ER
+2
+SEL-2245-221 4 LEA
+2
+SEL-2245-3 8 AO
+13
+SEL-2245-4 4 CT/4 PT
+3
+SEL-2245-411 4 CT/4 LEA
+3
+SEL-2245-42 3 CT/3 PT
+6
+Feature Selections
+Typical Burden
+(W)
+No use of SEL-2241 serial port +5 Vdc
+-3
+No use of SEL-2241-2 serial port +5 Vdc
+-1.5
+No use of SEL-2241-2 USB port power
+-1.5
+Each DO port not energized (SEL-2241,
+SEL-2244-3, or SEL-2244-5 relay coil)
+-0.3
+Each AO port not energized (SEL-2245-2)
+-0.7
+
+=== page 18 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+18
+SEL-2241 RTAC
+CPU Processing and Memory
+Processor Speed:
+533 MHz
+Memory:
+1024 MB DDR2 ECC RAM
+Storage:
+4 GB (2 GB reserved)
+Time-Code Input (Modulated IRIG-B)
+Input Impedance:
+2 k-
+Accuracy:
+500 us
+Time-Code Input (Demodulated IRIG-B)
+On (1) State:
+Vih > 2.2 V
+Off (0) State:
+Vil < 0.8 V
+Input Impedance:
+2 k-
+Accuracy:
+500 ns
+Time-Code Output (IRIG-B)
+On (1) State:
+Voh > 2.4 V
+Off (0) State:
+Vol < 0.8 V
+Load:
+50 -
+Communications Ports
+Ethernet Ports (To Backplane)
+Ports:
+1
+Data Rate:
+Automatic
+Protocols:
+Dedicated EtherCAT port
+Ethernet Ports (Terminal Side)
+Ports:
+2
+Data Rate:
+10 or 100 Mbps
+Connector:
+RJ45 Female or LC Fiber (Multimode or
+Single-Mode 100 Mbps only)
+Fiber-Optic Ports (Class 1 LASER/LED)
+Wavelength:
+1300 nm
+Optical Connector Type:
+LC
+Multimode Option
+Link Budget:
+11 dB
+Min. TX Power:
+-20 dBm
+Min. RX Sensitivity:
+-31 dBm
+Fiber Size:
+50-200 um
+Approximate Range:
+2 km
+Data Rate:
+100 Mbps
+Typical Fiber
+Attenuation:
+-2 dB/km
+Single-Mode Option
+Link Budget:
+10 dB
+Min. TX Power:
+-15 dBm
+Min. RX Sensitivity:
+-25 dBm
+Fiber Size:
+9 um
+Approximate Range:
+15 km
+Data Rate:
+100 Mbps
+Typical Fiber
+Attenuation:
+-0.4 dB/km
+Serial Ports
+Ports:
+4
+Types:
+EIA-232/EIA-485 (software selectable)
+Data Rate:
+300 to 115,200 bps
+Connector:
+DB-9 Female
+Time Synchronization:
+IRIG-B
+Power:
++5 Vdc power on Pin 1 (500 mA maximum
+per SEL-2241)
+USB Device Ports
+1 Type B
+Output
+Mechanical Durability
+10 M no-load operations
+DC Output Ratings
+Rated Operational Voltage: 250 Vdc
+Rated Voltage Range:
+19.2-275 Vdc
+Rated Insulation Voltage:
+300 Vdc
+Make:
+30 A @ 250 Vdc per IEEE C37.90
+Continuous Carry:
+6 A @ 70 degC; 4 A @ 85 degC
+Thermal:
+50 A for 1 s
+Contact Protection:
+360 Vdc, 40 J MOV
+Operating Time (Coil
+Energization to Contact
+Closure, Resistive Load): Pickup/Dropout time -8 ms typical
+Breaking Capacity (10,000
+Operations) Per
+IEC 60255-0-20:1974:
+24 Vdc
+0.75 A
+L/R = 40 ms
+48 Vdc
+0.50 A
+L/R = 40 ms
+125 Vdc
+0.30 A
+L/R = 40 ms
+250 Vdc
+0.20 A
+L/R = 40 ms
+Cyclic Capacity
+(2.5 Cycles/Second) Per
+IEC 60255-0-20:1974:
+24 Vdc
+0.75 A
+L/R = 40 ms
+48 Vdc
+0.50 A
+L/R = 40 ms
+125 Vdc
+0.30 A
+L/R = 40 ms
+250 Vdc
+0.20 A
+L/R = 40 ms
+AC Output Ratings
+Rated Operational Voltage:
+240 Vac
+Rated Insulation Voltage:
+300 Vac
+Utilization Category:
+AC-15 (control of electromagnetic loads
+> 72 VA)
+Contact Rating
+Designation:
+B300 (B = 5 A, 300 = rated insulation
+voltage)
+Contact Protection:
+270 Vac, 40 J
+Continuous Carry:
+3 A @ 120 Vac
+1.5 A @ 240 Vac
+Conventional Enclosed
+Thermal Current (Ithe)
+Rating:
+5 A
+Rated Frequency:
+50/60 +/- 5 Hz
+Operating Time (Coil
+Energization to Contact
+Closure, Resistive Load): Pickup/Dropout time < 8 ms typical
+Electrical Durability Make
+VA Rating:
+3600 VA, cosø = 0.3
+Electrical Durability Break
+VA Rating:
+360 VA, cosø = 0.3
+SEL-2241-2 RTAC
+CPU Processing and Memory
+Processor:
+Intel Atom x5-E3940
+Core/Threads:
+4/4
+Frequency:
+1.6 GHz
+Cache:
+2 MB L2
+Memory:
+4 GB ECC SDRAM
+Storage:
+8 GB eMMC (2 GB reserved)
+
+=== page 19 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+19
+Time-Code Inputs
+One BNC IRIG-B Input
+Format:
+IRIG-B002 or -B004 (demodulated)
+On (1) State:
+Vih - 2.2 V
+Off (0) State:
+Vil - 0.8 V
+Input Impedance:
+-1.2 k- at 5 V signal level
+Constant Load:
+-4 mA
+Note: IRIG-B004 control bits comply with IEEE C37.118.1-2011 (backward
+compatible with IRIG-B000 and IEEE C37.118-2005).
+Time-Code Outputs
+All RJ45 Serial Ports
+Format:
+IRIG-B004 (demodulated)
+On (1) State:
+Voh - 2.4 V
+Off (0) State:
+Vol - 0.8 V
+Output Drive Capacity
+Each Serial Port:
+TTL 6 mA (>400 -)
+Note: IRIG-B004 control bits comply with IEEE C37.118.1-2011 (backward
+compatible with IRIG-B000 and IEEE C37.118-2005).
+Video and Audio
+Intel HD Graphics 500 Controller
+DisplayPort 2.1 output
+Intel Display Audio digital audio output
+Maximum Resolution*:
+4096 x 2160 @ 60 Hz
+Use DisplayPort cables that have ferrite chokes and are less than 2 m
+(6 ft) in length for Electromagnetic Compatibility Immunity
+compliance.
+* High-resolution displays require high-quality cables. Ensure your display
+cables are as short as possible and rated for the required screen resolution.
+USB
+2 USB A ports
+200 mA maximum combined current
+Use USB cables that have ferrite chokes and are less than 2 m (6 ft) in
+length for Electromagnetic Compatibility Immunity compliance.
+Communications Ports
+Ethernet
+SEL Gigabit Ethernet controllers
+1 10/100/1000 Mbps port, RJ45 copper
+Configurations:
+2 RJ45 copper ports
+2 SFP fiber-optic ports
+Use RJ45 Ethernet cables that are less than 10 m (33 ft) in length for
+protection-level performance and for Surge Immunity Zone A
+compliance.
+Serial
+SEL multiport serial controller
+EIA-232/422/485 Ports:
+4 ports
+RJ45 connectors
+300-115,200 bps
+256 byte TX and RX FIFOs each port
++5 Vdc port power
+COM 1-4:
+200 mA maximum combined current
+IRIG-B output
+Serial cables less than 10 m (33 ft) in length are required for
+Electromagnetic Compatibility Immunity compliance.
+Standard Output Contact OUT101/Alarm
+Output Type:
+Relay Form C Break Before Make
+Pilot Duty Ratings*:
+B300 (UL), AC-15 (IEC)
+R300 (UL) DC-13 (IEC)
+Rated Voltage†:
+24-250 Vdc
+110-240 Vrms
+Note: The voltage across the contact output terminals must not exceed the
+operational voltage.
+Operational Voltage†:
+0-300 Vdc
+0-264 Vrms
+Contact Protection:
+MOV protection across open contact
+264 Vrms continuous voltage
+300 Vdc continuous voltage
+Continuous Carry†:
+6 A @ 70 degC, 4 A @ 85 degC
+Pickup/Dropout Time†:
+-6 ms (resistive load)
+Power Supply Burden†:
+-1 W
+Mechanical Endurance†:
+10,000 no-load operations
+Make (Short Duration
+Contact Current)†:
+30 Adc
+1,000 operations @ 250 Vdc
+2,000 operations @ 125 Vdc
+Note: 200 ms on, 15 ms off, current interrupted by independent means
+Short-Time Thermal
+Withstand†:
+50 A for 1 s
+Limiting Making
+Capacity†:
+1,000 W @ 250 Vdc (L/R = 40 ms)
+Limiting Breaking
+Capacity/Electrical
+Endurance†:
+10,000 operations
+10 operations in 4 s, followed by 2 min idle
+
+* Per UL 508 and IEC 60947-5-1 for IEC 61010-2-201 compliance.
+† Parameters verified by SEL per IEC 60255-1:2009 and IEEE C37.90-2005.
+Network Time Protocol (NTP) Modes
+NTP Client:
+As many as three configurable servers
+NTP Server
+Simple Network Time Protocol (SNTP) Accuracy
++/-1 ms:
+This does not take into account external
+factors such as network switches and
+topologies
+Precision Time Protocol (PTP)
+PTP Client:
+Peer delay request and end-to-end path
+delay supported
+Backplane (SEL-2242)
+Ethernet Port
+Ports:
+1
+Data Rate:
+10/100 Mbps
+Connector:
+RJ45 Female
+Protocols:
+Engineering Access
+Note: SEL-2242 Ethernet port is included with the optional touchscreen,
+10-slot model only.
+
+Rated Voltage
+Resistive Break
+Inductive Break
+L/R = 40 ms (DC)
+PF = 0.4 (AC)
+24 Vdc
+1.25 Adc
+1.25 Adc
+48 Vdc
+0.63 Adc
+0.63 Adc
+125 Vdc
+0.30 Adc
+0.30 Adc
+250 Vdc
+0.20 Adc
+0.20 Adc
+110 Vrms
+0.30 Arms
+0.30 Arms
+240 Vrms
+0.20 Arms
+0.20 Arms
+
+=== page 20 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+20
+Fuse Rating
+Non-Serviceable:
+2.5 A, 125 V, time lag T
+Power Coupler (SEL-2243)
+EtherCAT Ports
+Ports:
+2
+Data Rate:
+Automatic
+Connector:
+RJ45 Female or LC Fiber
+Protocols:
+Dedicated EtherCAT
+RJ45 Ports
+Cable Length:
+<3 m
+Fiber-Optic Ports (Class 1 LASER/LED)
+Wavelength:
+1300 nm
+Optical Connector Type:
+LC
+Multimode Option
+Link Budget:
+11 dB
+Min. TX Power:
+-20 dBm
+Min. RX Sensitivity:
+-31 dBm
+Fiber Size:
+50-200 um
+Approximate Range:
+2 km
+Data Rate:
+100 Mbps
+Typical Fiber Attenuation: -2 dB/km
+Single-Mode Option
+Link Budget:
+10 dB
+Min. TX Power:
+-15 dBm
+Min. RX Sensitivity:
+-25 dBm
+Fiber Size:
+9 um
+Approximate Range:
+15 km
+Data Rate:
+100 Mbps
+Typical Fiber Attenuation: -0.4 dB/km
+Power Supply
+AC Input Voltage (High-Voltage Model)
+Note: Single phase.
+Nominal Supply
+Voltage:
+120-240 Vac, 50-60 Hz
+Operational Voltage
+Range:
+85-264 Vac, 40-70 Hz
+DC Input Voltage (High-Voltage Model)
+Nominal Supply
+Voltage:
+125-250 Vdc
+Operational Voltage
+Range:
+85-300 Vdc
+DC Input Voltage (Low-Voltage Model)
+Nominal Supply
+Voltage:
+24-48 Vdc
+Operational Voltage
+Range:
+19.1-57.6 Vdc polarity-dependent
+Note: UL operational voltage range is equal to the nominal voltage range +/-10
+percent.
+Fuse Rating
+High-Voltage Model, F1: 3.15 A, high breaking capacity, time lag T,
+250 V (5x20 mm, T3.15AH 250 V)
+High-Voltage Model, F2
+(Non-Serviceable):
+8 A, high breaking capacity, time lag T,
+60 Vdc (2.7x6.1 mm, T8A 60 Vdc)
+Low-Voltage Model:
+6.30 A, high breaking capacity, time lag T, 250
+V (5x20 mm, T6.3AH 250 V)
+Power Consumption: See Module Burden per Module for Each Node on
+page 17 for power per module.
+Maximum AC Burden:
+160 VA
+Maximum DC Burden:
+75 W
+Interruptions:
+30 ms @ 24 Vdc
+130 ms @ 48 Vdc
+50 ms @ 125 Vac/Vdc
+100 ms @ 250 Vac/Vdc
+The following exceptions for the IEC 61850-3 acceptance criteria for
+normal equipment functioning regarding ac power dips and interruptions
+and dc voltage dips are applicable (refer to IEC 61850-3 subclause 7.5.5,
+Equipment functioning, and 7.5.6, Exceptions).
+Max Inrush:
+17 A
+Isolation:
+3100 Vdc
+Redundant Installation:
+Each node may have one or two SEL-2243
+modules installed. When two are used,
+they operate in load-sharing mode.
+Recommended External Overcurrent Protection
+Breaker Type:
+Standard
+Breaker Rating:
+15 A or 20 A at 250 Vdc
+Current Breaking
+Capacity:
+10 kA
+Grounded Neutral System: Device in series with the HOT or energized
+conductor
+DC and Isolated Systems:
+Device in series with both conductors
+Optoisolated Control Inputs (SEL-2244-2)
+When Used With DC Control Signals:
+250 V
+ON for 200-275 Vdc
+OFF below 150 Vdc
+220 V
+ON for 176-242 Vdc
+OFF below 132 Vdc
+125 V
+ON for 100-135.5 Vdc
+OFF below 75 Vdc
+110 V
+ON for 88-121 Vdc
+OFF below 66 Vdc
+48 V
+ON for 38.4-52.8 Vdc
+OFF below 28.8 Vdc
+24 V
+ON for 15-30 Vdc
+OFF for <10 Vdc
+When Used With AC Control Signals:
+250 V
+ON for 170.6-300 Vac
+OFF below 106 Vac
+220 V
+ON for 150.3-264 Vac
+OFF below 93.2 Vac
+125 V
+ON for 85-150 Vac
+OFF below 53 Vac
+110 V
+ON for 75.1-132 Vac
+OFF below 46.6 Vac
+48 V
+ON for 32.8-60 Vac
+OFF below 20.3 Vac
+24 V
+ON for 14-27 Vac
+OFF for <5 Vac
+Burden/Current Draw at
+Nominal DC Voltage:
+2-6 mA (Except for 24 V, 8 mA)
+Rated Insulation Voltage:
+300 Vac
+Rated Impulse Withstand
+Voltage (Uimp):
+5,000 V
+Power Supply
+Requirement
+Exceptiona
+a Voltage interruptions that are longer than the specified
+interruption duration result in a device restart.
+125 Vac
+5 cycles
+(83.33 ms @ 60 Hz,
+100 ms @ 50 Hz)
+50 ms
+50 cycles
+Not applicableb
+b Equipment is not intended to be connected to power supply
+ports that are directly connected to a public low-voltage
+power supply network.
+
+=== page 21 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+21
+Input Thermal Derating
+SEL-2244-2 Digital Input Derating Curve
+Control Outputs (SEL-2244-3 Standard Contacts)
+Mechanical Durability
+10 M no-load operations
+DC Output Ratings
+Rated Operational Voltage:
+250 Vdc
+Rated Voltage Range:
+19.2-275 Vdc
+Rated Insulation Voltage:
+300 Vdc
+Make:
+30 A @ 250 Vdc per IEEE C37.90
+Continuous Carry:
+6 A @ 70 degC; 4 A @ 85 degC
+Continuous Carry -
+(UL/CSA Derating With
+All Outputs Asserted):
+5 A @ <60 degC; 2.5 A 60 deg to 70 degC
+Thermal:
+50 A for 1 s
+Contact Protection:
+350 Vdc, 145 J MOV protection across open
+contacts
+Operating Time (Coil
+Energization to Contact
+Closure, Resistive Load): Pickup/Dropout time -8 ms typical
+Breaking Capacity (10,000
+Operations) Per
+IEC 60255-0-20:1974:
+24 Vdc
+0.75 A
+L/R = 40 ms
+48 Vdc
+0.50 A
+L/R = 40 ms
+125 Vdc
+0.30 A
+L/R = 40 ms
+250 Vdc
+0.20 A
+L/R = 40 ms
+Cyclic Capacity
+(2.5 Cycles/Second) Per
+IEC 60255-0-20:1974:
+24 Vdc
+0.75 A
+L/R = 40 ms
+48 Vdc
+0.50 A
+L/R = 40 ms
+125 Vdc
+0.30 A
+L/R = 40 ms
+250 Vdc
+0.20 A
+L/R = 40 ms
+AC Output Ratings
+Rated Operational Voltage:
+240 Vac
+Rated Insulation Voltage
+(Excluding EN 61010-1):
+300 Vac
+Utilization Category:
+AC-15 (control of electromagnetic
+loads > 72 VA)
+Contact Rating
+Designation:
+B300 (B = 5 A, 300 = rated insulation
+voltage)
+Contact Protection:
+250 Vac, 145 J
+Continuous Carry:
+3 A @ 120 Vac
+1.5 A @ 240 Vac
+Conventional Enclosed
+Thermal Current (Ithe)
+Rating:
+5 A
+Rated Frequency:
+50/60 +/- 5 Hz
+Operating Time (Coil
+Energization to Contact
+Closure, Resistive Load): Pickup/Dropout time -8 ms typical
+Electrical Durability Make
+VA Rating:
+3600 VA, cosø = 0.3
+Electrical Durability Break
+VA Rating:
+360 VA, cosø = 0.3
+Optoisolated Control Inputs (SEL-2244-4)
+When Used With DC Control Signals:
+125 V
+ON for 100-135.5 Vdc
+OFF below 75 Vdc
+110 V
+ON for 88-121 Vdc
+OFF below 66 Vdc
+48 V
+ON for 38.4-52.8 Vdc
+OFF below 28.8 Vdc
+24 V
+ON for 15-30 Vdc
+OFF for <10 Vdc
+When Used With AC Control Signals:
+125 V
+ON for 85-150 Vac
+OFF below 53 Vac
+110 V
+ON for 75.1-132 Vac
+OFF below 46.6 Vac
+Burden/Current Draw at
+Nominal DC Voltage:
+2-6 mA (Except for 24 V, 8 mA)
+Rated Insulation Voltage:
+300 Vac
+Rated Impulse Withstand
+Voltage (Uimp):
+5,000 V
+Maximum Voltage
+Between Inputs That
+Share a Common
+Ground:
+150 Vpeak
+Use default timer values or greater (-10 ms in DC mode) for EMC
+compliance.
+Control Outputs (SEL-2244-5 Fast High-Current Contacts)
+Mechanical Durability
+10 M no-load operations
+DC Output Ratings
+Rated Operational Voltage: 250 Vdc
+Rated Voltage Range:
+19.2-275 Vdc
+Rated Insulation Voltage:
+300 Vdc
+Make:
+30 A @ 250 Vdc per IEEE C37.90
+Continuous Carry:
+6 A @ 70 degC; 4 A @ 85 degC
+Continuous Carry -
+(UL/CSA Derating With
+All Outputs Asserted):
+5 A @ <60 degC; 2.5 A 60 deg to 70 degC
+Thermal:
+50 A for 1 s
+Contact Protection:
+330 Vdc, 145 J MOV protection across open
+contacts
+Operating Time (Coil Energization to Contact Closure, Resistive Load)
+Pickup Time:
+-12 us at 250 Vdc, 16 us at 125 Vdc,
+65 us at 19.2 Vdc typical (results with
+100 k- resistive load)
+Dropout Time:
+- 8 ms typical
+Inductive Breaking
+Capacity (10,000
+Operations) Per
+IEC 60255-0-20:1974:
+24 Vdc
+10 A
+L/R = 40 ms
+48 Vdc
+10 A
+L/R = 40 ms
+125 Vdc
+10 A
+L/R = 40 ms
+250 Vdc
+10 A
+L/R = 20 ms
+Cyclic Capacity
+(4 Cycles/Second
+Followed by 2 Min Idle
+Thermal Dissipation) Per
+IEC 60255-0-20:1974:
+24 Vdc
+10 A
+L/R = 40 ms
+48 Vdc
+10 A
+L/R = 40 ms
+125 Vdc
+10 A
+L/R = 40 ms
+250 Vdc
+10 A
+L/R = 20 ms
+AC Output Ratings
+Rated Operational Voltage: 110/120/220/240 Vac
+Voltage Range:
+19.2-250 Vac
+Rated Insulation Voltage:
+250 Vac
+Make:
+30 A @ 240 Vac
+Continuous Carry:
+6 A @ 70 degC; 4 A @ 85 degC
+Continuous Carry -
+(UL/CSA Derating With
+All Outputs Asserted):
+5 A @ <60 degC; 2.5 A @ 60 deg to 70 degC
+Thermal:
+50 A for 1 s
+Contact Protection:
+250 Vac, 145 J MOV protection across open
+contacts
+
+=== page 22 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+22
+Operating Time (Coil Energization to Contact Closure, Resistive Load)
+Pickup Time:
+-12 us at 250 Vac, 16 us at 125 Vac, 65 us at
+19.2 Vac typical (results with
+100 k- resistive load)
+Dropout Time:
+--8 ms typical
+Note: Per IEC 60255-23:1994, using the simplified method of assessment.
+Note: Make rating per IEEE C37.90-1989.
+Fuse Rating
+Non-Serviceable:
+4 A, 450 V, medium time lag M
+DC Transducer (Analog) Inputs (SEL-2245-2)
+Input Impedance
+Current Mode:
+200 --for +/-20 mA
+5,000 --for +/-2 mA
+Voltage Mode:
+10 M-
+Input Range (Maximum)
++/-20 mA (transducers: 4-20 mA or 0-20 mA typical)
++/-2 mA (transducers: 0-1 mA or 0-2 mA typical)
++/-10 V (transducers: 0-5 V or 0-10 V typical)
+Sampling Rate
+1 ksps
+Anti-Alias Filter
+Corner Frequency:
+330 Hz
+Rolloff:
+20 dBV per decade
+Digital Filter
+Corner Frequency:
+Filter A: 16 Hz
+Filter B: 10 Hz
+Filter C: 0.2 Hz
+50 Hz Rejection:
+Filter A: >30 dB
+Filter B: >50 dB
+Filter C: >70 dB
+60 Hz Rejection:
+Filter A: >60 dB
+Filter B: >70 dB
+Filter C: >70 dB
+Step Response
+No Filter:
+3 ms (10%-90% response)
+Filter A:
+23 ms (10%-90% response)
+Filter B:
+35 ms (10%-90% response)
+Filter C:
+700 ms (10%-90% response)
+Common Mode Range
++/-35 Vdc between separate inputs
++/-250 Vdc all inputs to chassis
+Isolation
+500 Vac between inputs
+2,000 Vac all inputs to chassis
+Accuracy at 25 degC
+ADC:
+16 bit
+Voltage Inputs (+/-10 V):
+0.25% of full-scale typical
+0.05% with field calibration
+2% of full-scale maximum
+High Current Inputs -
+(+/-20 mA):
+0.5% of full-scale typical
+0.1% with field calibration
+2% of full-scale maximum
+Low Current Inputs -
+(+/-2 mA):
+0.5% of full-scale typical
+0.1% with field calibration
+4% of full-scale maximum
+Accuracy Variation With Temperature
+Inputs:
++/-0.015% per degC of full scale -
+(+/-20 mA, +/-2 mA, or +/-10 V)
+ADC:
++/-0.004% per degC
+Triggered Waveform Recording
+Sampling Rate:
+1 kHz
+Record Duration:
+0.1 second increments from 0.5 s to 144 s
+Record Pre-Trigger:
+0.05 s minimum to a maximum of (record
+length minus 0.05 s)
+Waveform File Format:
+COMTRADE (IEEE C37.111-1999
+compliant)
+DC Analog Inputs Extended Range
+(SEL-2245-22 in DC Mode)
+Input Impedance
+>7 M-
+Input Range (Maximum)
+0-300 V
+Sampling Rate
+24 ksps
+Anti-Alias Filter
+Corner Frequency:
+5 kHz
+Rolloff:
+20 dB per decade
+Digital Filter
+Corner Frequency:
+Filter A: 16 Hz
+Filter B: 10 Hz
+Filter C: 0.2 Hz
+50 Hz Rejection:
+Filter A: >30 dB
+Filter B: >50 dB
+Filter C: >70 dB
+60 Hz Rejection:
+Filter A: >60 dB
+Filter B: >70 dB
+Filter C: >70 dB
+Step Response
+Group Delay (Pre-Filter):
+5.3 ms
+No Filter:
+3 ms (10%-90% response)
+Filter A:
+23 ms (10%-90% response)
+Filter B:
+35 ms (10%-90% response)
+Filter C:
+700 ms (10%-90% response)
+Common Mode Range
++/-250 Vdc between separate inputs
++/-250 Vac all inputs to chassis
+Isolation
+2,500 Vrms between separate inputs
+2,500 Vrms all inputs to chassis
+Accuracy at 25 degC
+ADC:
+16 bit
+Inputs:
+0.25% of full-scale typical
+3% of full-scale worst case
+Accuracy Variation With Temperature (Inputs)
++/-0.015% per degC of full scale
+Triggered Waveform Recording
+Sampling Rate:
+1, 2, 4, 8, 24 kHz
+Record Duration:
+0.1 second increments from 0.5 s to 144 s
+Record Pre-Trigger:
+0.05 s minimum to a maximum of (record
+length minus 0.05 s)
+Waveform File Format:
+COMTRADE (IEEE C37.111-1999
+compliant)
+
+=== page 23 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+23
+DC Analog Outputs (SEL-2245-3)
+Current Mode
+Output Range:
+-20.48 to +20.48 mA
+Load Impedance:
+0-750 - @ 20 mA, 100 uH
+Voltage Mode
+Output Range:
+-10.24 to +10.24 volts
+Load Impedance:
+>2,000 - , 1 uF
+Step Response
+1 ms (10%-90% response typical)
+Isolation
+2,000 Vdc between outputs or ground
+Accuracy at 25 degC (Outputs)
+Current Mode:
++/- 0.3% of full-scale typical
++/- 3% of full-scale worst case (average
+during an EMI event over a 1-second
+period)
+Voltage Mode:
++/- 0.2% of full-scale typical
++/- 2% of full-scale worst case (average
+during an EMI event over a 1-second
+period)
+Accuracy Variation With Temperature (Outputs)
++/-0.01% of full-scale/ degK (current or voltage mode)
+AC Metering Inputs (SEL-2245-4, SEL-2245-411,
+SEL-2245-221, and SEL-2245-22 Voltage Inputs in AC Mode)
+Frequency:
+50/60 Hz
+Range:
+45-65 Hz
+Typical Accuracy
+SEL-2245-4 and
+SEL-2245-22:
++/- 0.005 Hz above 20 V
+SEL-2245-411 and
+SEL-2245-221:
++/- 0.005 Hz above 500 mV
+Worst-Case Accuracy
+SEL-2245-4 and
+SEL-2245-22:
++/- 0.01 Hz above 20 V
+SEL-2245-411 and
+SEL-2245-221:
++/- 0.01 Hz above 500 mV
+Phase Rotation:
+ABC, ACB
+Input Configuration:
+3-Wire Delta, 4-Wire Wye
+Update Interval
+Fundamental Metering:
+200 Hz
+RMS Metering:
+5 Hz
+Current Inputs Phase and Neutral
+INOM:
+1 A or 5 A (no setting required)
+Measurement Range:
+0.050-22 A Continuous
+22-100 A Symmetrical for 25 s
+Thermal Withstand Limit:
+500 A for 1 s
+Typical Accuracy:
++/- 0.1% fundamental @ fNOM and > 0.6 A
++/- 0.1% rms @ fNOM and > 0.6 A
+Worst-Case Accuracy:
++/- 2% +/- 0.005 A fundamental
++/- 1% +/- 0.005 A rms
+Angle
+Range:
++/- 180 deg
+Typical Accuracy:
++/- 0.1 deg fundamental @ fNOM and > 0.6 A
+Worst-Case Accuracy:
++/- 2 deg @ fNOM
+Burden:
+< 0.1 VA @ INOM
+Voltage Inputs (SEL-2245-4 and SEL-2245-22 in AC Mode)
+VNOM:
+300 V
+Measurement Range:
+5-400 L-N, 9-693 L-L Vac -
+fundamental/rms
+5-300 L-N, 9-520 L-L Vac -
+fundamental/rms (UL)
+Maximum:
+600 L-N, 1,039 L-L Vac fundamental/rms
+for 10 s
+Typical Accuracy:
++/-0. 1% fundamental @ fNOM and > 20 V
++/- 0.1% rms @ fNOM
+Worst-Case Accuracy:
++/-2% fundamental @ fNOM
++/-1% rms plus +/-0.05 V
+Angle
+Range:
++/-180 deg
+Typical Accuracy:
++/-0.1 deg @ fNOM and > 20 V
+Worst-Case Accuracy:
++/-2 deg @ fNOM
+Burden:
+< 0.1 VA
+LEA Voltage Inputs (SEL-2245-411 and SEL-2245-221)
+VNOM:
+1.5 V
+Measurement Range:
+30 Vac peak
+0.05-22 Vac rms
+Maximum:
+300 VL-N rms for 10 s (surge)
+Typical Accuracy:
++/- 0. 1% rms @ fNOM and > 50 mV
++/- 0.1% fundamental @ fNOM and > 50 mV
+Worst-Case Accuracy:
++/- 3% +/-1 mV @ fNOM fundamental/rms
+Angle
+Range:
++/- 180 deg
+Typical Accuracy:
++/- 0.1 deg @ fNOM and > 50 mV
+Worst-Case Accuracy:
++/- 2 deg @ fNOM
+Burden:
+< 0.1 VA
+Sequence Components (SEL-2245-4)
+Values:
+I0, I1, I2, V0, V1, V2
+Typical Accuracy
+Magnitude:
++/- 0.2% @ fNOM and V > 6.7 V, I > 0.6 A
+Angle:
++/- 0.2 deg @ fNOM and V > 6.7 V, I > 0.6 A
+Worst-Case Accuracy
+Magnitude:
++/-3% @ fNOM and V > 6.7 V, I > 0.6 A
+Angle:
++/- 0.2 deg @ fNOM and V > 6.7 V, I > 0.6 A
+Power and Power Factor Per Phase and Three-Phase (SEL-2245-4)
+PA, PB, PC, 3P
+Typical Accuracy:
+0.1% @ PF > 0.1
+Worst-Case Accuracy:
+2%
+QA, QB, QC, 3Q
+Typical Accuracy:
+0.1% @ PF < 0.9
+Worst-Case Accuracy:
+2%
+SA, SB, SC, 3S
+Typical Accuracy:
+0.1%
+Worst-Case Accuracy:
+2%
+PFA, PFB, PFC, 3PF
+Typical Accuracy:
+0.1% @ PF > 0.1
+Worst-Case Accuracy:
+2%
+Power and Power Factor Per Phase and Three-Phase (SEL-2245-411)
+PA, PB, PC, 3P
+Typical Accuracy:
+0.1% @ PF --0.5
+Worst-Case Accuracy:
+2%
+
+=== page 24 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+24
+QA, QB, QC, 3Q
+Typical Accuracy:
+0.1% @ PF-- 0.98
+Worst-Case Accuracy:
+2%
+SA, SB, SC, 3S
+Typical Accuracy:
+0.1%
+Worst-Case Accuracy:
+2%
+PFA, PFB, PFC, 3PF
+Typical Accuracy:
+0.1% @ Unity PF
+Worst-Case Accuracy:
+2%
+Synchrophasor
+Conformance:
+IEEE C37.118.1-2011 as amended by
+IEEE C37.118.1a-2014
+IEEE C37.118.2-2011
+Accuracy:
+Level 1 as specified by IEEE C37.118
+Measurements:
+Software selectable (P or M class)
+Voltage:
+VA, VB, VC, VS
+Current:
+IA, IB, IC, IN
+Positive-Sequence:
+V1, I1
+Periodic:
+Frequency and df/dt
+Processing Rate:
+120 Hz
+Frequency Resolution:
++/-1.25 mHz*
+Calculated Power
+Resolution:
++/-0.1%*
+* Resolution values tested on SEL-2245-4 with 69 V voltage inputs, 0.6 A to
+1 A current inputs, and 49.5 to 50.5 Hz frequency range.
+Message Rates -
+(60 Hz nominal):
+1, 2, 4, 5, 10, 12, 15, 20, 30, 60, and 120*
+(messages/second)
+Message Rates -
+(50 Hz nominal):
+1, 2, 5, 10, 25, 50, and 100* -
+(messages/second)
+* This message rate is only supported on the SEL-2245-4, SEL-2245-42, and
+SEL-2245-411 Axion modules. Message rates are supported on the
+SEL-2241-2, SEL-3350, SEL-3555, and SEL-3560.
+Triggered Waveform Recording (SEL-2245-4, SEL-2245-411,
+SEL-2245-22, and SEL-2245-221)
+Sampling Rates:
+1, 2, 4, 8, 24 kHz software selectable
+Record Duration:
+0.1 second increments from 0.5 s to specified
+maximum for each sample rate.
+Maximum Record
+Duration:
+6 s @ 24 kHz
+18 s @ 8 kHz
+36 s @ 4 kHz
+72 s @ 2 kHz
+144 s @ 1 kHz
+Record Pre-Trigger:
+0.05 s minimum to a maximum of (record
+length minus 0.05 s)
+Waveform File Format:
+COMTRADE (IEEE C37.111-1999
+compliant)
+AC Protection Inputs (SEL-2245-42)
+Frequency
+Rated:
+50/60 Hz
+Range:
+40-90 Hz
+Typical Accuracy:
++/- 0.005 Hz above 20 V
+Worst-Case Accuracy:
++/- 0.01 Hz above 20 V (+/-0.1 Hz for <2.5
+cycles during transients)
+Phase Rotation:
+ABC, ACB
+Input Configuration:
+3-Wire Delta, 4-Wire Wye
+Update Interval
+Fundamental Metering:
+250 Hz
+RMS:
+250 Hz, 1 cycle window
+THD (15th Harmonic
+Limited):
+250 Hz, 1 cycle window
+Harmonics and THD
+(63rd Harmonic
+Limited):
+10/12 cycle for 50/60 Hz system frequency
+AC Current Channels
+Nominal Current:
+1 ARMS or 5 ARMS (no setting required)
+Current Range Rating
+(With DC Offset at -
+X/R = 10, 1.5 Cycles):
+0.1-91 A
+Operational Range:
+0.1-300 ARMS
+Measurement Range:
+0.1-20 ARMS
+Thermal Withstand Limit:
+15 ARMS continuous
+500 ARMS for one second
+Fundamental Measurement Accuracy
+Magnitude:
++/-0.1%, typical, +/-0.001 A
++/-2%, worst case, +/-0.001 A
+Phase:
++/-0.1 deg, typical at fNOM and current > 0.4 A
++/-1 deg, over full rated temperature range
++/-2 deg, worst case
+RMS Measurement Accuracy
+Magnitude:
++/-0.1%, typical, +/-0.001 A
++/-2%, worst case, +/-0.001 A
+Burden:
+< 0.1 VA @ 67 V
+Impedance >500 k-
+THD Accuracy (15th
+Harmonic Limited):
++/-5% of measurement plus +/-0.25%
+AC Voltage Channels
+Rated Range:
+67-240 VL-N
+Note: Rated Range refers to the IEEE C37.118 rating system.
+Operational Range:
+0-300 VL-N
+Accuracy Range:
+6.7-300 VL-N
+Rated Insulation Voltage:
+300 VL-N continuous
+600 VL-N for ten seconds
+Galvanic Isolated Channels
+Channel-to-Ground and
+Channel-to-Channel:
+2.5 kVRMS for one minute
+Fundamental Measurement Accuracy
+Magnitude:
++/-0.1%, typical, plus +/-0.05 V
++/-3%, worst case, plus +/-0.05 V
+Phase:
++/-0.1 deg @ fNOM, typical
++/-1 deg @ fNOM, over full rated temperature
+range
++/-2 deg @ fNOM, worst case
+RMS Measurement Accuracy
+Magnitude:
++/-0.1%, typical, plus +/-0.05 V
++/-3%, worst case, plus +/-0.05 V
+Burden:
+< 0.01 VA @ 67 V
+Impedance >500 k-
+THD Accuracy (15th
+Harmonic Limited):
++/-5% of measurement plus +/-0.25%
+Sequence Components
+Values:
+I0, I1, I2, V0, V1, V2
+Note: Sequence components are of the fundamental frequency.
+Accuracy
+Magnitude:
++/-1%, typical
+Angle:
++/-0.5 deg, typical
+Power and Power Factor (Per-Phase and Three-Phase)
+Values:
+PA, PB, PC, PAB, PBC, PCA,-
+QA, QB, QC, QAB, QAC, QCA,-
+SA, SB, SC, SAB, SBC, SCA,-
+PFA, PFB, PFC, P3, Q3, S3, PF3
+Accuracy:
++/-1%, typical
+
+=== page 25 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+25
+Technical Support
+We appreciate your interest in SEL products and services. If you have questions or comments, please contact us at:
+Schweitzer Engineering Laboratories, Inc.-
+2350 NE Hopkins Court-
+Pullman, WA 99163-5603 U.S.A.-
+Tel: +1.509.338.3838-
+Fax: +1.509.332.7990-
+Internet: selinc.com/support-
+Email: info@selinc.com
+Synchrophasors
+Conformance:
+IEEE C37.118.1-2011 as amended by IEEE
+C37.118.1a-2014
+IEEE C37.118.2-2011
+Accuracy:
+Level 1 as specified by IEEE C37.118
+Measurements:
+Software selectable (P or M Class)
+Voltage:
+VA, VB, VC
+Current:
+IA, IB, IC
+Positive-Sequence:
+V1, I1
+Periodic:
+Frequency and df/dt
+Processing Rate:
+120 Hz
+Frequency Resolution:
++/-1.25 mHz*
+Calculated Power
+Resolution:
++/-0.1%*
+* Resolution values tested with 69 V voltage inputs, 0.6 A to 1 A current
+inputs, and 49.5 to 50.5 Hz frequency range.
+Message Rates (60 Hz
+nominal):
+1, 2, 4, 5, 10, 12, 15, 20, 30, 60, and 120*
+(messages/second)
+Message Rates (50 Hz
+nominal):
+1, 2, 5, 10, 25, 50, and 100*
+(messages/second)
+* Message rates are supported on the SEL-2241-2, SEL-3350, SEL-3555, and
+SEL-3560.
+Triggered Waveform Recording
+Sampling Rates:
+1, 2, 4, 8, 24 kHz software selectable
+Transient Fault Record Length
+Individual Records as
+Long as:
+24 s for 24 kHz
+72 s for 8 kHz
+144 s for 4 kHz
+288 s for 2 kHz
+576 s for 1 kHz
+Pre-Fault Time:
+0.05 s to (max. event length - 0.05 s)
+Data Format:
+IEEE C37.111-2013 COMTRADE
+File Naming:
+IEEE C37.232 COMNAME
+Harmonics
+Processing Window:
+10/12 cycle for 50/60 Hz system frequency
+Measurement Bandwidth:
+40-4,000 Hz (63rd harmonic)
+Accuracy Range
+Fundamental Frequency: 40-70 Hz
+Voltage (Vfund):
+67-270 V
+Current (Ifund):
+0.5-18.0 A
+Voltage Accuracy -
+(40-3,000 Hz):
++/-5% for measurements -1% of Vfund
++/-0.05% of Vfund for measurements <1% of
+Vfund
+Current Accuracy -
+(40-3,000 Hz):
++/-5% for measurements -1% of Ifund
++/-0.15% of Ifund for measurements <1% of
+Ifund
+THD Accuracy (63rd
+Harmonic Limited):
++/-5% typical
+Note: Harmonic measurements are calculated as harmonic subgroups,
+representing the rms value of the spectral content within a 15 Hz band
+centered on the target harmonic frequency (7.5 Hz before and after).
+Interharmonic measurements are determined as interharmonic centered
+subgroups, which are the rms values of the spectral content between
+two harmonic subgroups. THD measurements are calculated as the
+ratio of the rms value of the harmonic subgroups, up to the 63rd
+harmonic, to the rms value of the subgroup associated with the
+fundamental frequency.
+
+=== page 26 ===
+SEL-2240 Bay Controller Data Sheet
+Schweitzer Engineering Laboratories, Inc.
+26
+Notes
+
+=== page 27 ===
+Schweitzer Engineering Laboratories, Inc.
+SEL-2240 Bay Controller Data Sheet
+27
+
+=== page 28 ===
+28
+SEL-2240 Bay Controller Data Sheet
+Date Code 20250423
+(C) 2021-2025 by Schweitzer Engineering Laboratories, Inc.
+Content subject to change without notice.
+Unless otherwise agreed in writing, all SEL product sales are subject to SEL's terms and
+conditions located here: https://selinc.com/company/termsandconditions/.
+EtherCAT(R) is registered trademark and patented technology, licensed by Beckhoff Auto-
+mation GmbH, Germany.
+
+*PDS2240-03*
+2350 NE Hopkins Court - Pullman, WA 99163-5603 U.S.A.
+Tel: +1.509.332.1890 - Fax: +1.509.332.7990
+selinc.com - info@selinc.com

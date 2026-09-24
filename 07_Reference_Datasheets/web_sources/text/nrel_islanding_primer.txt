@@ -7,6 +7,33 @@ PAGES: 42
 USED FOR: Item 54. 1547 clause 8.1: 2 s trip, 5 min return-to-service, safety and out-of-phase reclosing.
 ------------------------------------------------------------------------
 
+=== outline (PDF bookmarks, p. = PDF page) ===
+Preface .. p.4
+Acknowledgments .. p.5
+List of Acronyms .. p.6
+Table of Contents .. p.7
+List of Figures .. p.8
+Introduction .. p.9
+1 Functional Requirements in IEEE Std 1547-2018 .. p.14
+2 Factory Testing and Certification .. p.15
+. 2.1 Balanced Generation-to-Load Test .. p.17
+. 2.2 Power Line-Conducted Permissive Signal Test .. p.18
+. 2.3 Permissive Hardware-Input Test .. p.19
+. 2.4 Reverse or Minimum Import Active Power Flow Test .. p.19
+3 Field Evaluations and Verifications .. p.20
+4 Common Concerns .. p.21
+. 4.1 Personnel Safety .. p.21
+. 4.2 Equipment Protection .. p.23
+. 4.3 Maintaining Power Quality .. p.25
+. 4.4 Impact of Grid Support and Ride-Through Functions .. p.25
+. 4.5 Multiple-Inverter and Mixed Distributed Energy Resource Scenarios .. p.27
+. 4.6 Locales with High Shares of Distributed Energy Resources .. p.28
+5 Guidelines to Determine the Risk of Unintentional Islanding .. p.30
+6 Conclusion .. p.33
+References .. p.34
+Bibliography .. p.37
+Appendix: Summary of Supplementary Anti-Islanding Protection Methods .. p.38
+
 === page 1 ===
 NREL is a national laboratory of the U.S. Department of Energy
 Office of Energy Efficiency & Renewable Energy
